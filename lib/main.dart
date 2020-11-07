@@ -12,6 +12,7 @@ import 'package:bakraw/provider/passwordprovider.dart';
 import 'package:bakraw/provider/pincodeprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
 import 'package:bakraw/provider/relatedproductprovider.dart';
+import 'package:bakraw/provider/searchprovider.dart';
 import 'package:bakraw/provider/shipmethodprovider.dart';
 import 'package:bakraw/provider/sliderprovider.dart';
 import 'package:bakraw/provider/taxProvider.dart';
@@ -58,11 +59,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: DeliverySlotProvider()),
         ChangeNotifierProvider.value(value: ShipmethodProvider()),
         ChangeNotifierProvider.value(value: TaxProvider()),
-        ChangeNotifierProvider.value(
-          value: OrderDetailsProvider(),
-        ),
+        ChangeNotifierProvider.value(value: OrderDetailsProvider()),
         ChangeNotifierProvider.value(value: ShipmethodProvider()),
-        ChangeNotifierProvider.value(value: CartToserverProvider())
+        ChangeNotifierProvider.value(value: CartToserverProvider()),
+        ChangeNotifierProvider.value(value: SearchProvider()),
       ],
       child: MaterialApp(
         home: SplashScreen(),
