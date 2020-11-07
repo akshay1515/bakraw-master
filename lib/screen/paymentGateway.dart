@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/model/addtocartmodel.dart';
@@ -259,9 +261,16 @@ class _PaymentsPageState extends State<PaymentsPage> {
         taxDetails: taxdetails);
 
     /*Map variable = model.toJson();*/
-    String variable = model.orderProducts[0].productName;
 
-    print(variable);
+    Map<String,dynamic> mapData = new Map();
+    mapData["user_id"] = 90;
+    mapData["userFirstName"] = "Test Name";
+    mapData["userLastName"] = "Test Last Name";
+    mapData["userPhone"] = mobile;
+    mapData["userEmail"] = email;
+
+    String json = jsonEncode(mapData);
+    print("Json data"+json.toString());
 
     /* Provider.of<CartToserverProvider>(context, listen: false)
         .PlaceOrderInCart(model, apikey)

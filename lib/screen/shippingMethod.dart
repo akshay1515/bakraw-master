@@ -226,9 +226,9 @@ class _ShippingMethodState extends State<ShippingMethod> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            text(
-                                'Tax (${double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate).toStringAsFixed(2)}%)',
-                                textColor: grocery_textColorSecondary),
+//                            taxmodel.data != null?text(
+//                                'Tax (${double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate).toStringAsFixed(2)}%)',
+//                                textColor: grocery_textColorSecondary):Container(height: 0,),
                             text("₹ ${Calculatetax()}",
                                 textColor: grocery_textColorSecondary),
                           ],
