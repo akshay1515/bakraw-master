@@ -17,8 +17,6 @@ import 'package:provider/provider.dart';
 class GroceryProductDescription extends StatefulWidget {
   static String tag = '/ProductDescription';
 
-  const GroceryProductDescription({Key key}) : super(key: key);
-
   @override
   GroceryProductDescriptionState createState() =>
       GroceryProductDescriptionState();
@@ -30,7 +28,6 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   String userid = '';
   Options optionvalue;
   int count = 1;
-
   var prodid;
   bool isFavourite = false;
 
@@ -76,14 +73,8 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
 
   @override
   void initState() {
-    getUserInfo();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    changeStatusColor(grocery_colorPrimary);
+    getUserInfo();
   }
 
   Data model;
@@ -95,8 +86,10 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   List<Data> list = [];
   bool isLoading = true;
   int itemcount = 1;
-  double price;
-  double defaultprice = 0;
+  var selectedValue;
+  var sOptionPrice;
+  var sOptionLable;
+  Options option;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +97,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
     favouriteMark();
     //print(prodid['prodid']);
     if (init == true) {
+      /* Provider.of<ProductProvider>(context).UpdateOptionValue(test);*/
       Provider.of<ProductProvider>(context, listen: false)
           .getProductDetails(prodid['prodid'])
           .then((value) {
@@ -136,9 +130,17 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
         setState(() {
           isLoading = false;
         });
-        //SelectedRadio('name');
       });
       init = false;
+    }
+
+    SelectedRadio(Options val) {
+      setState(() {
+        option = val;
+        selectedValue = val.optionValueId;
+        sOptionPrice = val.price;
+      });
+      print('price $sOptionPrice');
     }
 
     String parseHtmlString(String htmlString) {
@@ -154,32 +156,28 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
         isFavourite = !isFavourite;
       });
     }
-    /*String increasecount(int count) {
-      setState(() {
-        return model.productOptions[0].options[optioncount].name;
-      });
-    }*/
 
     String PriceReturn() {
-      if (Provider.of<ProductProvider>(context).items == null) {
+      double defaultprice = 0;
+      double price = 0;
+      defaultprice = double.parse(model.price);
+      if (option == null) {
         setState(() {
-          defaultprice = double.parse(model.price);
           price = defaultprice;
         });
       } else {
         setState(() {
-          price = (defaultprice +
-              double.parse(Provider.of<ProductProvider>(context).items.price));
+          price = (defaultprice + double.parse(sOptionPrice));
         });
       }
       return price.toString();
     }
 
     changeStatusColor(grocery_app_background);
-    double expandHeight = MediaQuery.of(context).size.width * 1.1;
     var width = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () {
+        dispose();
         init = true;
         Navigator.of(context).pop();
       },
@@ -263,10 +261,60 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                   height: MediaQuery.of(context).size.width / 6,
                                   width: MediaQuery.of(context).size.width,
                                   child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height / 10,
-                                    child: RadioListBuilder(optionlist: target),
-                                  ),
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              10,
+                                      child: /*RadioListBuilder(optionlist: target)*/
+                                          ListView.builder(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: target.length,
+                                        itemBuilder: (context, index) {
+                                          return SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2.3,
+                                            child: RadioListTile(
+                                                toggleable: false,
+                                                controlAffinity:
+                                                    ListTileControlAffinity
+                                                        .platform,
+                                                dense: true,
+                                                title: Text(
+                                                  target[index].label,
+                                                  style: TextStyle(
+                                                      fontFamily: fontMedium,
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              23),
+                                                ),
+                                                value:
+                                                    target[index].optionValueId,
+                                                groupValue: selectedValue,
+                                                activeColor: grocery_color_red,
+                                                onChanged: (val) {
+                                                  setState(() {
+                                                    SelectedRadio(Options(
+                                                        priceType: target[index]
+                                                            .priceType,
+                                                        label:
+                                                            target[index].label,
+                                                        price:
+                                                            target[index].price,
+                                                        optionValueId: val,
+                                                        increaseProductPriceBy:
+                                                            target[index]
+                                                                .increaseProductPriceBy,
+                                                        name: target[index]
+                                                            .name));
+                                                  });
+                                                }),
+                                          );
+                                        },
+                                      )),
                                 ),
                                 SizedBox(height: spacing_standard_new),
                                 Container(
@@ -313,11 +361,6 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                 FittedBox(
                                     child: groceryButton(
                                         onPressed: () async {
-                                          Options option =
-                                              Provider.of<ProductProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .items;
                                           if (option == null) {
                                             Fluttertoast.showToast(
                                                 msg: 'Please select pack Size');
@@ -340,7 +383,8 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                                   option.increaseProductPriceBy,
                                               DatabaseHelper.quantity:
                                                   itemcount.toString(),
-                                              DatabaseHelper.price: price
+                                              DatabaseHelper.price:
+                                                  PriceReturn()
                                             });
                                             i > 0 ? count = 1 : count = count;
                                             Fluttertoast.showToast(
@@ -403,7 +447,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   }
 }
 
-class RadioListBuilder extends StatefulWidget {
+/*class RadioListBuilder extends StatefulWidget {
   List<Options> optionlist;
 
   RadioListBuilder({Key key, this.optionlist}) : super(key: key);
@@ -414,17 +458,11 @@ class RadioListBuilder extends StatefulWidget {
 
 class _RadioListBuilderState extends State<RadioListBuilder> {
   var samp;
-  SelectedRadio(Options val) {
-    setState(() {
-      selectedValue = val.optionValueId;
-      Provider.of<ProductProvider>(context, listen: false)
-          .UpdateOptionValue(val);
-    });
-  }
 
   var selectedValue;
   var sOptionPrice;
   var sOptionLable;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -459,4 +497,4 @@ class _RadioListBuilderState extends State<RadioListBuilder> {
       },
     );
   }
-}
+}*/

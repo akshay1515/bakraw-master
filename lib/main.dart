@@ -6,6 +6,7 @@ import 'package:bakraw/provider/deliveryslotprovider.dart';
 import 'package:bakraw/provider/favouriteproductprovider.dart';
 import 'package:bakraw/provider/flashsaleprovider.dart';
 import 'package:bakraw/provider/markfavouriteprovider.dart';
+import 'package:bakraw/provider/orderdetailsprovider.dart';
 import 'package:bakraw/provider/orderhistoryprovider.dart';
 import 'package:bakraw/provider/passwordprovider.dart';
 import 'package:bakraw/provider/pincodeprovider.dart';
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: DeliverySlotProvider()),
         ChangeNotifierProvider.value(value: ShipmethodProvider()),
         ChangeNotifierProvider.value(value: TaxProvider()),
+        ChangeNotifierProvider.value(
+          value: OrderDetailsProvider(),
+        ),
         ChangeNotifierProvider.value(value: ShipmethodProvider()),
         ChangeNotifierProvider.value(value: CartToserverProvider())
       ],

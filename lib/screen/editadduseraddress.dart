@@ -440,15 +440,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
       decoration: formFieldDecoration('Billing Address2'),
     );
-
-    final shipphoneNumber = TextFormField(
-      controller: phoneNumberCont,
-      keyboardType: TextInputType.phone,
-      textInputAction: TextInputAction.done,
-      maxLength: 10,
-      autofocus: false,
-      decoration: formFieldDecoration('Mobile Number'),
-    );
+    
 
     final shipbody = Wrap(runSpacing: spacing_standard_new, children: <Widget>[
       Row(
@@ -495,7 +487,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
               Navigator.of(context).popAndPushNamed(UserAddressManager.tag);
             }),
         title: Text(
-          'Add Shipping Address',
+          'Add/Edit Shipping Address',
           style: TextStyle(color: grocery_color_white),
         ),
       ),

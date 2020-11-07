@@ -60,13 +60,14 @@ class _ShippingMethodState extends State<ShippingMethod> {
     super.initState();
     Shippinglist = [];
     getUserInfo();
-    if (isinit == true) {
-      fetchcartItems();
+    if (isLoading) {
+      if (isinit == true) {
+        fetchcartItems();
+      }
     }
   }
 
   Future fetchcartItems() async {
-    print('set');
     subtotal = 0.0;
     if (rowlist == null) {
       rowlist = List<CartsModel>();
@@ -77,7 +78,6 @@ class _ShippingMethodState extends State<ShippingMethod> {
 
     if (isinit == true) {
       rowlist.forEach((element) {
-        //print('rowlist ${element.option}');
         Provider.of<ProductProvider>(context, listen: false)
             .getProductDetails(element.productid)
             .then((value) {
@@ -91,9 +91,6 @@ class _ShippingMethodState extends State<ShippingMethod> {
       });
       isinit = false;
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   double Subtotal() {
@@ -109,8 +106,8 @@ class _ShippingMethodState extends State<ShippingMethod> {
 
   double Calculatetax() {
     double temp = 0.0;
-    temp =
-        ((Subtotal() / 100) * double.parse(taxmodel.data[0].taxRates[0].rate));
+    temp = ((Subtotal() / 100) *
+        double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate));
 
     return temp;
   }
@@ -119,15 +116,14 @@ class _ShippingMethodState extends State<ShippingMethod> {
     if (isdelivery) {
       total = (Subtotal() +
           Calculatetax() +
-          double.parse(Shippinglist[0].freeShippingMinAmount));
-      Shippinglable = Shippinglist[0].freeShippingLabel;
-      shippingcost = Shippinglist[0].freeShippingMinAmount;
+          double.parse(Shippinglist[defaultvalue].freeShippingMinAmount));
+      Shippinglable = Shippinglist[defaultvalue].freeShippingLabel;
+      shippingcost = Shippinglist[defaultvalue].freeShippingMinAmount;
     } else {
       total = (Subtotal() + Calculatetax());
-      Shippinglable = Shippinglist[0].localPickupLabel;
-      shippingcost = Shippinglist[0].localPickupCost;
+      Shippinglable = Shippinglist[defaultvalue].localPickupLabel;
+      shippingcost = Shippinglist[defaultvalue].localPickupCost;
     }
-
     return total;
   }
 
@@ -172,7 +168,6 @@ class _ShippingMethodState extends State<ShippingMethod> {
                 localPickupName: element.localPickupName));
           });
         }
-        print('Shippinglist ${Shippinglist[0].localPickupLabel}');
         setState(() {
           isLoading = false;
         });
@@ -191,7 +186,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                 Navigator.of(context).pop();
               }),
           title: Text(
-            'Goatmeat',
+            'Overview',
             style: TextStyle(color: grocery_color_white),
           ),
         ),
@@ -432,57 +427,5 @@ class _ShippingMethodState extends State<ShippingMethod> {
                   ),
                 ],
               ));
-
-/*class RadioListBuilder extends StatefulWidget {
-  List<String> optionlist;
-
-  RadioListBuilder({Key key, this.optionlist}) : super(key: key);
-
-  @override
-  _RadioListBuilderState createState() => _RadioListBuilderState();
-}*/
-
-/*
-class _RadioListBuilderState extends State<RadioListBuilder> {
-  var samp;
-  SelectedRadio(String val) {
-    setState(() {
-      selectedValue = val;
-      Provider.of<DeliverySlotProvider>(context, listen: false)
-          .UpdateOptionValue(val);
-    });
-  }
-
-  var selectedValue;
-  var sOptionPrice;
-  var sOptionLable;
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: widget.optionlist.length,
-      itemBuilder: (context, index) {
-        return SizedBox(
-          width: MediaQuery.of(context).size.width / 2.3,
-          child: RadioListTile(
-              toggleable: false,
-              controlAffinity: ListTileControlAffinity.platform,
-              dense: true,
-              title: Text(
-                widget.optionlist[index],
-                style: TextStyle(
-                    fontFamily: fontMedium,
-                    fontSize: MediaQuery.of(context).size.width / 23),
-              ),
-              value: widget.optionlist[index],
-              groupValue: selectedValue,
-              onChanged: (val) {
-                SelectedRadio(selectedValue = val);
-              }),
-        );
-      },
-    );
-  }*/
   }
 }

@@ -62,7 +62,7 @@ class _GroceryChangePasswordState extends State<GroceryChangePassword> {
       backgroundColor: grocery_app_background,
       appBar: PreferredSize(
         preferredSize: Size(double.infinity, 65),
-        child: title1(grocery_lbl_Change_Password, grocery_color_white,
+        child: title1('Change Password', grocery_color_white,
             grocery_textColorPrimary, context),
       ),
       body: isLoading

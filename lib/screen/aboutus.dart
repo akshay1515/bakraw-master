@@ -21,7 +21,7 @@ class _AboutUsState extends State<AboutUs> {
               Navigator.of(context).pop();
             }),
         title: Text(
-          'GoatMeat',
+          'About Us',
           style: TextStyle(color: grocery_color_white),
         ),
       ),

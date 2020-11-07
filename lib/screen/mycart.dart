@@ -69,7 +69,6 @@ class _MycartState extends State<Mycart> {
     }
     count = await DatabaseHelper.instance.getCount();
     rowlist = await DatabaseHelper.instance.getcartItems();
-    rowlist.forEach((element) {});
 
     if (isinit == true) {
       rowlist.forEach((element) {
@@ -85,7 +84,6 @@ class _MycartState extends State<Mycart> {
       });
       isinit = false;
     }
-
     setState(() {
       isLoading = false;
     });
@@ -96,106 +94,7 @@ class _MycartState extends State<Mycart> {
     changeStatusColor(grocery_colorPrimary);
     var width = MediaQuery.of(context).size.width;
     fetchcartItems();
-    return /*widget.istab
-        ? isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.all(spacing_standard_new),
-                      width: width,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              color: grocery_ShadowColor,
-                              blurRadius: 10,
-                              spreadRadius: 3)
-                        ],
-                        borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(spacing_middle),
-                            bottomLeft: Radius.circular(spacing_middle)),
-                        color: grocery_color_white,
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              text(
-                                  '${grocery_lbl_subtotal}${' '}${'(${count} items)'}'),
-                              text('₹ ${Subtotal().toString()}',
-                                  fontFamily: fontMedium),
-                            ],
-                          ),
-                          SizedBox(height: spacing_control),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              text(grocery_lbl_promotion_discount,
-                                  textColor: grocery_textColorSecondary),
-                              text(grocery_lbl_promotion_discount_price,
-                                  textColor: grocery_textColorSecondary),
-                            ],
-                          ),
-                          SizedBox(height: spacing_standard_new),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              text("Contine Shopping",
-                                      textColor: grocery_colorPrimary,
-                                      textAllCaps: true,
-                                      fontFamily: fontMedium)
-                                  .onTap(
-                                () {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed(Dashboard.Tag);
-                                },
-                              ),
-                              SizedBox(width: spacing_standard_new),
-                              FittedBox(
-                                child: groceryButton(
-                                  textContent: grocery_lbl_checkout,
-                                  onPressed: (() {
-                                    !email.isEmptyOrNull
-                                        ? subtotal <= 0
-                                            ? Fluttertoast.showToast(
-                                                msg: 'Your cart is Empty',
-                                                toastLength: Toast.LENGTH_SHORT)
-                                            : Navigator.of(context).pushNamed(
-                                                UserAddressManager.tag,
-                                                arguments: {
-                                                    'cartitems': rowlist,
-                                                    'subtotal': subtotal
-                                                  })
-                                        : Fluttertoast.showToast(
-                                            msg: 'Please Login',
-                                            toastLength: Toast.LENGTH_SHORT);
-                                  }),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: spacing_standard_new),
-                    ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: rowlist.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Cart(rowlist[index], target[index], index);
-                      },
-                    ),
-                  ],
-                ),
-              )
-        : */
-        Scaffold(
+    return Scaffold(
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(),

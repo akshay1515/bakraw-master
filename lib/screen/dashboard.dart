@@ -85,6 +85,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
         height: 70,
         child: GestureDetector(
           onTap: () {
+            finish(context);
             tag.launch(context);
           },
           child: Row(
