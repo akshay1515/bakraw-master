@@ -21,7 +21,7 @@ class _PrivacyState extends State<Privacy> {
               Navigator.of(context).pop();
             }),
         title: Text(
-          'GoatMeat',
+          'Privacy Policy',
           style: TextStyle(color: grocery_color_white),
         ),
       ),

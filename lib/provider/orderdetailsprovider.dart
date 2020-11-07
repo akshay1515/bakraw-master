@@ -19,15 +19,18 @@ class OrderDetailsProvider with ChangeNotifier {
     OrderDetailsModel model;
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
-        body: jsonEncode({
-          'user_id': userid,
-          'user_email': email,
-        }));
+        body: jsonEncode(
+            {'user_id': userid, 'user_email': email, "order_id": orderid}));
     if (response.statusCode == 200) {
-      Map<String, dynamic> decodeddata = jsonDecode(response.body);
-      model = OrderDetailsModel.fromJson(decodeddata);
+      var decodeddata = jsonDecode(response.body);
+      print(decodeddata.toString());
+      if (decodeddata['status'] == 200) {
+        model = OrderDetailsModel.fromJson(decodeddata);
+      } else {
+        model = OrderDetailsModel.fromJson(decodeddata);
+      }
     }
-
+    notifyListeners();
     return model;
   }
 }

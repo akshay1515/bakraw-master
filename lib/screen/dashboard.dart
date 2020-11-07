@@ -5,6 +5,7 @@ import 'package:bakraw/screen/home.dart';
 import 'package:bakraw/screen/mycart.dart';
 import 'package:bakraw/screen/orderhistory.dart';
 import 'package:bakraw/screen/privacypolicy.dart';
+import 'package:bakraw/screen/searchscreen.dart';
 import 'package:bakraw/screen/termsandcondition.dart';
 import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/screen/userprofile.dart';
@@ -85,6 +86,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
         height: 70,
         child: GestureDetector(
           onTap: () {
+            finish(context);
             tag.launch(context);
           },
           child: Row(
@@ -188,7 +190,9 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                   Icons.search,
                   color: grocery_color_white,
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  SearchScreen().launch(context);
+                }),
             IconButton(
                 icon: Icon(
                   Icons.notifications,

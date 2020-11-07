@@ -6,6 +6,7 @@ import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/utils/GroceryWidget.dart';
+import 'package:bakraw/widget/orderdetailscard.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -119,14 +120,16 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                     button(context, 'Order Details',
                         backgroundColor: grocery_textColorSecondary,
                         height: 40,
-                        width: 150),
+                        width: 150)
                   ],
-                ).paddingOnly(top: 16)
+                ).paddingOnly(top: 16).onTap(() {
+                  OrderDetailsCard(
+                    orderid: list[index].orderId,
+                  ).launch(context);
+                })
               ],
             ).paddingOnly(left: 16, right: 16, top: 16, bottom: 16),
-          ).paddingOnly(left: 16, right: 16, top: 16).onTap(() {
-            /* GroceryTrackOrderScreen().launch(context);*/
-          });
+          ).paddingOnly(left: 16, right: 16, top: 16).onTap(() {});
         });
 
     return email.isEmptyOrNull
@@ -140,7 +143,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(AppBar(
                     title: Text(
-                      'Goatmeat',
+                      'Order History',
                       style: TextStyle(color: grocery_color_white),
                     ),
                     leading: IconButton(

@@ -67,7 +67,7 @@ class _CheckPincodeState extends State<CheckPincode> {
               Navigator.of(context).pop();
             }),
         title: Text(
-          'GoatMeat',
+          'Delivery Slot',
           style: TextStyle(color: grocery_color_white),
         ),
       ),

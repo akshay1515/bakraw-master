@@ -259,7 +259,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
         taxDetails: taxdetails);
 
     /*Map variable = model.toJson();*/
-    String variable = model.userFirstName;
+    String variable = model.orderProducts[0].productName;
 
     print(variable);
 
@@ -275,8 +275,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
   @override
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
-    var width = MediaQuery.of(context).size.width;
-    print(widget.amount);
     taxamount = (widget.amount.toInt() * 100);
     PlaceOrder();
     /* openCheckout();*/
