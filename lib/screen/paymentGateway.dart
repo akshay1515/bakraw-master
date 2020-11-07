@@ -4,6 +4,7 @@ import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/model/addtocartmodel.dart';
 import 'package:bakraw/model/internalcart.dart';
+import 'package:bakraw/model/paymentGatewayModels.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/model/taxmodel.dart';
 import 'package:bakraw/model/useraddressmodel.dart';
@@ -186,18 +187,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
           increaseProductPriceBy: rowlist[k].productpriceincreased));
     }
 
-    for (int i = 0; i < rowlist.length; i++) {
-      list.add(OrderProduct(
-          productId: target[i].productId,
-          productName: target[i].name,
-          isProductIsInSale: target[i].isProductIsInSale,
-          qty: rowlist[i].quantity,
-          unitPrice: rowlist[i].price,
-          lineTotal:
-              (double.parse(rowlist[i].price) * int.parse(rowlist[i].quantity))
-                  .toString(),
-          productOptions: optionlist));
-    }
+
 
     setState(() {
       isLoading = false;
@@ -214,10 +204,19 @@ class _PaymentsPageState extends State<PaymentsPage> {
     Fluttertoast.showToast(msg: 'error', toastLength: Toast.LENGTH_SHORT);
   }
 
+
+
+
+
   PlaceOrder() {
     if (ispickup)
       taxdetails.add(TaxDetail(
           taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
+
+
+    List<TaxDetails> taxDetails = [
+      TaxDetails(taxRateId: 1,amount: widget.amount.toString())
+    ];
 
     model = DbcarTmodel(
         userId: 90,
@@ -264,10 +263,72 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
     Map<String,dynamic> mapData = new Map();
     mapData["user_id"] = 90;
-    mapData["userFirstName"] = "Test Name";
-    mapData["userLastName"] = "Test Last Name";
-    mapData["userPhone"] = mobile;
-    mapData["userEmail"] = email;
+    mapData["user_first_name"] = fname;
+    mapData["user_last_name"] = lname;
+    mapData["user_phone"] = mobile;
+    mapData["user_email"] = email;
+    mapData["billing_first_name"] = fname;
+    mapData["billing_last_name"]= lname;
+    mapData["billing_address_1"] = widget.model.shippingAddress1;
+    mapData["billing_address_2"] = widget.model.shippingAddress2;
+    mapData["billing_city"] = widget.model.billingCity;
+    mapData["billing_state"] = widget.model.billingState;
+    mapData["billing_zip"] = widget.model.billingZip;
+    mapData["billing_country"]= widget.model.shippingCountry;
+    mapData["shipping_first_name"] = fname;
+    mapData["shipping_last_name"] = lname;
+    mapData["shipping_address_1"] = widget.model.shippingAddress1;
+    mapData["shipping_address_2"] = widget.model.shippingAddress2;
+    mapData["shipping_city"] = widget.model.billingCity;
+    mapData["shipping_state"] = widget.model.billingState;
+    mapData["shipping_zip"] = widget.model.billingZip;
+    mapData["shipping_country"] = widget.model.shippingCountry;
+    mapData["sub_total"] = widget.amount.toString();
+    mapData["shipping_method"] = widget.shippinglable.toString();
+    mapData["shipping_cost"] = widget.Shippingcost.toString();
+    mapData["coupon_id"] = "";
+    mapData["discount"] = "0.0";
+    mapData["total"] = widget.amount.toString();
+    mapData["payment_method"] = "razorpay";
+    mapData["currency"] = "INR";
+    mapData["currency_rate"] = "1.000";
+    mapData["locale"] = "en";
+    mapData["status"] = "pending";
+    mapData["delivery_slot"] = widget.deliveryslot.toString();
+    mapData["note"] = "";
+    mapData["created_at"] = DateTime.now().toString();
+    mapData["updated_at"] = DateTime.now().toString();
+
+
+    for (int i = 0; i < rowlist.length; i++) {
+      list.add(OrderProduct(
+          productId: target[i].productId,
+          productName: target[i].name,
+          isProductIsInSale: target[i].isProductIsInSale,
+          qty: rowlist[i].quantity,
+          unitPrice: rowlist[i].price,
+          lineTotal:
+          (double.parse(rowlist[i].price) * int.parse(rowlist[i].quantity))
+              .toString(),
+          productOptions: optionlist));
+    }
+
+    print("Row List :-"+rowlist.length.toString());
+    print(list.length.toString());
+
+    mapData["tax_details"] = taxdetails;
+    mapData["order_products"] = list;
+
+
+    transactionDetails = new TransactionDetails(
+      transactionId: "pay_dummy",
+      paymentMethod: "razorpay",
+      createdAt: DateTime.now().toString(),
+      updatedAt: DateTime.now().toString(),
+
+    );
+
+    mapData["transaction_details"] = transactionDetails.toJson();
 
     String json = jsonEncode(mapData);
     print("Json data"+json.toString());

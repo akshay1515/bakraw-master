@@ -10,11 +10,11 @@ import 'package:nb_utils/nb_utils.dart';
 class CartToserverProvider with ChangeNotifier {
   Future PlaceOrderInCart(DbcarTmodel model, String apikey) async {
     const url = '${Utility.BaseURL}${'add-order-details-in-server-db.php'}';
-    String temp = jsonEncode(model.toJson());
-    print(temp);
+
+    //print(temp);
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
-        body: temp);
+        body: "");
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
 
     Fluttertoast.showToast(

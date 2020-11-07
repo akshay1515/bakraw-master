@@ -301,21 +301,21 @@ class TransactionDetails {
 
   String transactionId;
   String paymentMethod;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String createdAt;
+  String updatedAt;
 
   factory TransactionDetails.fromJson(Map<String, dynamic> json) =>
       TransactionDetails(
         transactionId: json["transaction_id"],
         paymentMethod: json["payment_method"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
       );
 
   Map<String, dynamic> toJson() => {
         "transaction_id": transactionId,
         "payment_method": paymentMethod,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
+        "created_at": createdAt,
+        "updated_at": updatedAt,
       };
 }
