@@ -25,7 +25,7 @@ class _FlashSaleState extends State<FlashSale> {
             child: CircularProgressIndicator(),
           )
         : Container(
-            height: MediaQuery.of(context).size.height * 0.33,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: ListView.builder(
               itemCount: flashsale[0].data[0].products.length,
               scrollDirection: Axis.horizontal,
@@ -83,7 +83,7 @@ class FlashsaleItem extends StatelessWidget {
         color: Colors.red.shade900,
         child: Container(
           width: MediaQuery.of(context).size.width * 0.38,
-          height: MediaQuery.of(context).size.height * 0.30,
+          height: MediaQuery.of(context).size.height * 0.25,
           decoration: boxDecoration(
               showShadow: true, radius: 10.0, bgColor: grocery_color_white),
           margin: EdgeInsets.only(left: 16, bottom: 16),

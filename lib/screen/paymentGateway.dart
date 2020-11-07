@@ -217,7 +217,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
       taxdetails.add(TaxDetail(
           taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
 
-    model = DbcarTmodel(
+    /*model = DbcarTmodel(
         userId: 90,
         userFirstName: fname,
         userLastName: lname,
@@ -256,7 +256,13 @@ class _PaymentsPageState extends State<PaymentsPage> {
         updatedAt: DateTime.now(),
         orderProducts: list,
         transactionDetails: transactionDetails,
-        taxDetails: taxdetails);
+        taxDetails: taxdetails);*/
+    data{"user_id":90,
+    "user_first_name":"Akshay",
+    "user_last_name":"Rathi",
+    "tax_details":[{"tax_rate_id":1,"amount":"23.25"}],
+    "order_products":[],
+    "transaction_details":{"transaction_id":"pay_dummy","payment_method":"razorpay","created_at":"2020-11-07 17:48:59.784903","updated_at":"2020-11-07 17:48:59.784988"}}
 
     /*Map variable = model.toJson();*/
     String variable = model.orderProducts[0].productName;

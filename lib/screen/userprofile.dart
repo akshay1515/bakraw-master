@@ -93,8 +93,7 @@ class _GroceryProfileState extends State<GroceryProfile> {
                                   .paddingOnly(
                                       left: spacing_standard,
                                       right: spacing_standard),
-                              text(phone.isEmptyOrNull ? phone : 'NA',
-                                      textColor: grocery_textColorSecondary)
+                              text(phone, textColor: grocery_textColorSecondary)
                                   .paddingOnly(
                                       left: spacing_standard,
                                       right: spacing_standard)
@@ -119,20 +118,15 @@ class _GroceryProfileState extends State<GroceryProfile> {
                           return GestureDetector(
                             onTap: () {
                               if (index == 0) {
-                                Fluttertoast.showToast(
-                                    msg: 'Coming Soon',
-                                    toastLength: Toast.LENGTH_SHORT);
-                              }
-                              if (index == 1) {
                                 Navigator.of(context)
                                     .popAndPushNamed(UserAddressManager.tag);
                               }
                               /*else if (index == 2) {
                         GroceryAddPaymentScreen().launch(context);
                       }*/
-                              if (index == 2) {
+                              if (index == 1) {
                                 GroceryChangePassword().launch(context);
-                              } else if (index == 3) {
+                              } else if (index == 2) {
                                 showLogoutBottomSheetDialog(context);
                               }
                             },

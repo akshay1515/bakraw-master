@@ -20,8 +20,7 @@ class ProductProvider with ChangeNotifier {
     ProductModel productModel;
     final response = await http.get('${url}${id}');
     //print('reponse${response.body}');
-    Map<String, dynamic> decodeddata = jsonDecode(response.body);
-
+    var decodeddata = jsonDecode(response.body);
     if (decodeddata['status'] == 200) {
       productModel = ProductModel.fromJson(decodeddata);
     } else {

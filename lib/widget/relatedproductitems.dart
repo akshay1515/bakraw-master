@@ -1,5 +1,4 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
-import 'package:bakraw/provider/categoryproductprovider.dart';
 import 'package:bakraw/provider/relatedproductprovider.dart';
 import 'package:bakraw/screen/productdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
@@ -15,11 +14,13 @@ class RelatedProduct extends StatefulWidget {
 
 class _RelatedProductState extends State<RelatedProduct> {
   var isLoading = true;
+  var flash;
+  var flashsale;
 
   @override
   Widget build(BuildContext context) {
-    final flash = Provider.of<RelatedProductProvier>(context);
-    final flashsale = flash.items;
+    flash = Provider.of<RelatedProductProvier>(context, listen: false);
+    flashsale = flash.items;
 
     return isLoading
         ? Center(
@@ -51,13 +52,8 @@ class _RelatedProductState extends State<RelatedProduct> {
   @override
   void didChangeDependencies() {
     if (isLoading) {
-      String productid =
-          Provider.of<CategoryProductProvider>(context, listen: false)
-              .list
-              .productId;
-
       (Provider.of<RelatedProductProvier>(context, listen: false)
-              .getRelatedProducts(productid))
+              .getRelatedProducts(flashsale))
           .then((value) {
         setState(() {
           isLoading = false;

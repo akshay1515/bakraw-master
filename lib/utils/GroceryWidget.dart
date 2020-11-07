@@ -424,8 +424,7 @@ class TopBar extends StatefulWidget {
   var rightIcon;
   VoidCallback onPressed;
 
-  TopBar(var this.leftIcon, var this.titleName, var this.rightIcon,
-      this.onPressed);
+  TopBar(var this.leftIcon, var this.titleName, this.onPressed);
 
   @override
   State<StatefulWidget> createState() {

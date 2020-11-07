@@ -22,9 +22,8 @@ class GroceryOrderHistoryScreen extends StatefulWidget {
 
 class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
   List<Data> listCompleated = [];
-  String userid = '6',
-      email = 'rmsundaramias@gmail.com',
-      apikey = '3HfNembb6edyHJNE7nwEQxtxONQxBPdX';
+  String userid = '', email = '', apikey = '';
+  bool isinit = true;
   List<Data> list = [];
   bool isLoading = true;
 
@@ -39,9 +38,9 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
     prefs = await SharedPreferences.getInstance();
     if (prefs != null) {
       setState(() {
-        /* email = prefs.getString('email');
+        email = prefs.getString('email');
         apikey = prefs.getString('apikey');
-        userid = prefs.getString('id');*/
+        userid = prefs.getString('id');
       });
     }
     return email;
@@ -49,7 +48,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading == true) {
+    if (isLoading == true && isinit == true) {
       Provider.of<OrderHistoryProvider>(context, listen: false)
           .getPastOrder(email: email, apikey: apikey, userid: userid)
           .then((value) {
@@ -61,6 +60,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
               createdAt: element.createdAt,
               status: element.status));
           setState(() {
+            isinit = false;
             isLoading = false;
           });
         });
@@ -125,6 +125,9 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                 ).paddingOnly(top: 16).onTap(() {
                   OrderDetailsCard(
                     orderid: list[index].orderId,
+                    apikey: apikey,
+                    email: email,
+                    userid: userid,
                   ).launch(context);
                 })
               ],
@@ -187,9 +190,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                 ),
                 body: Container(
                   width: MediaQuery.of(context).size.width,
-                  child: Center(
-                    child: Container(child: compleated),
-                  ),
+                  child: Container(child: compleated),
                 ),
               ),
             ),

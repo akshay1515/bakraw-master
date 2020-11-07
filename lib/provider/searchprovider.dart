@@ -27,7 +27,6 @@ class SearchProvider with ChangeNotifier {
       }
     }
     notifyListeners();
-    print('search ${model.data[0].name}');
     return model;
   }
 }

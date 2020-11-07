@@ -50,9 +50,9 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
         .isFavourite(userid, apikey, prodid['prodid'])
         .then((value) {
       sample = value.data
-          .firstWhere((element) =>
-              element.productId.contains(prodid['prodid']).validate())
+          .firstWhere((element) => element.productId == (prodid['prodid']))
           .productId;
+      Fluttertoast.showToast(msg: sample, toastLength: Toast.LENGTH_SHORT);
       if (sample == prodid['prodid']) {
         setState(() {
           isFavourite = true;

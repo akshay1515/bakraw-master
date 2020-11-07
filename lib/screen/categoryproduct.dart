@@ -35,19 +35,27 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
         Provider.of<CategoryProductProvider>(context, listen: false)
             .getProductBycategory(catid['catid'])
             .then((value) {
-          value.data.forEach((element) {
-            mStoreDealList.add(Datum(
-              productId: element.productId,
-              price: element.price,
-              name: element.name,
-              images: element.images,
-            ));
+          if (value.data != null) {
+            value.data.forEach((element) {
+              mStoreDealList.add(Datum(
+                productId: element.productId,
+                price: element.price,
+                name: element.name,
+                images: element.images,
+              ));
+              setState(() {
+                isLoading = false;
+              });
+              init = false;
+            });
+          } else {
             setState(() {
               isLoading = false;
             });
             init = false;
-          });
+          }
         });
+        print('length ${mStoreDealList.length}');
       }
     });
     //print(catid['name']);
@@ -55,7 +63,7 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
       backgroundColor: grocery_app_background,
       appBar: PreferredSize(
         preferredSize: Size(double.infinity, width * 0.25),
-        child: TopBar(Icons.arrow_back, catid['name'], Icons.search, () {}),
+        child: TopBar(Icons.arrow_back, catid['name'], () {}),
       ),
       body: isLoading
           ? Center(
@@ -63,25 +71,38 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
             )
           : SafeArea(
               child: Container(
-                margin: EdgeInsets.only(
-                    left: spacing_middle,
-                    right: spacing_middle,
-                    top: spacing_middle),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.70),
-                  itemCount: mStoreDealList.length,
-                  itemBuilder: (context, index) {
-                    //print(mStoreDealList[index].name);
-                    return StoreDeal(mStoreDealList[index], index);
-                  },
-                ),
-              ),
+                  margin: EdgeInsets.only(
+                      left: spacing_middle,
+                      right: spacing_middle,
+                      top: spacing_middle),
+                  child: mStoreDealList.isNotEmpty
+                      ? GridView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  childAspectRatio: 0.70),
+                          itemCount: mStoreDealList.length,
+                          itemBuilder: (context, index) {
+                            //print(mStoreDealList[index].name);
+                            return StoreDeal(mStoreDealList[index], index);
+                          },
+                        )
+                      : Container(
+                          child: Center(
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
+                              fit: BoxFit.contain,
+                              placeholder: placeholderWidgetFn(),
+                              errorWidget: (context, url, error) =>
+                                  new Icon(Icons.error),
+                            ),
+                          ),
+                        )),
             ),
     );
   }
@@ -100,28 +121,6 @@ class StoreDeal extends StatefulWidget {
 
 class _StoreDealState extends State<StoreDeal> {
   String userid = '', email = '', apikey = '';
-
-  bool isfavourite = false;
-
-  Markfavourite() {
-    setState(() {
-      isfavourite = !isfavourite;
-    });
-  }
-
-  /*Future<void> setUser() async {
-    SharedPreferences prefs;
-    prefs = await SharedPreferences.getInstance();
-    if (prefs != null) {
-      email = prefs.getString('email');
-      if (email.isNotEmpty) {
-        userid = prefs.getString('id');
-        apikey = prefs.getString('apikey');
-      }
-    }
-    */ /* print(userid);
-    print(apikey);*/ /*
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -158,33 +157,6 @@ class _StoreDealState extends State<StoreDeal> {
                         child: text("1kg",
                             fontSize: textSizeSmall, isCentered: true),
                       ),
-                      IconButton(
-                          icon: isfavourite
-                              ? Icon(
-                                  Icons.favorite_outlined,
-                                  color: Colors.red,
-                                )
-                              : Icon(
-                                  Icons.favorite_border,
-                                  color: grocery_icon_color,
-                                ),
-                          onPressed: () {
-                            /* setUser().then((value) {
-                              */ /* print('userid$userid');
-                        print('userid${model.productId}');
-                        print('userid$apikey');*/ /*
-                              Provider.of<MarkFavourite>(context, listen: false)
-                                  .markFavourites(
-                                      userid, widget.model.productId, apikey)
-                                  .then((value) {
-                                if (value.message.compareTo(
-                                        'Product has been marked as favorite') !=
-                                    null) {
-                                  Markfavourite();
-                                }
-                              });
-                            });*/
-                          })
                     ],
                   )
                 : Container(),

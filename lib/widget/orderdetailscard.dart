@@ -8,15 +8,14 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
 class OrderDetailsCard extends StatefulWidget {
-  String orderid;
-  OrderDetailsCard({this.orderid});
+  String orderid, email, userid, apikey;
+  OrderDetailsCard({this.orderid, this.email, this.userid, this.apikey});
 
   @override
   _OrderDetailsCardState createState() => _OrderDetailsCardState();
 }
 
 class _OrderDetailsCardState extends State<OrderDetailsCard> {
-  String userid = '', email = '', apikey = '';
   Data model;
   List<Products> productslist = [];
   List<Address> addresslist = [];
@@ -30,26 +29,20 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
   @override
   void initState() {
     super.initState();
-    getUserInfo();
     isinit = true;
-  }
-
-  Future<String> getUserInfo() async {
-    SharedPreferences prefs;
-    prefs = await SharedPreferences.getInstance();
-    if (prefs != null) {
-      email = prefs.getString('email');
-      apikey = prefs.getString('apikey');
-      userid = prefs.getString('id');
-    }
-    return email;
   }
 
   @override
   Widget build(BuildContext context) {
     if (isinit == true) {
+      print('api ${widget.apikey}');
+      print('email ${widget.email}');
+      print('userid ${widget.userid}');
+      print('orderid ${widget.orderid}');
+
       Provider.of<OrderDetailsProvider>(context)
-          .getOrderDetail(apikey, userid, email, '32')
+          .getOrderDetail(
+              widget.apikey, widget.userid, widget.email, widget.orderid)
           .then((value) {
         model = Data(
             status: value.data.status,
@@ -94,194 +87,197 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            child: Card(
-              margin: EdgeInsets.all(16),
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16))),
-              child: InkWell(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                onTap: () {},
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 10),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(model.status,
-                              style: boldTextStyle(
-                                size: 23,
+        : Scaffold(
+            body: Container(
+              margin: EdgeInsets.symmetric(vertical: 10),
+              child: Card(
+                margin: EdgeInsets.all(16),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                child: InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                  onTap: () {},
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(height: 10),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(model.status,
+                                style: boldTextStyle(
+                                  size: 23,
+                                )),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Text('Order Id: ${model.orderId}',
+                              style: secondaryTextStyle(
+                                size: 16,
                               )),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Text('Order Id: ${model.orderId}',
-                            style: secondaryTextStyle(
-                              size: 16,
-                            )),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Text(
-                            'Amount Paid: ₹ ${double.parse(model.subTotal).toStringAsFixed(2)}',
-                            style: secondaryTextStyle(
-                              size: 16,
-                            )),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Text('Payment Method: ${model.paymentMethod}',
-                            style: secondaryTextStyle(
-                              size: 16,
-                            )),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Text('Order Date: ${model.createdAt}',
-                            style: secondaryTextStyle(
-                              size: 16,
-                            )),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Text('Delivered At:',
-                            style: secondaryTextStyle(
-                              size: 16,
-                            )),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 16),
-                        child: Text(
-                            'Name : ${model.address.shippingFirstName + ' ' + model.address.shippingLastName}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 16),
-                        child: Text('${model.address.shippingAddress1}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 16),
-                        child: Text(
-                            '${model.address.shippingAddress2 + ' \,'}${model.address.shippingCity}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 16),
-                        child: Text(
-                            '${model.address.shippingState + ' \,'}${model.address.shippingCountry + ' - ' + model.address.shippingZip}'),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Text('Products Ordered',
-                            style: secondaryTextStyle(
-                              size: 20,
-                            )),
-                      ),
-                      Container(
-                        height: 500,
-                        child: ListView.builder(
-                            itemCount: productslist.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
-                                width: MediaQuery.of(context).size.width,
-                                height: 100,
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.black,
-                                              width: 2,
-                                              style: BorderStyle.solid)),
-                                      height: 100,
-                                      width: 150,
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            productslist[index].images[range],
-                                        fit: BoxFit.contain,
-                                        placeholder: placeholderWidgetFn(),
-                                        errorWidget: (context, url, error) =>
-                                            new Icon(Icons.error),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Text(
+                              'Amount Paid: ₹ ${double.parse(model.subTotal).toStringAsFixed(2)}',
+                              style: secondaryTextStyle(
+                                size: 16,
+                              )),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Text('Payment Method: ${model.paymentMethod}',
+                              style: secondaryTextStyle(
+                                size: 16,
+                              )),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Text('Order Date: ${model.createdAt}',
+                              style: secondaryTextStyle(
+                                size: 16,
+                              )),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Text('Delivered At:',
+                              style: secondaryTextStyle(
+                                size: 16,
+                              )),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 16),
+                          child: Text(
+                              'Name : ${model.address.shippingFirstName + ' ' + model.address.shippingLastName}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25, right: 16),
+                          child: Text('${model.address.shippingAddress1}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25, right: 16),
+                          child: Text(
+                              '${model.address.shippingAddress2 + ' \,'}${model.address.shippingCity}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25, right: 16),
+                          child: Text(
+                              '${model.address.shippingState + ' \,'}${model.address.shippingCountry + ' - ' + model.address.shippingZip}'),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Text('Products Ordered',
+                              style: secondaryTextStyle(
+                                size: 20,
+                              )),
+                        ),
+                        Container(
+                          child: ListView.builder(
+                              itemCount: productslist.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 3),
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 120,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                width: 2,
+                                                style: BorderStyle.solid)),
+                                        height: 100,
+                                        width: 150,
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              productslist[index].images[range],
+                                          fit: BoxFit.contain,
+                                          placeholder: placeholderWidgetFn(),
+                                          errorWidget: (context, url, error) =>
+                                              new Icon(Icons.error),
+                                        ),
                                       ),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            productslist[index].name,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            '${optionlist[0].value}',
-                                            style: TextStyle(
-                                              fontSize: 15,
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              productslist[index].name,
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                            textAlign: TextAlign.start,
                                           ),
-                                        ),
-                                        Flexible(child: Container()),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            'Price : ₹ ${double.parse(productslist[index].unitPrice).toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                              fontSize: 15,
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              '${optionlist[0].value}',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                              textAlign: TextAlign.start,
                                             ),
-                                            textAlign: TextAlign.start,
                                           ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            'Quantity :${int.parse(productslist[index].qty)}',
-                                            style: TextStyle(
-                                              fontSize: 15,
+                                          Flexible(child: Container()),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              'Price : ₹ ${double.parse(productslist[index].unitPrice).toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                              textAlign: TextAlign.start,
                                             ),
-                                            textAlign: TextAlign.start,
                                           ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            'Total : ₹ ${double.parse(productslist[index].lineTotal).toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                              fontSize: 15,
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              'Quantity :${int.parse(productslist[index].qty)}',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                              textAlign: TextAlign.start,
                                             ),
-                                            textAlign: TextAlign.start,
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      )
-                    ],
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              'Total : ₹ ${double.parse(productslist[index].lineTotal).toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

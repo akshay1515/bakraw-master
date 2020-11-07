@@ -140,6 +140,9 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
                               .groceryButton(
                                 textContent: grocery_lbl_Sign_Up,
                                 onPressed: (() {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                   var mob = mobileController.text;
                                   if (mob.isEmptyOrNull) {
                                     showDialog(
@@ -174,8 +177,7 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
                                                         isLoading = false;
                                                       });
                                                       Navigator.of(context)
-                                                          .pushNamed(
-                                                              Dashboard.Tag);
+                                                          .pop();
                                                     },
                                                     child: Text('Ok'))
                                               ],
@@ -206,9 +208,8 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
                                       Fluttertoast.showToast(
                                           msg: value.message,
                                           toastLength: Toast.LENGTH_SHORT);
-                                      Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                              builder: (ctx) => Dashboard()));
+                                      Navigator.of(context)
+                                          .pushReplacementNamed(Dashboard.Tag);
                                     });
                                   }
                                 }),

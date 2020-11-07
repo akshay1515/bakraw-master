@@ -6,12 +6,6 @@ import 'package:bakraw/utils/GroceryImages.dart';
 List<GroceryProfileModel> groceryProfileList() {
   List<GroceryProfileModel> list = List<GroceryProfileModel>();
 
-  var list1 = GroceryProfileModel();
-  list1.title = grocery_lbl_Recipient_Details;
-  list1.icon = Grocery_ic_User;
-  list1.color = grocery_purpleLightColor;
-  list.add(list1);
-
   var list2 = GroceryProfileModel();
   list2.title = grocery_lbl_Delivery_Address;
   list2.icon = Grocery_ic_DeliveryTruck;
