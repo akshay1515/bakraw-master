@@ -440,7 +440,6 @@ class _EditUserAddressState extends State<EditUserAddress> {
       style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
       decoration: formFieldDecoration('Billing Address2'),
     );
-    
 
     final shipbody = Wrap(runSpacing: spacing_standard_new, children: <Widget>[
       Row(
