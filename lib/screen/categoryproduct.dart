@@ -43,19 +43,13 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
                 name: element.name,
                 images: element.images,
               ));
-              setState(() {
-                isLoading = false;
-              });
-              init = false;
             });
-          } else {
             setState(() {
+              init = false;
               isLoading = false;
             });
-            init = false;
           }
         });
-        print('length ${mStoreDealList.length}');
       }
     });
     //print(catid['name']);
@@ -70,40 +64,38 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
               child: CircularProgressIndicator(),
             )
           : SafeArea(
-              child: Container(
-                  margin: EdgeInsets.only(
-                      left: spacing_middle,
-                      right: spacing_middle,
-                      top: spacing_middle),
-                  child: mStoreDealList.isNotEmpty
-                      ? GridView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  childAspectRatio: 0.70),
-                          itemCount: mStoreDealList.length,
-                          itemBuilder: (context, index) {
-                            //print(mStoreDealList[index].name);
-                            return StoreDeal(mStoreDealList[index], index);
-                          },
-                        )
-                      : Container(
-                          child: Center(
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
-                              fit: BoxFit.contain,
-                              placeholder: placeholderWidgetFn(),
-                              errorWidget: (context, url, error) =>
-                                  new Icon(Icons.error),
-                            ),
-                          ),
-                        )),
-            ),
+              child: mStoreDealList.isNotEmpty
+                  ? Container(
+                      margin: EdgeInsets.only(
+                          left: spacing_middle,
+                          right: spacing_middle,
+                          top: spacing_middle),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            childAspectRatio: 0.70),
+                        itemCount: mStoreDealList.length,
+                        itemBuilder: (context, index) {
+                          //print(mStoreDealList[index].name);
+                          return StoreDeal(mStoreDealList[index], index);
+                        },
+                      ))
+                  : Container(
+                      child: Center(
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
+                          fit: BoxFit.contain,
+                          placeholder: placeholderWidgetFn(),
+                          errorWidget: (context, url, error) =>
+                              new Icon(Icons.error),
+                        ),
+                      ),
+                    )),
     );
   }
 }

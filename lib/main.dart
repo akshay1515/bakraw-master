@@ -1,4 +1,3 @@
-import 'package:bakraw/payment_screen.dart';
 import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/categoryproductprovider.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
@@ -11,6 +10,7 @@ import 'package:bakraw/provider/orderdetailsprovider.dart';
 import 'package:bakraw/provider/orderhistoryprovider.dart';
 import 'package:bakraw/provider/passwordprovider.dart';
 import 'package:bakraw/provider/pincodeprovider.dart';
+import 'package:bakraw/provider/previousorderprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
 import 'package:bakraw/provider/relatedproductprovider.dart';
 import 'package:bakraw/provider/searchprovider.dart';
@@ -64,6 +64,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ShipmethodProvider()),
         ChangeNotifierProvider.value(value: CartToserverProvider()),
         ChangeNotifierProvider.value(value: SearchProvider()),
+        ChangeNotifierProvider.value(value: PreviousOrderProvider())
       ],
       child: MaterialApp(
         home: SplashScreen(),

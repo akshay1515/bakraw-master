@@ -99,6 +99,11 @@ class DatabaseHelper {
     return result;
   }
 
+  Future<int> TrunccateTable() async {
+    Database db = await instance.database;
+    return db.delete(_tbl_name);
+  }
+
   Future<List<CartsModel>> getcartItems() async {
     var cartlist = await getCartitem();
     int count = cartlist.length;

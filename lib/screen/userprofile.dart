@@ -19,7 +19,7 @@ import 'dashboaruderprofile.dart';
 
 class GroceryProfile extends StatefulWidget {
   static String tag = '/GroceryProfile';
-  bool istab = false;
+  bool istab;
   GroceryProfile({this.istab});
 
   @override
@@ -198,7 +198,9 @@ class _GroceryProfileState extends State<GroceryProfile> {
                   onPressed: () => Navigator.of(context).pop()),
             ),
             body: email.isEmptyOrNull
-                ? DefaultUserProfile()
+                ? DefaultUserProfile(
+                    istab: true,
+                  )
                 : SingleChildScrollView(
                     child: Column(
                       children: <Widget>[

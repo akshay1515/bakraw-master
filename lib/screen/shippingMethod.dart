@@ -15,6 +15,7 @@ import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/utils/GroceryWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,12 +49,12 @@ class _ShippingMethodState extends State<ShippingMethod> {
   List<TaxDetail> taxdetails = [];
   var isLoading = true;
   List<dw.Data> Shippinglist;
-  bool ispickup = true;
+  bool ispickup = false;
   bool isdelivery = false;
   bool isinit = true;
   List<Data.Data> target = [];
-  String shippingcost;
-  String Shippinglable;
+  String shippingcost = '0.0';
+  String Shippinglable = 'local_pickup';
 
   @override
   void initState() {
@@ -108,7 +109,6 @@ class _ShippingMethodState extends State<ShippingMethod> {
     double temp = 0.0;
     temp = ((Subtotal() / 100) *
         double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate));
-
     return temp;
   }
 
@@ -119,12 +119,13 @@ class _ShippingMethodState extends State<ShippingMethod> {
           double.parse(Shippinglist[defaultvalue].freeShippingMinAmount));
       Shippinglable = Shippinglist[defaultvalue].freeShippingLabel;
       shippingcost = Shippinglist[defaultvalue].freeShippingMinAmount;
-    } else {
+    } else if (ispickup) {
       total = (Subtotal() + Calculatetax());
-      Shippinglable = Shippinglist[defaultvalue].localPickupLabel;
-      shippingcost = Shippinglist[defaultvalue].localPickupCost;
+      Shippinglable = Shippinglist[1].localPickupLabel;
+      shippingcost =
+          double.parse(Shippinglist[1].localPickupCost).toStringAsFixed(2);
     }
-    return total;
+    return double.parse(total.toStringAsFixed(2));
   }
 
   Future<String> getUserInfo() async {
@@ -226,9 +227,9 @@ class _ShippingMethodState extends State<ShippingMethod> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-//                            taxmodel.data != null?text(
-//                                'Tax (${double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate).toStringAsFixed(2)}%)',
-//                                textColor: grocery_textColorSecondary):Container(height: 0,),
+                            text(
+                                'Tax (${double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate).toStringAsFixed(2)}%)',
+                                textColor: grocery_textColorSecondary),
                             text("₹ ${Calculatetax()}",
                                 textColor: grocery_textColorSecondary),
                           ],
@@ -281,24 +282,33 @@ class _ShippingMethodState extends State<ShippingMethod> {
                               child: groceryButton(
                                 textContent: grocery_lbl_checkout,
                                 onPressed: (() {
-                                  !email.isEmptyOrNull
-                                      ? subtotal <= 0
-                                          ? Fluttertoast.showToast(
-                                              msg: 'Your cart is Empty',
-                                              toastLength: Toast.LENGTH_SHORT)
-                                          : /*openCheckout()*/ PaymentsPage(
-                                                  widget.model,
-                                                  widget.deliveryslot,
-                                                  finalTotal(),
-                                                  Shippinglable,
-                                                  shippingcost,
-                                                  taxmodel.data[0].taxRates[0]
-                                                      .taxRateId,
-                                                  Calculatetax().toString())
-                                              .launch(context)
-                                      : Fluttertoast.showToast(
-                                          msg: 'Please Login',
-                                          toastLength: Toast.LENGTH_SHORT);
+                                  print('$shippingcost $Shippinglable');
+                                  if (shippingcost.isEmptyOrNull &&
+                                      Shippinglable.isEmptyOrNull) {
+                                    Fluttertoast.showToast(
+                                        msg: 'Please Select Shipping Method',
+                                        toastLength: Toast.LENGTH_SHORT);
+                                  } else {
+                                    !email.isEmptyOrNull
+                                        ? subtotal <= 0
+                                            ? Fluttertoast.showToast(
+                                                msg: 'Your cart is Empty',
+                                                toastLength: Toast.LENGTH_SHORT)
+                                            : /*openCheckout()*/ PaymentsPage(
+                                                    widget.model,
+                                                    widget.deliveryslot,
+                                                    finalTotal(),
+                                                    Shippinglable,
+                                                    shippingcost,
+                                                    taxmodel.data[0].taxRates[0]
+                                                        .taxRateId,
+                                                    Calculatetax()
+                                                        .toStringAsFixed(2))
+                                                .launch(context)
+                                        : Fluttertoast.showToast(
+                                            msg: 'Please Login',
+                                            toastLength: Toast.LENGTH_SHORT);
+                                  }
                                 }),
                               ),
                             ),
@@ -325,7 +335,12 @@ class _ShippingMethodState extends State<ShippingMethod> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
-                          if (!isdelivery) {
+                          if (!isdelivery && !ispickup) {
+                            setState(() {
+                              isdelivery = !isdelivery;
+                              ispickup = ispickup;
+                            });
+                          } else {
                             setState(() {
                               isdelivery = !isdelivery;
                               ispickup = !ispickup;
@@ -376,7 +391,12 @@ class _ShippingMethodState extends State<ShippingMethod> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (!ispickup) {
+                          if (!isdelivery && !ispickup) {
+                            setState(() {
+                              isdelivery = isdelivery;
+                              ispickup = !ispickup;
+                            });
+                          } else {
                             setState(() {
                               isdelivery = !isdelivery;
                               ispickup = !ispickup;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/model/addtocartmodel.dart';
@@ -8,6 +10,7 @@ import 'package:bakraw/model/useraddressmodel.dart';
 import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
+import 'package:bakraw/widget/success_dialogue.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -59,7 +62,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
   bool isLoading = true;
   List<CartsModel> rowlist;
   double subtotal = 00.00;
-  int taxamount = 00;
+  num taxamount = 00;
   double total = 00.00;
   List<Data.Data> target = [];
   bool isinit = true;
@@ -71,29 +74,33 @@ class _PaymentsPageState extends State<PaymentsPage> {
   TransactionDetails transactionDetails;
   TaxModel taxmodel;
   List<TaxDetail> taxdetails = [];
-  bool ispickup = true;
-  bool isdelivery = false;
+  bool ispickup = false;
+  bool isdelivery = true;
+  String data = '';
+  CircularProgressIndicator indicator = CircularProgressIndicator();
 
   @override
   void initState() {
     super.initState();
-    if (isLoading) getUserInfo();
-    fetchcartItems();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerpaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerpaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerpaymentwallet);
-    Subtotal();
+    if (isLoading) {
+      getUserInfo();
+      fetchcartItems();
+      _razorpay = Razorpay();
+      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerpaymentSuccess);
+      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerpaymentError);
+      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerpaymentwallet);
+      Subtotal();
 
-    setState(() {
-      isLoading = false;
-    });
+      setState(() {
+        isdelivery = true;
+        isLoading = false;
+      });
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-
     _razorpay.clear();
   }
 
@@ -125,14 +132,17 @@ class _PaymentsPageState extends State<PaymentsPage> {
   }
 
   void openCheckout() async {
+    setState(() {
+      ispickup = true;
+    });
     var options = {
       "key": "rzp_test_uQ7Wk2tHdgWxS3",
       "amount": taxamount,
-      "name": '${fname + ' '}${lname}',
+      "name": '${widget.model.userFirstname + ' '}${widget.model.userLastname}',
       "description": 'Purchased Meat',
       "prefill": {
-        "contact": mobile,
-        "email": email,
+        "contact": widget.model.userPhone,
+        "email": widget.model.userEmail,
       },
       "external": {
         "wallets": ['paytm']
@@ -143,6 +153,19 @@ class _PaymentsPageState extends State<PaymentsPage> {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  void _showdialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DialogResponses(
+            color: Colors.green[300],
+            icon: Icons.check_circle,
+            message: "Transaction\nSuccessfull",
+            id: 'Hello World',
+          );
+        });
   }
 
   Future fetchcartItems() async {
@@ -156,7 +179,16 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
     if (isinit == true) {
       rowlist.forEach((element) {
-        //print('rowlist ${element.option}');
+        valuelist.add(Value(
+            optionValueId: int.parse(element.optionvalueId),
+            increaseProductPriceBy: element.productpriceincreased));
+        optionlist.add(ProductOption(
+            optionId: int.parse(element.optionid),
+            optionName: element.optionname,
+            optionLabel: element.optionlable,
+            values: valuelist));
+
+        print(optionlist[0].optionLabel);
         Provider.of<ProductProvider>(context, listen: false)
             .getProductDetails(element.productid)
             .then((value) {
@@ -166,23 +198,95 @@ class _PaymentsPageState extends State<PaymentsPage> {
             isProductIsInSale: value.data.isProductIsInSale,
             productSaleDetails: value.data.productSaleDetails,
           ));
+
+          print('sample ${target[0].isProductIsInSale}');
         }).then((value) {});
       });
       isinit = false;
     }
 
-    for (int j = 0; j < list.length; j++) {
-      optionlist.add(ProductOption(
-          optionId: int.parse(rowlist[j].optionid),
-          optionName: rowlist[j].optionname,
-          optionLabel: rowlist[j].optionlable,
-          values: valuelist));
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void handlerpaymentSuccess(PaymentSuccessResponse response) {
+    setState(() {
+      indicator.visible(true);
+    });
+    transactionDetails = new TransactionDetails(
+      transactionId: response.paymentId,
+      paymentMethod: "razorpay",
+      createdAt: DateTime.now().toString(),
+      updatedAt: DateTime.now().toString(),
+    );
+
+    if (ispickup) {
+      PlaceOrder();
+      Provider.of<CartToserverProvider>(context, listen: false)
+          .PlaceOrderInCart(data, apikey)
+          .then((value) {
+        var i = DatabaseHelper.instance.TrunccateTable();
+        print('database deleted $i');
+      });
+      setState(() {
+        indicator.visible(false);
+        ispickup = false;
+      });
     }
-    for (int k = 0; k < optionlist.length; k++) {
-      valuelist.add(Value(
-          optionValueId: int.parse(rowlist[k].optionvalueId),
-          increaseProductPriceBy: rowlist[k].productpriceincreased));
-    }
+    /* _showdialog();*/
+  }
+
+  void handlerpaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(msg: 'failed', toastLength: Toast.LENGTH_SHORT);
+    print('payment failed ${response.message}');
+  }
+
+  void handlerpaymentwallet() {
+    Fluttertoast.showToast(msg: 'error', toastLength: Toast.LENGTH_SHORT);
+  }
+
+  PlaceOrder() {
+    taxdetails.add(TaxDetail(
+        taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
+    print('userid $userid');
+    Map<String, dynamic> mapData = new Map();
+    mapData["user_id"] = int.parse(userid);
+    mapData["user_first_name"] = fname;
+    mapData["user_last_name"] = lname;
+    mapData["user_phone"] = mobile;
+    mapData["user_email"] = email;
+    mapData["billing_first_name"] = fname;
+    mapData["billing_last_name"] = lname;
+    mapData["billing_address_1"] = widget.model.shippingAddress1;
+    mapData["billing_address_2"] = widget.model.shippingAddress2;
+    mapData["billing_city"] = widget.model.billingCity;
+    mapData["billing_state"] = widget.model.billingState;
+    mapData["billing_zip"] = widget.model.billingZip;
+    mapData["billing_country"] = widget.model.shippingCountry;
+    mapData["shipping_first_name"] = fname;
+    mapData["shipping_last_name"] = lname;
+    mapData["shipping_address_1"] = widget.model.shippingAddress1;
+    mapData["shipping_address_2"] = widget.model.shippingAddress2;
+    mapData["shipping_city"] = widget.model.billingCity;
+    mapData["shipping_state"] = widget.model.billingState;
+    mapData["shipping_zip"] = widget.model.billingZip;
+    mapData["shipping_country"] = widget.model.shippingCountry;
+    mapData["sub_total"] = widget.amount.toString();
+    mapData["shipping_method"] = widget.shippinglable;
+    mapData["shipping_cost"] = widget.Shippingcost;
+    mapData["coupon_id"] = "";
+    mapData["discount"] = "0.0";
+    mapData["total"] = widget.amount.toString();
+    mapData["payment_method"] = "razorpay";
+    mapData["currency"] = "INR";
+    mapData["currency_rate"] = "1.000";
+    mapData["locale"] = "en";
+    mapData["status"] = "pending";
+    mapData["delivery_slot"] = widget.deliveryslot.toString();
+    mapData["note"] = "string";
+    mapData["created_at"] = DateTime.now().toString();
+    mapData["updated_at"] = DateTime.now().toString();
 
     for (int i = 0; i < rowlist.length; i++) {
       list.add(OrderProduct(
@@ -197,98 +301,46 @@ class _PaymentsPageState extends State<PaymentsPage> {
           productOptions: optionlist));
     }
 
-    setState(() {
-      isLoading = false;
-    });
-  }
+    mapData["tax_details"] = taxdetails;
+    mapData["order_products"] = list;
 
-  void handlerpaymentSuccess() {}
-
-  void handlerpaymentError() {
-    Fluttertoast.showToast(msg: 'failed', toastLength: Toast.LENGTH_SHORT);
-  }
-
-  void handlerpaymentwallet() {
-    Fluttertoast.showToast(msg: 'error', toastLength: Toast.LENGTH_SHORT);
-  }
-
-  PlaceOrder() {
-    if (ispickup)
-      taxdetails.add(TaxDetail(
-          taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
-
-    model = DbcarTmodel(
-        userId: 90,
-        userFirstName: fname,
-        userLastName: lname,
-        userPhone: mobile,
-        userEmail: email,
-        shippingFirstName: widget.model.shippingFirstName,
-        shippingLastName: widget.model.shippingLastName,
-        shippingAddress1: widget.model.shippingAddress1,
-        shippingAddress2: widget.model.shippingAddress2,
-        shippingCity: widget.model.shippingCity,
-        shippingState: widget.model.shippingState,
-        shippingCountry: widget.model.shippingCountry,
-        shippingZip: widget.model.shippingZip,
-        billingFirstName: widget.model.billingFirstName,
-        billingLastName: widget.model.billingLastName,
-        billingAddress1: widget.model.billingAddress1,
-        billingAddress2: widget.model.billingAddress2,
-        billingCity: widget.model.billingCity,
-        billingState: widget.model.billingState,
-        billingZip: widget.model.billingZip,
-        subTotal: widget.amount.toString(),
-        shippingMethod: widget.shippinglable,
-        billingCountry: 'IN',
-        shippingCost: widget.Shippingcost,
-        couponId: "",
-        discount: "0.00",
-        total: widget.amount.toString(),
-        paymentMethod: 'razorpay',
-        currency: 'INR',
-        currencyRate: '1.00',
-        locale: 'en',
-        status: 'pending',
-        deliverySlot: widget.deliveryslot,
-        note: "",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        orderProducts: list,
-        transactionDetails: transactionDetails,
-        taxDetails: taxdetails);
-
-    /*Map variable = model.toJson();*/
-    String variable = model.orderProducts[0].productName;
-
-    print(variable);
+    mapData["transaction_details"] = transactionDetails.toJson();
+    data = jsonEncode(mapData);
 
     /* Provider.of<CartToserverProvider>(context, listen: false)
-        .PlaceOrderInCart(model, apikey)
+        .PlaceOrderInCart(json, apikey)
         .then((value) {});*/
-
-    setState(() {
-      ispickup = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
-    taxamount = (widget.amount.toInt() * 100);
-    PlaceOrder();
-    /* openCheckout();*/
-    Provider.of<CartToserverProvider>(context, listen: false)
-        .PlaceOrderInCart(model, apikey)
-        .then((value) {});
+    print('amount ${widget.amount}');
+    double amount = double.parse(widget.amount.toStringAsFixed(2));
+    if (isdelivery) {
+      taxamount = num.parse((amount * 100).toString());
+      openCheckout();
+      setState(() {
+        isdelivery = false;
+      });
+    }
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: ispickup
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(),
-    );
+    return ispickup
+        ? Container(
+            color: grocery_color_white,
+            child: Center(
+              child: CircularProgressIndicator(
+                backgroundColor: grocery_colorPrimary,
+              ),
+            ),
+          )
+        : Scaffold(
+            appBar: AppBar(),
+            body: Container(
+              child: Center(
+                child: Column(),
+              ),
+            ),
+          );
   }
 }

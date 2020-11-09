@@ -40,14 +40,10 @@ class UserFavouriteProvider with ChangeNotifier {
             specialPrice: element.specialPrice,
             specialPriceType: element.specialPriceType));
       });
-
-      /*_items = list;*/
-      notifyListeners();
-      return model;
     } else {
-      model = FavouriteModel(
-          status: decodeddata['status'], message: decodeddata['message']);
-      return model;
+      model = FavouriteModel.fromJson(decodeddata);
     }
+    notifyListeners();
+    return model;
   }
 }

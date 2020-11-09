@@ -118,18 +118,19 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                   children: <Widget>[
                     Expanded(child: SizedBox()),
                     button(context, 'Order Details',
-                        backgroundColor: grocery_textColorSecondary,
-                        height: 40,
-                        width: 150)
+                            backgroundColor: grocery_textColorSecondary,
+                            height: 40,
+                            width: 150)
+                        .onTap(() {
+                      OrderDetailsCard(
+                        orderid: list[index].orderId,
+                        apikey: apikey,
+                        email: email,
+                        userid: userid,
+                      ).launch(context);
+                    })
                   ],
-                ).paddingOnly(top: 16).onTap(() {
-                  OrderDetailsCard(
-                    orderid: list[index].orderId,
-                    apikey: apikey,
-                    email: email,
-                    userid: userid,
-                  ).launch(context);
-                })
+                ).paddingOnly(top: 16)
               ],
             ).paddingOnly(left: 16, right: 16, top: 16, bottom: 16),
           ).paddingOnly(left: 16, right: 16, top: 16).onTap(() {});

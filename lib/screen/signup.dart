@@ -168,8 +168,7 @@ class _SignUpState extends State<SignUp> {
                                 Fluttertoast.showToast(
                                     msg: value.message,
                                     toastLength: Toast.LENGTH_SHORT);
-                                Navigator.of(context)
-                                    .pushReplacementNamed(Dashboard.Tag);
+                                Dashboard().launch(context, isNewTask: true);
                               } else {
                                 showDialog(
                                     context: context,

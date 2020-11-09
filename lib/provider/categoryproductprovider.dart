@@ -43,7 +43,9 @@ class CategoryProductProvider with ChangeNotifier {
       return catprod;
     } else {
       catprod = CategoryProduct(
-          status: decodeddata['status'], message: decodeddata['message']);
+          status: decodeddata['status'],
+          message: decodeddata['message'],
+          data: decodeddata['data']);
     }
     return catprod;
   }

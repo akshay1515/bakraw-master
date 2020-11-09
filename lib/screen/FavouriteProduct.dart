@@ -16,77 +16,90 @@ class UserFavouriteList extends StatefulWidget {
 
 class _UserFavouriteListState extends State<UserFavouriteList> {
   List<Datas> mFavouriteList = [];
-  String userid, email, apikey;
+  String userid = '', email = '', apikey = '';
   bool favinit = true;
 
   @override
-  void initState() {}
+  void initState() {
+    super.initState();
+    setUser();
+  }
 
   Future setUser() async {
     SharedPreferences prefs;
     prefs = await SharedPreferences.getInstance();
     if (prefs != null) {
-      email = prefs.getString('email');
-      if (email.isNotEmpty) {
+      setState(() {
+        email = prefs.getString('email');
         userid = prefs.getString('id');
         apikey = prefs.getString('apikey');
-      }
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    setUser().then((value) {
-      if (favinit) {
-        Provider.of<UserFavouriteProvider>(context, listen: false)
-            .getUserFavProduct(userid, apikey)
-            .then((value) {
-          print('My Message${value.message}');
-          value.data.forEach((element) {
-            mFavouriteList.add(Datas(
-                specialPriceType: element.specialPriceType,
-                specialPrice: element.specialPrice,
-                sku: element.sku,
-                shortDescription: element.shortDescription,
-                qty: element.qty,
-                manageStock: element.manageStock,
-                isProductNew: element.isProductNew,
-                isProductIsInSale: element.isProductIsInSale,
-                isProductHasSpecialPrice: element.isProductHasSpecialPrice,
-                inStock: element.inStock,
-                images: element.images,
-                price: element.price,
-                productId: element.productId,
-                name: element.name));
-          });
+    if (favinit) {
+      Provider.of<UserFavouriteProvider>(context, listen: false)
+          .getUserFavProduct(userid, apikey)
+          .then((value) {
+        value.data.forEach((element) {
+          mFavouriteList.add(Datas(
+              specialPriceType: element.specialPriceType,
+              specialPrice: element.specialPrice,
+              sku: element.sku,
+              shortDescription: element.shortDescription,
+              qty: element.qty,
+              manageStock: element.manageStock,
+              isProductNew: element.isProductNew,
+              isProductIsInSale: element.isProductIsInSale,
+              isProductHasSpecialPrice: element.isProductHasSpecialPrice,
+              inStock: element.inStock,
+              images: element.images,
+              price: element.price,
+              productId: element.productId,
+              name: element.name));
         });
         setState(() {
           favinit = false;
         });
-      }
-    });
+      });
+    }
 
     return favinit
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : email.isEmpty
+        : email == null || email.isEmpty
             ? DefaultUserProfile(
-                istab: false,
+                istab: true,
               )
             : Container(
                 margin: EdgeInsets.only(
                     top: spacing_middle, right: spacing_standard_new),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.8),
-                  itemCount: mFavouriteList.length,
-                  itemBuilder: (context, index) {
-                    return StoreDeal(mFavouriteList[index], index);
-                  },
-                ),
+                child: mFavouriteList.isNotEmpty
+                    ? GridView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, childAspectRatio: 0.8),
+                        itemCount: mFavouriteList.length,
+                        itemBuilder: (context, index) {
+                          return StoreDeal(mFavouriteList[index], index);
+                        },
+                      )
+                    : Container(
+                        child: Center(
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
+                            fit: BoxFit.contain,
+                            placeholder: placeholderWidgetFn(),
+                            errorWidget: (context, url, error) =>
+                                new Icon(Icons.error),
+                          ),
+                        ),
+                      ),
               );
   }
 }
