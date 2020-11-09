@@ -19,7 +19,7 @@ class FlashSaleProvider with ChangeNotifier {
     final response = await http.get(url);
     List<FlashsaleModel> list = [];
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
-    print(decodeddata.toString());
+    //print(decodeddata.toString());
     if (response.statusCode == 200) {
       model = FlashsaleModel.fromJson(decodeddata);
       list.add(model);

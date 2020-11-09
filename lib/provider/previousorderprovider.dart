@@ -27,7 +27,6 @@ class PreviousOrderProvider with ChangeNotifier {
       list.add(model);
     }
     _items = list;
-    print(list.length);
     notifyListeners();
     return model;
   }

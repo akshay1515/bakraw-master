@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bakraw/backend.dart';
 import 'package:bakraw/model/orderdetailsmodel.dart';
@@ -11,13 +12,15 @@ class CartToserverProvider with ChangeNotifier {
     print(apikey);
     const url = '${Utility.BaseURL}${'add-order-details-in-server-db.php'}';
     print(model);
+    log(model);
     OrderDetailsModel modelm;
     try {
       final response = await http.post(url,
           headers: {'Content-Type': 'application/json', 'apikey': apikey},
           body: model);
-      Map<String, dynamic> decodeddata = jsonDecode(response.body);
-      print('decodeddata ${decodeddata['message']}');
+      log(response.body);
+      var decodeddata = jsonDecode(response.body);
+      log('decodeddata ${decodeddata['message']}');
     } catch (e) {
       print(e.toString());
     }

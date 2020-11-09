@@ -178,15 +178,20 @@ class _PaymentsPageState extends State<PaymentsPage> {
     rowlist = await DatabaseHelper.instance.getcartItems();
 
     if (isinit == true) {
+      int index = 0;
       rowlist.forEach((element) {
         valuelist.add(Value(
             optionValueId: int.parse(element.optionvalueId),
             increaseProductPriceBy: element.productpriceincreased));
+
+        List<Value> vList = new List();
+        vList.add(valuelist[index]);
+
         optionlist.add(ProductOption(
             optionId: int.parse(element.optionid),
             optionName: element.optionname,
             optionLabel: element.optionlable,
-            values: valuelist));
+            values: vList));
 
         print(optionlist[0].optionLabel);
         Provider.of<ProductProvider>(context, listen: false)
@@ -201,6 +206,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
           print('sample ${target[0].isProductIsInSale}');
         }).then((value) {});
+
+        index++;
       });
       isinit = false;
     }
@@ -228,10 +235,10 @@ class _PaymentsPageState extends State<PaymentsPage> {
           .then((value) {
         var i = DatabaseHelper.instance.TrunccateTable();
         print('database deleted $i');
-      });
-      setState(() {
-        indicator.visible(false);
-        ispickup = false;
+        setState(() {
+          indicator.visible(false);
+          ispickup = false;
+        });
       });
     }
     /* _showdialog();*/
@@ -289,6 +296,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
     mapData["updated_at"] = DateTime.now().toString();
 
     for (int i = 0; i < rowlist.length; i++) {
+      print('rowlist ${rowlist.length}');
+      print('target ${target.length}');
       list.add(OrderProduct(
           productId: target[i].productId,
           productName: target[i].name,
@@ -300,7 +309,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                   .toString(),
           productOptions: optionlist));
     }
-
+    print('list ${list.length}');
     mapData["tax_details"] = taxdetails;
     mapData["order_products"] = list;
 

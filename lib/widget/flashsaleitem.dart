@@ -43,11 +43,6 @@ class _FlashSaleState extends State<FlashSale> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   void didChangeDependencies() {
     if (isLoading) {
       (Provider.of<FlashSaleProvider>(context, listen: false)

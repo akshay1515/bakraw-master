@@ -1,4 +1,5 @@
 import 'package:bakraw/provider/flashsaleprovider.dart';
+import 'package:bakraw/provider/previousorderprovider.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/widget/bannercarousel.dart';
 import 'package:bakraw/widget/flashsaleitem.dart';
@@ -10,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   bool istab = false;
+
   Home({this.istab});
 
   @override
@@ -18,8 +20,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isLoading = true;
-  bool isinit;
+  bool isinit = false;
   int defaultvalue = 0;
+  var flashsale;
   String userid = '', email = 'sample', apikey = '';
 
   Future<String> getUserInfo() async {
@@ -32,26 +35,32 @@ class _HomeState extends State<Home> {
         userid = prefs.getString('id');
       });
     }
-    return email;
+    return 'something';
   }
 
   @override
   Widget build(BuildContext context) {
+    getUserInfo();
     if (isLoading) {
-      Provider.of<FlashSaleProvider>(context)
+      Provider.of<FlashSaleProvider>(context, listen: false)
           .getFlashSaleProduct()
           .then((value) {
-        if (value.data.length > 0) {
+        flashsale = value.data.length;
+        if (email != null) {
+          Provider.of<PreviousOrderProvider>(context, listen: false)
+              .getFlashSaleProduct(apikey, userid, email)
+              .then((value) {
+            setState(() {
+              isLoading = false;
+            });
+          });
+        } else {
           setState(() {
-            isinit == true;
+            isLoading = false;
           });
         }
-        setState(() {
-          isLoading = false;
-        });
       });
     }
-
     return isLoading
         ? Center(
             child: CircularProgressIndicator(),
@@ -82,7 +91,7 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: HorizontalScrollview(),
                 ),
-                isinit
+                flashsale > 0
                     ? Container(
                         margin: EdgeInsets.only(
                             top: spacing_standard_new,
@@ -97,19 +106,10 @@ class _HomeState extends State<Home> {
                               color: Colors.grey.shade700),
                         ))
                     : Container(),
-                isinit
+                flashsale > 0
                     ? Container(height: 200, child: FlashSale())
                     : Container(),
-                email != null
-                    ?
-                Container(
-                        height: MediaQuery.of(context).size.height * 0.35,
-                        margin: EdgeInsets.only(
-                            top: spacing_standard_new,
-                            right: spacing_standard_new,
-                            bottom: spacing_standard),
-                        child: PreviousOrder())
-                    : Container()
+                email != null ? Container(child: PreviousOrder()) : Container()
               ],
             ),
           );
@@ -119,10 +119,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     if (isLoading) {
-      setState(() {
-        getUserInfo();
-        isinit = false;
-      });
+      setState(() {});
     }
   }
 }

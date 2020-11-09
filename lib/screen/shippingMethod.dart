@@ -118,7 +118,9 @@ class _ShippingMethodState extends State<ShippingMethod> {
           Calculatetax() +
           double.parse(Shippinglist[defaultvalue].freeShippingMinAmount));
       Shippinglable = Shippinglist[defaultvalue].freeShippingLabel;
-      shippingcost = Shippinglist[defaultvalue].freeShippingMinAmount;
+      shippingcost =
+          double.parse(Shippinglist[defaultvalue].freeShippingMinAmount)
+              .toStringAsFixed(2);
     } else if (ispickup) {
       total = (Subtotal() + Calculatetax());
       Shippinglable = Shippinglist[1].localPickupLabel;
@@ -167,11 +169,12 @@ class _ShippingMethodState extends State<ShippingMethod> {
                 localPickupEnabled: element.localPickupEnabled,
                 localPickupLabel: element.localPickupLabel,
                 localPickupName: element.localPickupName));
+
+            setState(() {
+              isLoading = false;
+            });
           });
         }
-        setState(() {
-          isLoading = false;
-        });
       });
     }
 

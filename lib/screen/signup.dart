@@ -168,9 +168,12 @@ class _SignUpState extends State<SignUp> {
                                 Fluttertoast.showToast(
                                     msg: value.message,
                                     toastLength: Toast.LENGTH_SHORT);
-                                Dashboard().launch(context, isNewTask: true);
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    Dashboard.Tag,
+                                    (Route<dynamic> route) => false);
                               } else {
                                 showDialog(
+                                    barrierDismissible: false,
                                     context: context,
                                     builder: (context) => AlertDialog(
                                           title: Text('Login Error'),
@@ -178,9 +181,7 @@ class _SignUpState extends State<SignUp> {
                                           actions: <Widget>[
                                             FlatButton(
                                                 onPressed: () {
-                                                  Navigator.of(context)
-                                                      .popAndPushNamed(
-                                                          SignUp.tag);
+                                                  Navigator.of(context).pop();
                                                   setState(() {
                                                     isLoading = false;
                                                   });
