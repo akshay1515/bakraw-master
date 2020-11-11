@@ -71,6 +71,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
     final compleated = ListView.builder(
         itemCount: list.length,
         shrinkWrap: true,
+        reverse: true,
         itemBuilder: (context, index) {
           return Container(
             decoration: boxDecoration(

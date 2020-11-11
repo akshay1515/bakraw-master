@@ -71,7 +71,7 @@ class _MycartState extends State<Mycart> {
     rowlist = await DatabaseHelper.instance.getcartItems();
 
     if (isinit == true) {
-      rowlist.forEach((element) {
+      /* rowlist.forEach((element) {
         //print('rowlist ${element.option}');
         Provider.of<ProductProvider>(context, listen: false)
             .getProductDetails(element.productid)
@@ -82,9 +82,20 @@ class _MycartState extends State<Mycart> {
           ));
         });
       });
-      isinit = false;
+      isinit = false;*/
+      for (int i = 0; i < rowlist.length; i++) {
+        Provider.of<ProductProvider>(context, listen: false)
+            .getProductDetails(rowlist[i].productid)
+            .then((value) {
+          target.add(Data(
+            name: value.data.name,
+            images: value.data.images,
+          ));
+        });
+      }
     }
     setState(() {
+      isinit = false;
       isLoading = false;
     });
   }
