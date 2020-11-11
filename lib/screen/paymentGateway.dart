@@ -188,7 +188,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
         List<Values> vList = new List();
         vList.add(valuelist[index]);
 
-        print('vlist ${vList[index].optionValueId}');
+        /* print('vlist ${vList[index].optionValueId}');*/
 
         optionlist.add(ProductOptions(
             optionId: int.parse(element.optionid),
