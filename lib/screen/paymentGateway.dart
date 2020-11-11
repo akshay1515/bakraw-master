@@ -4,11 +4,12 @@ import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/model/addtocartmodel.dart';
 import 'package:bakraw/model/internalcart.dart';
+import 'package:bakraw/model/paymentGatewayModels.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/model/taxmodel.dart';
 import 'package:bakraw/model/useraddressmodel.dart';
-import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
+import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/widget/success_dialogue.dart';
 import 'package:flutter/material.dart';
@@ -68,15 +69,16 @@ class _PaymentsPageState extends State<PaymentsPage> {
   bool isinit = true;
   int count = 0;
   DbcarTmodel model;
-  List<OrderProduct> list = [];
-  List<ProductOption> optionlist = [];
-  List<Value> valuelist = [];
+  List<OrderProducts> list = [];
+  List<ProductOptions> optionlist = [];
+  List<Values> valuelist = [];
   TransactionDetails transactionDetails;
   TaxModel taxmodel;
-  List<TaxDetail> taxdetails = [];
+  List<TaxDetails> taxdetails = [];
   bool ispickup = false;
   bool isdelivery = true;
   String data = '';
+  orderplacedmessage orderplaced;
   CircularProgressIndicator indicator = CircularProgressIndicator();
 
   @override
@@ -90,7 +92,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
       _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerpaymentError);
       _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerpaymentwallet);
       Subtotal();
-
       setState(() {
         isdelivery = true;
         isLoading = false;
@@ -155,15 +156,15 @@ class _PaymentsPageState extends State<PaymentsPage> {
     }
   }
 
-  void _showdialog() {
+  void _showdialog({String message, String orderid}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return DialogResponses(
             color: Colors.green[300],
             icon: Icons.check_circle,
-            message: "Transaction\nSuccessfull",
-            id: 'Hello World',
+            message: message,
+            id: orderid,
           );
         });
   }
@@ -180,20 +181,23 @@ class _PaymentsPageState extends State<PaymentsPage> {
     if (isinit == true) {
       int index = 0;
       rowlist.forEach((element) {
-        valuelist.add(Value(
+        valuelist.add(Values(
             optionValueId: int.parse(element.optionvalueId),
             increaseProductPriceBy: element.productpriceincreased));
 
-        List<Value> vList = new List();
+        List<Values> vList = new List();
         vList.add(valuelist[index]);
 
-        optionlist.add(ProductOption(
+        print('vlist ${vList[index].optionValueId}');
+
+        optionlist.add(ProductOptions(
             optionId: int.parse(element.optionid),
             optionName: element.optionname,
             optionLabel: element.optionlable,
             values: vList));
-
+        index++;
         print(optionlist[0].optionLabel);
+
         Provider.of<ProductProvider>(context, listen: false)
             .getProductDetails(element.productid)
             .then((value) {
@@ -206,8 +210,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
           print('sample ${target[0].isProductIsInSale}');
         }).then((value) {});
-
-        index++;
       });
       isinit = false;
     }
@@ -229,24 +231,32 @@ class _PaymentsPageState extends State<PaymentsPage> {
     );
 
     if (ispickup) {
-      PlaceOrder();
-      Provider.of<CartToserverProvider>(context, listen: false)
-          .PlaceOrderInCart(data, apikey)
-          .then((value) {
-        var i = DatabaseHelper.instance.TrunccateTable();
-        print('database deleted $i');
-        setState(() {
-          indicator.visible(false);
-          ispickup = false;
-        });
-      });
+      /* SendData();*/
     }
     /* _showdialog();*/
   }
 
+  /* SendData() {
+    PlaceOrder();
+    Provider.of<CartToserverProvider>(context, listen: false)
+        .PlaceOrderInCart(data, apikey)
+        .then((value) {
+      orderplaced = orderplacedmessage(
+          message: value.message, status: value.status, data: value.data);
+      var i = DatabaseHelper.instance.TrunccateTable();
+      print('database deleted $i');
+      setState(() {
+        indicator.visible(false);
+        ispickup = false;
+        _showdialog(
+            message: orderplaced.message,
+            orderid: orderplaced.data.orderId.toString());
+      });
+    });
+  }*/
+
   void handlerpaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(msg: 'failed', toastLength: Toast.LENGTH_SHORT);
-    print('payment failed ${response.message}');
+    _showdialog(message: response.message, orderid: response.code.toString());
   }
 
   void handlerpaymentwallet() {
@@ -254,7 +264,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
   }
 
   PlaceOrder() {
-    taxdetails.add(TaxDetail(
+    taxdetails.add(TaxDetails(
         taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
     print('userid $userid');
     Map<String, dynamic> mapData = new Map();
@@ -296,19 +306,36 @@ class _PaymentsPageState extends State<PaymentsPage> {
     mapData["updated_at"] = DateTime.now().toString();
 
     for (int i = 0; i < rowlist.length; i++) {
-      print('rowlist ${rowlist.length}');
-      print('target ${target.length}');
-      list.add(OrderProduct(
-          productId: target[i].productId,
-          productName: target[i].name,
-          isProductIsInSale: target[i].isProductIsInSale,
-          qty: rowlist[i].quantity,
-          unitPrice: rowlist[i].price,
-          lineTotal:
-              (double.parse(rowlist[i].price) * int.parse(rowlist[i].quantity))
-                  .toString(),
-          productOptions: optionlist));
+      if (target[i].isProductIsInSale == true) {
+        print('target ${target[i].productSaleDetails.saleProductId}');
+        list.add(OrderProducts(
+            productSaleDetails: ProductSaleDetails(
+                saleProductId:
+                    num.parse(target[i].productSaleDetails.saleProductId)),
+            productId: target[i].productId,
+            productName: target[i].name,
+            isProductIsInSale: target[i].isProductIsInSale,
+            qty: rowlist[i].quantity,
+            unitPrice: rowlist[i].price,
+            lineTotal: (double.parse(rowlist[i].price) *
+                    int.parse(rowlist[i].quantity))
+                .toString(),
+            productOptions: optionlist));
+      } else {
+        list.add(OrderProducts(
+            productSaleDetails: ProductSaleDetails(),
+            productId: target[i].productId,
+            productName: target[i].name,
+            isProductIsInSale: target[i].isProductIsInSale,
+            qty: rowlist[i].quantity,
+            unitPrice: rowlist[i].price,
+            lineTotal: (double.parse(rowlist[i].price) *
+                    int.parse(rowlist[i].quantity))
+                .toString(),
+            productOptions: optionlist));
+      }
     }
+
     print('list ${list.length}');
     mapData["tax_details"] = taxdetails;
     mapData["order_products"] = list;
@@ -345,9 +372,15 @@ class _PaymentsPageState extends State<PaymentsPage> {
           )
         : Scaffold(
             appBar: AppBar(),
-            body: Container(
-              child: Center(
-                child: Column(),
+            body: WillPopScope(
+              onWillPop: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(Dashboard.Tag, (route) => false);
+              },
+              child: Container(
+                child: Center(
+                  child: Column(),
+                ),
               ),
             ),
           );

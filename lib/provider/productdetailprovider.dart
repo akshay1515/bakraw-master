@@ -20,8 +20,25 @@ class ProductProvider with ChangeNotifier {
     ProductModel productModel;
     final response = await http.get('${url}${id}');
     //print('reponse${response.body}');
-    var decodeddata = jsonDecode(response.body);
+    var decodeddata = json.decode(response.body);
+
+    /*  ProductSaleDetails pd = ProductSaleDetails(
+        saleId: '21',
+        saleProductId: '21',
+        price: '21',
+        qty: '21',
+        isProductOutOfStock: true,
+        endDate: DateTime.now(),
+        sold: 4,
+        saleName: 'demo');*/
+
+    if (decodeddata['data']['product_sale_details'].length > 0) {
+    } else {
+      decodeddata['data']['product_sale_details'] = null;
+    }
+
     if (decodeddata['status'] == 200) {
+      print(decodeddata['data']);
       productModel = ProductModel.fromJson(decodeddata);
     } else {
       productModel = ProductModel(

@@ -9,6 +9,7 @@ import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/utils/GroceryWidget.dart';
 import 'package:bakraw/widget/relatedproductitems.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html/parser.dart';
@@ -93,6 +94,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   List<Data> list = [];
   bool isLoading = true;
   int itemcount = 1;
+  var specialprice;
   var selectedValue;
   var sOptionPrice;
   var sOptionLable;
@@ -116,6 +118,8 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
             productOptions: value.data.productOptions,
             sellingPrice: value.data.sellingPrice,
             inStock: value.data.inStock,
+            isProductIsInSale: value.data.isProductIsInSale,
+            productSaleDetails: value.data.productSaleDetails,
             description: value.data.description);
         model.productOptions.forEach((element) {
           productoptions.add(ProductOptions(
@@ -147,7 +151,6 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
         selectedValue = val.optionValueId;
         sOptionPrice = val.price;
       });
-      print('price $sOptionPrice');
     }
 
     String parseHtmlString(String htmlString) {
@@ -161,7 +164,9 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
     String PriceReturn() {
       double defaultprice = 0;
       double price = 0;
-      defaultprice = double.parse(model.price);
+      defaultprice = model.isProductIsInSale == false
+          ? double.parse(model.price)
+          : double.parse(model.productSaleDetails.price);
       if (option == null) {
         setState(() {
           price = defaultprice;
@@ -172,6 +177,22 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
         });
       }
       return price.toString();
+    }
+
+    String CancelledPrice() {
+      double cancelleddefaultprice = 0;
+      double cancelledprice = 0;
+      cancelleddefaultprice = double.parse(model.price);
+      if (option == null) {
+        setState(() {
+          cancelledprice = cancelleddefaultprice;
+        });
+      } else {
+        setState(() {
+          cancelledprice = (cancelleddefaultprice + double.parse(sOptionPrice));
+        });
+      }
+      return cancelledprice.toString();
     }
 
     changeStatusColor(grocery_app_background);
@@ -254,6 +275,13 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                   fontFamily: fontMedium,
                                   fontSize: textSizeLargeMedium),
                               SizedBox(height: spacing_large),
+                              text('₹ ${double.parse(CancelledPrice()).toStringAsFixed(2)}',
+                                      fontFamily: fontMedium,
+                                      lineThrough: true,
+                                      fontSize: textSizeLargeMedium)
+                                  .visible(model.isProductIsInSale == true
+                                      ? true
+                                      : false),
                               text(
                                   '₹ ${double.parse(PriceReturn()).toStringAsFixed(2)}',
                                   fontFamily: fontMedium,
@@ -403,32 +431,142 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                       },
                                       textContent: grocery_lbl_add_to_cart)),
                               SizedBox(height: spacing_standard_new),
-                              GestureDetector(
-                                onTap: () {},
-                                child: text(grocery_lbl_buy_now,
-                                    textColor: grocery_colorPrimary,
-                                    textAllCaps: true),
-                              )
                             ],
                           ),
                         ),
                         Align(
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: boxDecoration(
-                                showShadow: true,
-                                radius: 10.0,
-                                bgColor: grocery_color_white),
-                            height: width * 0.35,
-                            width: width * 0.6,
-                            child: CachedNetworkImage(
-                              placeholder: placeholderWidgetFn(),
-                              imageUrl: model.images[0].path,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
+                            alignment: Alignment.topCenter,
+                            child: model.isProductIsInSale == true
+                                ? Banner(
+                                    location: BannerLocation.topStart,
+                                    message: 'Sale',
+                                    child:
+                                        /*Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: boxDecoration(
+                                        showShadow: true,
+                                        radius: 10.0,
+                                        bgColor: grocery_color_white),
+                                    height: width * 0.35,
+                                    width: width * 0.6,
+                                    child: CachedNetworkImage(
+                                      placeholder: placeholderWidgetFn(),
+                                      imageUrl: model.images[0].path,
+                                      fit: BoxFit.fill,
+                                    ),*/
+                                        Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: boxDecoration(
+                                          showShadow: true,
+                                          radius: 10.0,
+                                          bgColor: grocery_color_white),
+                                      height: width * 0.35,
+                                      width: width * 0.6,
+                                      child: CarouselSlider(
+                                          options: CarouselOptions(
+                                            viewportFraction: 0.95,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                3.5,
+                                            initialPage: 0,
+                                            enableInfiniteScroll: true,
+                                            autoPlay: true,
+                                            autoPlayInterval:
+                                                Duration(seconds: 3),
+                                          ),
+                                          items: model.images.map((e) {
+                                            return Builder(builder:
+                                                (BuildContext context) {
+                                              return Container(
+                                                width: double.infinity,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            100,
+                                                    vertical: 5),
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    4,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: e.path,
+                                                    width: double.infinity,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            4,
+                                                    fit: BoxFit.fill,
+                                                    placeholder:
+                                                        placeholderWidgetFn(),
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                          }).toList()),
+                                    ))
+                                : Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: boxDecoration(
+                                        showShadow: true,
+                                        radius: 10.0,
+                                        bgColor: grocery_color_white),
+                                    height: width * 0.35,
+                                    width: width * 0.6,
+                                    child: CarouselSlider(
+                                        options: CarouselOptions(
+                                          viewportFraction: 1,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              3.5,
+                                          initialPage: 0,
+                                          enableInfiniteScroll: true,
+                                          autoPlay: true,
+                                          autoPlayInterval:
+                                              Duration(seconds: 3),
+                                        ),
+                                        items: model.images.map((e) {
+                                          return Builder(
+                                              builder: (BuildContext context) {
+                                            return Container(
+                                              width: double.infinity,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          100,
+                                                  vertical: 5),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  4,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: e.path,
+                                                  width: double.infinity,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      4,
+                                                  fit: BoxFit.fill,
+                                                  placeholder:
+                                                      placeholderWidgetFn(),
+                                                ),
+                                              ),
+                                            );
+                                          });
+                                        }).toList()),
+                                  )),
                       ],
                     ),
                     SizedBox(

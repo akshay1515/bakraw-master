@@ -1,7 +1,10 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
+import 'package:bakraw/model/pincodemodel.dart';
 import 'package:bakraw/model/useraddressmodel.dart';
+import 'package:bakraw/provider/pincodeprovider.dart';
 import 'package:bakraw/provider/useraddressprovider.dart';
 import 'package:bakraw/screen/checkpincode.dart';
+import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/screen/dashboaruderprofile.dart';
 import 'package:bakraw/screen/editadduseraddress.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
@@ -82,12 +85,12 @@ class _UserAddressManagerState extends State<UserAddressManager> {
     for (int i = 0; i < carts.length; i++) {
       print(carts[i].price);
     }*/
+    var argument = ModalRoute.of(context).settings.arguments as Map;
 
     if (isloading) {
       Provider.of<UserAddressProvider>(context, listen: false)
           .getuserAddressList(userid, apikey)
           .then((value) {
-        print('object ${value.message}');
         value.data.forEach((element) {
           list.add(addressData(
             addressTitle: element.addressTitle,
@@ -134,7 +137,12 @@ class _UserAddressManagerState extends State<UserAddressManager> {
                     color: grocery_color_white,
                   ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    if (argument != null) {
+                      Navigator.of(context).pop();
+                    } else {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          Dashboard.Tag, (route) => false);
+                    }
                   }),
               title: Text(
                 'User Addresss',
@@ -176,13 +184,37 @@ class _UserAddressManagerState extends State<UserAddressManager> {
                               icon: Icons.edit,
                               onTap: () {
                                 editAddress(list[index]);
-                                print(list[index].billingFirstName);
                               },
                             )
                           ],
                           child: InkWell(
-                            onTap: () {
-                              CheckPincode(model: list[index]).launch(context);
+                            onTap: () async {
+                              PincodeModel model = await Provider.of<
+                                      PincodeProvider>(context, listen: false)
+                                  .checkpincodestatus(list[index].shippingZip);
+                              if (model.status == 200) {
+                                if (!model
+                                    .data.pincodeDeliveryStatus.allowDelivery) {
+                                  return showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            title: Text('Sorry......'),
+                                            content: Text(
+                                                'We aren\'t avaliable at your location yet'),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('Ok'))
+                                            ],
+                                          ));
+                                } else if (argument != null ||
+                                    argument['isnav'] == true) {
+                                  CheckPincode(model: list[index])
+                                      .launch(context);
+                                }
+                              }
                             },
                             child: Container(
                               padding: EdgeInsets.all(spacing_standard_new),

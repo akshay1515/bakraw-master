@@ -96,9 +96,9 @@ class Data {
       });
     }
     isProductIsInSale = json['is_product_is_in_sale'];
-    /*productSaleDetails = json['product_sale_details'] != null
+    productSaleDetails = json['product_sale_details'] != null
         ? new ProductSaleDetails.fromJson(json['product_sale_details'])
-        : null;*/
+        : null;
   }
 
   Map<String, dynamic> toJson() {

@@ -6,7 +6,6 @@ import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -155,9 +154,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                     'prodid': searchList[index].productId,
                                     'names': searchList[index].name
                                   });
-                              Fluttertoast.showToast(
-                                  msg: searchList[index].productId,
-                                  toastLength: Toast.LENGTH_SHORT);
                             }),
                             child: Container(
                               margin: EdgeInsets.symmetric(vertical: 3),
@@ -201,7 +197,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         padding:
                                             const EdgeInsets.only(left: 10),
                                         child: Text(
-                                          '${searchList[index].shortDescription}',
+                                          ' ',
                                           maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(

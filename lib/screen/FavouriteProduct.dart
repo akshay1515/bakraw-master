@@ -2,10 +2,12 @@ import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/favouritemodel.dart';
 import 'package:bakraw/provider/favouriteproductprovider.dart';
 import 'package:bakraw/screen/dashboaruderprofile.dart';
+import 'package:bakraw/screen/productdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -116,7 +118,8 @@ class StoreDeal extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        /*GroceryProductDescription().launch(context);*/
+        Navigator.of(context).pushNamed(GroceryProductDescription.tag,
+            arguments: {'prodid': model.productId, 'names': model.name});
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.38,
@@ -143,12 +146,15 @@ class StoreDeal extends StatelessWidget {
             SizedBox(height: 4),
             Align(
               alignment: Alignment.center,
-              child: CachedNetworkImage(
-                placeholder: placeholderWidgetFn(),
-                imageUrl: model.images[0],
-                fit: BoxFit.fill,
-                height: width * 0.25,
-                width: width * 0.27,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImage(
+                  placeholder: placeholderWidgetFn(),
+                  imageUrl: model.images[0],
+                  fit: BoxFit.fill,
+                  height: width * 0.25,
+                  width: width * 0.27,
+                ),
               ),
             ),
             SizedBox(height: 4),

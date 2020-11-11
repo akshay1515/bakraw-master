@@ -10,7 +10,6 @@ import 'package:bakraw/utils/GroceryImages.dart';
 import 'package:bakraw/utils/GroceryWidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -257,20 +256,15 @@ class _GroceryProfileState extends State<GroceryProfile> {
                               return GestureDetector(
                                 onTap: () {
                                   if (index == 0) {
-                                    Fluttertoast.showToast(
-                                        msg: 'Coming Soon',
-                                        toastLength: Toast.LENGTH_SHORT);
-                                  }
-                                  if (index == 1) {
                                     Navigator.of(context).popAndPushNamed(
                                         UserAddressManager.tag);
                                   }
                                   /*else if (index == 2) {
                         GroceryAddPaymentScreen().launch(context);
                       }*/
-                                  if (index == 2) {
+                                  if (index == 1) {
                                     GroceryChangePassword().launch(context);
-                                  } else if (index == 3) {
+                                  } else if (index == 2) {
                                     showLogoutBottomSheetDialog(context);
                                   }
                                 },

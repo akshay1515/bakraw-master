@@ -24,18 +24,26 @@ class CategoryProductProvider with ChangeNotifier {
     CategoryProduct catprod;
     Datum sample;
     final response = await http.get('${url}$CategoryI');
-    Map<String, dynamic> decodeddata = jsonDecode(response.body);
+    var decodeddata = jsonDecode(response.body);
     List<Datum> productlist = [];
     //print('decodedData: ${decodeddata['data']}');
     if (decodeddata['status'] == 200) {
+      print('length ${decodeddata['data'].length}');
+      for (int i = 0; i < decodeddata['data'].length; i++) {
+        if (decodeddata['data'][i]['product_sale_details'].length > 0) {
+        } else {
+          decodeddata['data'][i]['product_sale_details'] = null;
+        }
+      }
+
       catprod = CategoryProduct.fromJson(decodeddata);
       catprod.data.forEach((element) {
         productlist.add(Datum(
-          name: element.name,
-          images: element.images,
-          price: element.price,
-          productId: element.productId,
-        ));
+            name: element.name,
+            images: element.images,
+            price: element.price,
+            productId: element.productId,
+            isProductIsInSale: element.isProductIsInSale));
         //print('decodedData${decodeddata}');
       });
 

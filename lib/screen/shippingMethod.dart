@@ -1,6 +1,5 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/databasehelper.dart';
-import 'package:bakraw/model/addtocartmodel.dart';
 import 'package:bakraw/model/internalcart.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/model/shipmethod.dart' as dw;
@@ -46,7 +45,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
   int defaultvalue = 0;
   bool loadsubtotal = true;
   TextEditingController coupon = TextEditingController();
-  List<TaxDetail> taxdetails = [];
+  List<taxData> taxdetails = [];
   var isLoading = true;
   List<dw.Data> Shippinglist;
   bool ispickup = false;

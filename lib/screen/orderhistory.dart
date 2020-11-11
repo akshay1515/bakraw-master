@@ -5,7 +5,6 @@ import 'package:bakraw/screen/dashboaruderprofile.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
-import 'package:bakraw/utils/GroceryWidget.dart';
 import 'package:bakraw/widget/orderdetailscard.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -25,6 +24,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
   String userid = '', email = '', apikey = '';
   bool isinit = true;
   List<Data> list = [];
+  List<Data> sortedlist = [];
   bool isLoading = true;
 
   @override
@@ -59,12 +59,12 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
               orderId: element.orderId,
               createdAt: element.createdAt,
               status: element.status));
+
           setState(() {
             isinit = false;
             isLoading = false;
           });
         });
-        print('object $email');
       });
     }
 
@@ -117,7 +117,25 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                 Row(
                   children: <Widget>[
                     Expanded(child: SizedBox()),
-                    button(context, 'Order Details',
+                    MaterialButton(
+                        height: 40,
+                        minWidth: 150,
+                        padding: const EdgeInsets.all(0.0),
+                        child: Text('Order Details',
+                                style: TextStyle(fontSize: 18),
+                                textAlign: TextAlign.center)
+                            .cornerRadiusWithClipRRect(25),
+                        textColor: grocery_color_white,
+                        color: grocery_colorPrimary,
+                        onPressed: () {
+                          OrderDetailsCard(
+                            orderid: list[index].orderId,
+                            apikey: apikey,
+                            email: email,
+                            userid: userid,
+                          ).launch(context);
+                        })
+                    /*button(context, 'Order Details',
                             backgroundColor: grocery_textColorSecondary,
                             height: 40,
                             width: 150)
@@ -128,7 +146,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                         email: email,
                         userid: userid,
                       ).launch(context);
-                    })
+                    })*/
                   ],
                 ).paddingOnly(top: 16)
               ],

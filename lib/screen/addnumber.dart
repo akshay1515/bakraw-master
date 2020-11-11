@@ -200,8 +200,6 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
                                           lastName: lname,
                                           phoneNumber: mob,
                                           token: value.data.token));
-                                      print('object : ${Data().email}');
-                                      print('email : $email');
                                       setState(() {
                                         isLoading = false;
                                       });

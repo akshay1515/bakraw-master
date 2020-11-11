@@ -1,58 +1,33 @@
-// To parse this JSON data, do
-//
-//     final categoryProduct = categoryProductFromJson(jsonString);
-
-import 'dart:convert';
-
-CategoryProduct categoryProductFromJson(String str) =>
-    CategoryProduct.fromJson(json.decode(str));
-
-String categoryProductToJson(CategoryProduct data) =>
-    json.encode(data.toJson());
-
 class CategoryProduct {
-  CategoryProduct({
-    this.status,
-    this.message,
-    this.data,
-  });
-
   int status;
   String message;
   List<Datum> data;
 
-  factory CategoryProduct.fromJson(Map<String, dynamic> json) =>
-      CategoryProduct(
-        status: json["status"],
-        message: json["message"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
-      );
+  CategoryProduct({this.status, this.message, this.data});
 
-  Map<String, dynamic> toJson() => {
-        "status": status,
-        "message": message,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
-      };
+  CategoryProduct.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    if (json['data'] != null) {
+      data = new List<Datum>();
+      json['data'].forEach((v) {
+        data.add(new Datum.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
 }
 
 class Datum {
-  Datum({
-    this.productId,
-    this.price,
-    this.specialPrice,
-    this.specialPriceType,
-    this.sku,
-    this.manageStock,
-    this.qty,
-    this.inStock,
-    this.name,
-    this.shortDescription,
-    this.images,
-    this.isProductNew,
-    this.isProductHasSpecialPrice,
-    this.isProductIsInSale,
-    this.productSaleDetails,
-  });
   String productId;
   String price;
   String specialPrice;
@@ -67,55 +42,69 @@ class Datum {
   bool isProductNew;
   bool isProductHasSpecialPrice;
   bool isProductIsInSale;
-  dynamic productSaleDetails;
+  ProductSaleDetails productSaleDetails;
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        productId: json["product_id"],
-        price: json["price"],
-        specialPrice: json["special_price"],
-        specialPriceType: json["special_price_type"],
-        sku: json["sku"],
-        manageStock: json["manage_stock"],
-        qty: json["qty"],
-        inStock: json["in_stock"],
-        name: json["name"],
-        shortDescription: json["short_description"],
-        images: List<String>.from(json["images"].map((x) => x)),
-        isProductNew: json["is_product_new"],
-        isProductHasSpecialPrice: json["is_product_has_special_price"],
-        isProductIsInSale: json["is_product_is_in_sale"],
-        productSaleDetails: json["product_sale_details"],
-      );
+  Datum(
+      {this.productId,
+      this.price,
+      this.specialPrice,
+      this.specialPriceType,
+      this.sku,
+      this.manageStock,
+      this.qty,
+      this.inStock,
+      this.name,
+      this.shortDescription,
+      this.images,
+      this.isProductNew,
+      this.isProductHasSpecialPrice,
+      this.isProductIsInSale,
+      this.productSaleDetails});
 
-  Map<String, dynamic> toJson() => {
-        "product_id": productId,
-        "price": price,
-        "special_price": specialPrice,
-        "special_price_type": specialPriceType,
-        "sku": sku,
-        "manage_stock": manageStock,
-        "qty": qty,
-        "in_stock": inStock,
-        "name": name,
-        "short_description": shortDescription,
-        "images": List<dynamic>.from(images.map((x) => x)),
-        "is_product_new": isProductNew,
-        "is_product_has_special_price": isProductHasSpecialPrice,
-        "is_product_is_in_sale": isProductIsInSale,
-        "product_sale_details": productSaleDetails,
-      };
+  Datum.fromJson(Map<String, dynamic> json) {
+    productId = json['product_id'];
+    price = json['price'];
+    specialPrice = json['special_price'];
+    specialPriceType = json['special_price_type'];
+    sku = json['sku'];
+    manageStock = json['manage_stock'];
+    qty = json['qty'];
+    inStock = json['in_stock'];
+    name = json['name'];
+    shortDescription = json['short_description'];
+    images = json['images'].cast<String>();
+    isProductNew = json['is_product_new'];
+    isProductHasSpecialPrice = json['is_product_has_special_price'];
+    isProductIsInSale = json['is_product_is_in_sale'];
+    productSaleDetails = json['product_sale_details'] != null
+        ? new ProductSaleDetails.fromJson(json['product_sale_details'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['product_id'] = this.productId;
+    data['price'] = this.price;
+    data['special_price'] = this.specialPrice;
+    data['special_price_type'] = this.specialPriceType;
+    data['sku'] = this.sku;
+    data['manage_stock'] = this.manageStock;
+    data['qty'] = this.qty;
+    data['in_stock'] = this.inStock;
+    data['name'] = this.name;
+    data['short_description'] = this.shortDescription;
+    data['images'] = this.images;
+    data['is_product_new'] = this.isProductNew;
+    data['is_product_has_special_price'] = this.isProductHasSpecialPrice;
+    data['is_product_is_in_sale'] = this.isProductIsInSale;
+    if (this.productSaleDetails != null) {
+      data['product_sale_details'] = this.productSaleDetails.toJson();
+    }
+    return data;
+  }
 }
 
-class ProductSaleDetailsClass {
-  ProductSaleDetailsClass({
-    this.saleId,
-    this.saleProductId,
-    this.inStock,
-    this.productSalePrice,
-    this.qty,
-    this.sold,
-  });
-
+class ProductSaleDetails {
   String saleId;
   String saleProductId;
   bool inStock;
@@ -123,22 +112,31 @@ class ProductSaleDetailsClass {
   String qty;
   int sold;
 
-  factory ProductSaleDetailsClass.fromJson(Map<String, dynamic> json) =>
-      ProductSaleDetailsClass(
-        saleId: json["sale_id"],
-        saleProductId: json["sale_product_id"],
-        inStock: json["in_stock"],
-        productSalePrice: json["product_sale_price"],
-        qty: json["qty"],
-        sold: json["sold"],
-      );
+  ProductSaleDetails(
+      {this.saleId,
+      this.saleProductId,
+      this.inStock,
+      this.productSalePrice,
+      this.qty,
+      this.sold});
 
-  Map<String, dynamic> toJson() => {
-        "sale_id": saleId,
-        "sale_product_id": saleProductId,
-        "in_stock": inStock,
-        "product_sale_price": productSalePrice,
-        "qty": qty,
-        "sold": sold,
-      };
+  ProductSaleDetails.fromJson(Map<String, dynamic> json) {
+    saleId = json['sale_id'];
+    saleProductId = json['sale_product_id'];
+    inStock = json['in_stock'];
+    productSalePrice = json['product_sale_price'];
+    qty = json['qty'];
+    sold = json['sold'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sale_id'] = this.saleId;
+    data['sale_product_id'] = this.saleProductId;
+    data['in_stock'] = this.inStock;
+    data['product_sale_price'] = this.productSalePrice;
+    data['qty'] = this.qty;
+    data['sold'] = this.sold;
+    return data;
+  }
 }

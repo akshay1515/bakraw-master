@@ -155,7 +155,7 @@ class _MycartState extends State<Mycart> {
                                               toastLength: Toast.LENGTH_SHORT)
                                           : Navigator.of(context).pushNamed(
                                               UserAddressManager.tag,
-                                            )
+                                              arguments: {'isnav': true})
                                       : DefaultUserProfile(
                                           istab: false,
                                         ).launch(context);
@@ -300,10 +300,6 @@ class _CartState extends State<Cart> {
                               DatabaseHelper.productid: widget.productid,
                               DatabaseHelper.optionvalueid: widget.optionvalueid
                             });
-                            Fluttertoast.showToast(
-                                msg:
-                                    'product ${widget.productid}+ option ${widget.optionvalueid}',
-                                toastLength: Toast.LENGTH_SHORT);
                             i > 0
                                 ? Fluttertoast.showToast(
                                     msg: 'Item Deleted Successfully',
