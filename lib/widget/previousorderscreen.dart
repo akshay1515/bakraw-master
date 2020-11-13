@@ -107,7 +107,7 @@ class FlashsaleItem extends StatelessWidget {
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.38,
-        height: MediaQuery.of(context).size.height * 0.30,
+        height: MediaQuery.of(context).size.height * 0.25,
         decoration: boxDecoration(
             showShadow: true, radius: 10.0, bgColor: grocery_color_white),
         margin: EdgeInsets.only(left: 16, bottom: 16),

@@ -108,10 +108,11 @@ class _ShippingMethodState extends State<ShippingMethod> {
     double temp = 0.0;
     temp = ((Subtotal() / 100) *
         double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate));
-    return temp;
+    return double.parse(temp.toStringAsFixed(2));
   }
 
   double finalTotal() {
+    total = (Subtotal() + Calculatetax());
     if (isdelivery) {
       total = (Subtotal() +
           Calculatetax() +
@@ -262,6 +263,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: groceryButton(
+                                  bgColors: grocery_colorPrimary,
                                   onPressed: () {
                                     if (!coupon.text.isEmptyOrNull) {
                                       Fluttertoast.showToast(
@@ -282,6 +284,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                           children: <Widget>[
                             FittedBox(
                               child: groceryButton(
+                                bgColors: grocery_colorPrimary,
                                 textContent: grocery_lbl_checkout,
                                 onPressed: (() {
                                   print('$shippingcost $Shippinglable');
@@ -350,7 +353,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                           }
                         },
                         child: Container(
-                          height: 130,
+                          height: 150,
                           child: Card(
                             color: isdelivery
                                 ? grocery_colorPrimary
@@ -406,7 +409,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                           }
                         },
                         child: Container(
-                          height: 130,
+                          height: 150,
                           child: Card(
                             color: ispickup
                                 ? grocery_colorPrimary

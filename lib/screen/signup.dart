@@ -146,6 +146,7 @@ class _SignUpState extends State<SignUp> {
                             .pushNamed(GroceryForgotPassword.tag);
                       }),
                       groceryButton(
+                        bgColors: grocery_colorPrimary,
                         textContent: grocery_lbl_Sign_In,
                         onPressed: (() {
                           if (_formKeyValue.currentState.validate() == true) {

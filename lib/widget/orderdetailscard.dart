@@ -220,15 +220,17 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                             child: Text(
                                               productslist[index].name,
                                               style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           Padding(
                                             padding:
                                                 const EdgeInsets.only(left: 10),
                                             child: Text(
-                                              '${optionlist[0].value}',
+                                              '${optionlist[index].value}',
                                               style: TextStyle(
                                                 fontSize: 15,
                                               ),

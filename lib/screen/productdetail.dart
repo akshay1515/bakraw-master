@@ -104,9 +104,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   Widget build(BuildContext context) {
     prodid = ModalRoute.of(context).settings.arguments as Map;
     favouriteMark();
-    //print(prodid['prodid']);
     if (init == true) {
-      /* Provider.of<ProductProvider>(context).UpdateOptionValue(test);*/
       Provider.of<ProductProvider>(context, listen: false)
           .getProductDetails(prodid['prodid'])
           .then((value) {
@@ -366,13 +364,21 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                         size: 35, color: grocery_icon_color),
                                     onPressed: () {
                                       setState(() {
-                                        itemcount > 1
-                                            ? itemcount--
-                                            : Fluttertoast.showToast(
+                                        model.isProductIsInSale == true &&
+                                                model.productSaleDetails
+                                                        .isProductOutOfStock ==
+                                                    true
+                                            ? Fluttertoast.showToast(
                                                 msg:
-                                                    'Minimum 1 Quantity of item is required',
-                                                toastLength:
-                                                    Toast.LENGTH_SHORT);
+                                                    'Sorry We Are Out Of Stock',
+                                                toastLength: Toast.LENGTH_SHORT)
+                                            : itemcount > 1
+                                                ? itemcount--
+                                                : Fluttertoast.showToast(
+                                                    msg:
+                                                        'Minimum 1 Quantity of item is required',
+                                                    toastLength:
+                                                        Toast.LENGTH_SHORT);
                                       });
                                     },
                                   ),
@@ -386,50 +392,110 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                       icon: Icon(Icons.add_circle_outline,
                                           size: 35, color: grocery_icon_color),
                                       onPressed: () {
-                                        setState(() {
-                                          itemcount++;
-                                        });
+                                        model.isProductIsInSale == true &&
+                                                model.productSaleDetails
+                                                        .isProductOutOfStock ==
+                                                    true
+                                            ? Fluttertoast.showToast(
+                                                msg:
+                                                    'Sorry We Are Out Of Stock',
+                                                toastLength: Toast.LENGTH_SHORT)
+                                            : setState(() {
+                                                itemcount++;
+                                              });
                                       }),
                                 ],
                               ),
                               SizedBox(height: spacing_standard_new),
                               FittedBox(
                                   child: groceryButton(
+                                      bgColors: model.isProductIsInSale ==
+                                                  true &&
+                                              model.productSaleDetails
+                                                      .isProductOutOfStock ==
+                                                  true
+                                          ? Colors.grey.shade300
+                                          : grocery_colorPrimary,
                                       onPressed: () async {
                                         if (option == null) {
                                           Fluttertoast.showToast(
                                               msg: 'Please select pack Size');
                                         } else {
-                                          int i = await DatabaseHelper.instance
-                                              .addtoCart({
-                                            DatabaseHelper.productid:
-                                                model.productId,
-                                            DatabaseHelper.optionid:
-                                                productoptions[0].optionId,
-                                            DatabaseHelper.optionname:
-                                                productoptions[0].name,
-                                            DatabaseHelper.optionvalueid:
-                                                option.optionValueId,
-                                            DatabaseHelper.optionlable:
-                                                option.label,
-                                            DatabaseHelper
-                                                    .productpriceincreased:
-                                                option.increaseProductPriceBy,
-                                            DatabaseHelper.quantity:
-                                                itemcount.toString(),
-                                            DatabaseHelper.price: PriceReturn()
-                                          });
-                                          i > 0 ? count = 1 : count = count;
-                                          Fluttertoast.showToast(
-                                              msg: i > 0
-                                                  ? "Product Added to Cart"
-                                                  : 'Product Already Exist In Cart');
-                                          setState(() {
-                                            itemcount = 1;
-                                          });
+                                          if (model.isProductIsInSale ==
+                                              false) {
+                                            int i = await DatabaseHelper
+                                                .instance
+                                                .addtoCart({
+                                              DatabaseHelper.productid:
+                                                  model.productId,
+                                              DatabaseHelper.optionid:
+                                                  productoptions[0].optionId,
+                                              DatabaseHelper.optionname:
+                                                  productoptions[0].name,
+                                              DatabaseHelper.optionvalueid:
+                                                  option.optionValueId,
+                                              DatabaseHelper.optionlable:
+                                                  option.label,
+                                              DatabaseHelper
+                                                      .productpriceincreased:
+                                                  option.increaseProductPriceBy,
+                                              DatabaseHelper.quantity:
+                                                  itemcount.toString(),
+                                              DatabaseHelper.price:
+                                                  PriceReturn()
+                                            });
+                                            i > 0 ? count = 1 : count = count;
+                                            Fluttertoast.showToast(
+                                                msg: i > 0
+                                                    ? "Product Added to Cart"
+                                                    : 'Product Already Exist In Cart');
+                                            setState(() {
+                                              itemcount = 1;
+                                            });
+                                          } else if (model.isProductIsInSale ==
+                                                  true &&
+                                              model.productSaleDetails
+                                                      .isProductOutOfStock ==
+                                                  false) {
+                                            int i = await DatabaseHelper
+                                                .instance
+                                                .addtoCart({
+                                              DatabaseHelper.productid:
+                                                  model.productId,
+                                              DatabaseHelper.optionid:
+                                                  productoptions[0].optionId,
+                                              DatabaseHelper.optionname:
+                                                  productoptions[0].name,
+                                              DatabaseHelper.optionvalueid:
+                                                  option.optionValueId,
+                                              DatabaseHelper.optionlable:
+                                                  option.label,
+                                              DatabaseHelper
+                                                      .productpriceincreased:
+                                                  option.increaseProductPriceBy,
+                                              DatabaseHelper.quantity:
+                                                  itemcount.toString(),
+                                              DatabaseHelper.price:
+                                                  PriceReturn()
+                                            });
+                                            i > 0 ? count = 1 : count = count;
+                                            Fluttertoast.showToast(
+                                                msg: i > 0
+                                                    ? "Product Added to Cart"
+                                                    : 'Product Already Exist In Cart');
+                                            setState(() {
+                                              itemcount = 1;
+                                            });
+                                          } else {}
                                         }
                                       },
-                                      textContent: grocery_lbl_add_to_cart)),
+                                      textContent: model.isProductIsInSale ==
+                                                  true &&
+                                              model.productSaleDetails
+                                                      .isProductOutOfStock ==
+                                                  true
+                                          ? 'Sold Out'
+                                          : grocery_lbl_add_to_cart)),
                               SizedBox(height: spacing_standard_new),
                             ],
                           ),
@@ -440,21 +506,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                 ? Banner(
                                     location: BannerLocation.topStart,
                                     message: 'Sale',
-                                    child:
-                                        /*Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration: boxDecoration(
-                                        showShadow: true,
-                                        radius: 10.0,
-                                        bgColor: grocery_color_white),
-                                    height: width * 0.35,
-                                    width: width * 0.6,
-                                    child: CachedNetworkImage(
-                                      placeholder: placeholderWidgetFn(),
-                                      imageUrl: model.images[0].path,
-                                      fit: BoxFit.fill,
-                                    ),*/
-                                        Container(
+                                    child: Container(
                                       padding: EdgeInsets.all(8),
                                       decoration: boxDecoration(
                                           showShadow: true,
@@ -572,15 +624,9 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                     SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      'Related Products',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    RelatedProduct(
+                      ProductId: prodid['prodid'],
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    RelatedProduct(),
                   ],
                 ),
               ),
@@ -588,55 +634,3 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
     );
   }
 }
-
-/*class RadioListBuilder extends StatefulWidget {
-  List<Options> optionlist;
-
-  RadioListBuilder({Key key, this.optionlist}) : super(key: key);
-
-  @override
-  _RadioListBuilderState createState() => _RadioListBuilderState();
-}
-
-class _RadioListBuilderState extends State<RadioListBuilder> {
-  var samp;
-
-  var selectedValue;
-  var sOptionPrice;
-  var sOptionLable;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      itemCount: widget.optionlist.length,
-      itemBuilder: (context, index) {
-        return SizedBox(
-          width: MediaQuery.of(context).size.width / 2.3,
-          child: RadioListTile(
-              toggleable: false,
-              controlAffinity: ListTileControlAffinity.platform,
-              dense: true,
-              title: Text(
-                widget.optionlist[index].label,
-                style: TextStyle(
-                    fontFamily: fontMedium,
-                    fontSize: MediaQuery.of(context).size.width / 23),
-              ),
-              value: widget.optionlist[index].optionValueId,
-              groupValue: selectedValue,
-              onChanged: (val) {
-                SelectedRadio(Options(
-                    label: widget.optionlist[index].label,
-                    name: widget.optionlist[index].name,
-                    price: widget.optionlist[index].price,
-                    increaseProductPriceBy:
-                        widget.optionlist[index].increaseProductPriceBy,
-                    optionValueId: widget.optionlist[index].optionValueId));
-              }),
-        );
-      },
-    );
-  }
-}*/

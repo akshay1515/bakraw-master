@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RelatedProduct extends StatefulWidget {
+  String ProductId;
+
+  RelatedProduct({Key key, this.ProductId}) : super(key: key);
+
   @override
   _RelatedProductState createState() => _RelatedProductState();
 }
@@ -22,38 +26,53 @@ class _RelatedProductState extends State<RelatedProduct> {
     flash = Provider.of<RelatedProductProvier>(context, listen: false);
     flashsale = flash.items;
 
-    return isLoading
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Container(
-            height: MediaQuery.of(context).size.height * 0.33,
-            child: ListView.builder(
-              itemCount: flashsale[0].data.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (ctx, index) {
-                return FlashsaleItem(
-                  id: flashsale[0].data[index].productId,
-                  image: flashsale[0].data[0].images[0],
-                  name: flashsale[0].data[0].name,
-                  price: flashsale[0].data[0].price,
-                  weight: flashsale[0].data[0].qty,
-                );
-              },
-            ),
-          );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    return flashsale[0].data.length > 0
+        ? isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: spacing_standard_new,
+                        right: spacing_standard_new,
+                        bottom: spacing_standard),
+                    child: Text(
+                      'Related Products',
+                      style: TextStyle(
+                          fontFamily: fontMedium,
+                          fontSize: textSizeLargeMedium,
+                          color: Colors.grey.shade700),
+                    ),
+                  ),
+                  Container(
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      child: ListView.builder(
+                        itemCount: flashsale[0].data.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (ctx, index) {
+                          return FlashsaleItem(
+                            id: flashsale[0].data[index].productId,
+                            image: flashsale[0].data[index].images[0],
+                            name: flashsale[0].data[index].name,
+                            price: flashsale[0].data[index].price,
+                            weight: flashsale[0].data[index].qty,
+                          );
+                        },
+                      )),
+                ],
+              )
+        : Container();
   }
 
   @override
   void didChangeDependencies() {
     if (isLoading) {
       (Provider.of<RelatedProductProvier>(context, listen: false)
-              .getRelatedProducts(flashsale))
+              .getRelatedProducts(widget.ProductId))
           .then((value) {
         setState(() {
           isLoading = false;
@@ -71,6 +90,7 @@ class FlashsaleItem extends StatelessWidget {
   final String id;
 
   FlashsaleItem({this.image, this.name, this.price, this.weight, this.id});
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -81,7 +101,7 @@ class FlashsaleItem extends StatelessWidget {
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.38,
-        height: MediaQuery.of(context).size.height * 0.30,
+        height: MediaQuery.of(context).size.height * 0.25,
         decoration: boxDecoration(
             showShadow: true, radius: 10.0, bgColor: grocery_color_white),
         margin: EdgeInsets.only(left: 16, bottom: 16),

@@ -29,8 +29,9 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
     changeStatusColor(grocery_colorPrimary);
+    var width = MediaQuery.of(context).size.width;
+
     final signupdetails = ModalRoute.of(context).settings.arguments as Map;
     fname = signupdetails['fname'];
     lname = signupdetails['lname'];
@@ -103,6 +104,7 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
                                 children: <Widget>[
                                   CountryCodePicker(
                                     onChanged: null,
+                                    initialSelection: 'IN',
                                   ),
                                   Icon(Icons.arrow_drop_down,
                                       size: 30,

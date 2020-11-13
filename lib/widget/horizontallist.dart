@@ -1,7 +1,6 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
 import 'package:bakraw/screen/categoryproduct.dart';
-import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,10 +79,11 @@ class Category extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.35,
                       height: MediaQuery.of(context).size.height * 0.15,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+                          /*borderRadius: BorderRadius.circular(10),
                           boxShadow: [BoxShadow(color: Colors.grey)],
                           border: Border.all(color: grocery_colorPrimary),
-                          color: grocery_colorPrimary_light),
+                          color: grocery_colorPrimary_light*/
+                          ),
                       /* borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey),
                         color: Colors.grey.shade100.withOpacity(0.5),*/

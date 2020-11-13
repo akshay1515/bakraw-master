@@ -25,6 +25,7 @@ class DefaultUserProfile extends StatelessWidget {
                 Center(
                   child: FittedBox(
                     child: groceryButton(
+                      bgColors: grocery_colorPrimary,
                       textContent: grocery_lbl_Sign_In,
                       onPressed: (() {
                         SignUp(
@@ -41,6 +42,7 @@ class DefaultUserProfile extends StatelessWidget {
                 Center(
                   child: FittedBox(
                       child: groceryButton(
+                    bgColors: grocery_colorPrimary,
                     textContent: grocery_lbl_Sign_Up,
                     onPressed: (() {
                       SignUp(
@@ -74,6 +76,7 @@ class DefaultUserProfile extends StatelessWidget {
                   Center(
                     child: FittedBox(
                       child: groceryButton(
+                        bgColors: grocery_colorPrimary,
                         textContent: grocery_lbl_Sign_In,
                         onPressed: (() {
                           SignUp(
@@ -90,6 +93,7 @@ class DefaultUserProfile extends StatelessWidget {
                   Center(
                     child: FittedBox(
                         child: groceryButton(
+                      bgColors: grocery_colorPrimary,
                       textContent: grocery_lbl_Sign_Up,
                       onPressed: (() {
                         SignUp(

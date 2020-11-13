@@ -71,7 +71,6 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
     final compleated = ListView.builder(
         itemCount: list.length,
         shrinkWrap: true,
-        reverse: true,
         itemBuilder: (context, index) {
           return Container(
             decoration: boxDecoration(
@@ -136,18 +135,6 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                             userid: userid,
                           ).launch(context);
                         })
-                    /*button(context, 'Order Details',
-                            backgroundColor: grocery_textColorSecondary,
-                            height: 40,
-                            width: 150)
-                        .onTap(() {
-                      OrderDetailsCard(
-                        orderid: list[index].orderId,
-                        apikey: apikey,
-                        email: email,
-                        userid: userid,
-                      ).launch(context);
-                    })*/
                   ],
                 ).paddingOnly(top: 16)
               ],
@@ -208,10 +195,14 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                         ],
                       )),
                 ),
-                body: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Container(child: compleated),
-                ),
+                body: isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(child: compleated),
+                      ),
               ),
             ),
           );

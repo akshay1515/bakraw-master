@@ -70,19 +70,7 @@ class _MycartState extends State<Mycart> {
     count = await DatabaseHelper.instance.getCount();
     rowlist = await DatabaseHelper.instance.getcartItems();
 
-    if (isinit == true) {
-      /* rowlist.forEach((element) {
-        //print('rowlist ${element.option}');
-        Provider.of<ProductProvider>(context, listen: false)
-            .getProductDetails(element.productid)
-            .then((value) {
-          target.add(Data(
-            name: value.data.name,
-            images: value.data.images,
-          ));
-        });
-      });
-      isinit = false;*/
+    if (isinit) {
       for (int i = 0; i < rowlist.length; i++) {
         Provider.of<ProductProvider>(context, listen: false)
             .getProductDetails(rowlist[i].productid)
@@ -157,6 +145,7 @@ class _MycartState extends State<Mycart> {
                             SizedBox(width: spacing_standard_new),
                             FittedBox(
                               child: groceryButton(
+                                bgColors: grocery_colorPrimary,
                                 textContent: grocery_lbl_checkout,
                                 onPressed: (() {
                                   !email.isEmptyOrNull

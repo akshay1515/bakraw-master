@@ -46,7 +46,7 @@ class groceryButton extends StatefulWidget {
       this.height = 50.0,
       this.radius = 5.0,
       this.color,
-      this.bgColors = grocery_colorPrimary});
+      this.bgColors});
 
   @override
   groceryButtonState createState() => groceryButtonState();
