@@ -1,7 +1,9 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
+import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/databasehelper.dart';
+import 'package:bakraw/model/carttoproductmodel.dart';
 import 'package:bakraw/model/internalcart.dart';
-import 'package:bakraw/model/productmodel.dart';
+//import 'package:bakraw/model/productmodel.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
 import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/screen/dashboaruderprofile.dart';
@@ -27,16 +29,17 @@ class _MycartState extends State<Mycart> {
   bool isLoading = true;
   List<CartsModel> rowlist;
   double subtotal = 00.00;
-  List<Data> target = [];
   bool isinit = true;
   int count = 0;
   String email = '';
   String apikey = '';
   String userid = '';
-
+  List<CartProductModel> cartProducts;
   @override
   void initState() {
+    super.initState();
     getUserInfo();
+    fetchcartItems();
   }
 
   Future<String> getUserInfo() async {
@@ -63,23 +66,19 @@ class _MycartState extends State<Mycart> {
 
   Future fetchcartItems() async {
     subtotal = 0.0;
-    if (rowlist == null) {
-      rowlist = List<CartsModel>();
-      count = 0;
-    }
+    cartProducts = List<CartProductModel>();
     count = await DatabaseHelper.instance.getCount();
     rowlist = await DatabaseHelper.instance.getcartItems();
 
     if (isinit) {
-      for (int i = 0; i < rowlist.length; i++) {
-        Provider.of<ProductProvider>(context, listen: false)
-            .getProductDetails(rowlist[i].productid)
-            .then((value) {
-          target.add(Data(
-            name: value.data.name,
-            images: value.data.images,
-          ));
-        });
+      for (CartsModel element in rowlist) {
+        Data.ProductModel model =
+            await Provider.of<ProductProvider>(context, listen: false)
+                .getProductDetails(element.productid);
+        List<Data.Data> target = [];
+        target.add(Data.Data(images: model.data.images, name: model.data.name));
+
+        cartProducts.add(new CartProductModel(element, target));
       }
     }
     setState(() {
@@ -92,7 +91,6 @@ class _MycartState extends State<Mycart> {
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
     var width = MediaQuery.of(context).size.width;
-    fetchcartItems();
     return Scaffold(
       body: isLoading
           ? Center(
@@ -170,21 +168,21 @@ class _MycartState extends State<Mycart> {
                   SizedBox(height: spacing_standard_new),
                   ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: rowlist.length,
+                    itemCount: cartProducts.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return Cart(
-                          rowlist[index].id,
-                          rowlist[index].productid,
-                          rowlist[index].optionvalueId,
-                          rowlist[index].optionid,
-                          rowlist[index].optionname,
-                          rowlist[index].optionlable,
-                          rowlist[index].productpriceincreased,
-                          rowlist[index].price,
-                          rowlist[index].quantity,
-                          target[index]);
+                          cartProducts[index].cartModel.id,
+                          cartProducts[index].cartModel.productid,
+                          cartProducts[index].cartModel.optionvalueId,
+                          cartProducts[index].cartModel.optionid,
+                          cartProducts[index].cartModel.optionname,
+                          cartProducts[index].cartModel.optionlable,
+                          cartProducts[index].cartModel.productpriceincreased,
+                          cartProducts[index].cartModel.price,
+                          cartProducts[index].cartModel.quantity,
+                          cartProducts[index].target[0]);
                     },
                   ),
                 ],
@@ -204,7 +202,7 @@ class Cart extends StatefulWidget {
   String productpriceincreased;
   String price;
   String quantity;
-  Data mld;
+  Data.Data mld;
 
   Cart(
     this.id,

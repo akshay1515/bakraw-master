@@ -8,8 +8,8 @@ class CartProductModel {
   List<Values> valuelist;
   List<ProductOptions> optionlist = [];
   List<Data.Data> target = [];
-  CartProductModel(
-      this.cartModel, this.valuelist, this.optionlist, this.target);
+  CartProductModel(this.cartModel, this.target,
+      {this.valuelist, this.optionlist});
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();

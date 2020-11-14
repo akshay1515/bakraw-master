@@ -67,7 +67,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
   double subtotal = 00.00;
   num taxamount = 00;
   double total = 00.00;
-  List<Data.Data> target = [];
   bool isinit = true;
   int count = 0;
   DbcarTmodel model;
@@ -189,13 +188,13 @@ class _PaymentsPageState extends State<PaymentsPage> {
         Data.ProductModel model =
             await Provider.of<ProductProvider>(context, listen: false)
                 .getProductDetails(element.productid);
-        target.add(Data.Data(
+        List<Data.Data> targetProduct = [];
+        targetProduct.add(Data.Data(
           name: model.data.name,
           productId: model.data.productId,
           isProductIsInSale: model.data.isProductIsInSale,
           productSaleDetails: model.data.productSaleDetails,
         ));
-
         List<Values> values = [];
         List<ProductOptions> optionsList = [];
         values.add(Values(
@@ -206,8 +205,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
             optionName: element.optionname,
             optionLabel: element.optionlable,
             values: values));
-        cartProducts
-            .add(new CartProductModel(element, values, optionsList, target));
+        cartProducts.add(new CartProductModel(element, targetProduct,
+            valuelist: values, optionlist: optionsList));
       }
       isinit = false;
     }
@@ -304,8 +303,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
     mapData["updated_at"] = DateTime.now().toString();
 
     for (int i = 0; i < cartProducts.length; i++) {
-      if (target[i].isProductIsInSale == true) {
-        print('target ${target[i].productSaleDetails.saleProductId}');
+      if (cartProducts[i].target[0].isProductIsInSale == true) {
+        print(
+            'target ${cartProducts[i].target[0].productSaleDetails.saleProductId}');
         list.add(OrderProducts(
             productSaleDetails: ProductSaleDetails(
                 saleProductId: num.parse(cartProducts[i]
