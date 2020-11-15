@@ -56,9 +56,9 @@ class _MycartState extends State<Mycart> {
   }
 
   double Subtotal() {
-    for (int i = 0; i < rowlist.length; i++) {
-      double total = double.parse(rowlist[i].price);
-      int qty = int.parse(rowlist[i].quantity);
+    for (int i = 0; i < cartProducts.length; i++) {
+      double total = double.parse(cartProducts[i].cartModel.price);
+      int qty = int.parse(cartProducts[i].cartModel.quantity);
       subtotal += total * qty;
     }
     return subtotal;
