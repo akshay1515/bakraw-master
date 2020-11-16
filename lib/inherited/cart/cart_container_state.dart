@@ -36,7 +36,6 @@ class CartContainerState extends State<CartContainer>{
         email = prefs.getString('email');
       });
     }
-    return email;
   }
 
   Future fetchCartItems() async {
@@ -63,9 +62,11 @@ class CartContainerState extends State<CartContainer>{
 
   void updateCartPricing(String productId,String quantity){
     setState(() {
+
       CartsModel model=cartProductModel[productId].cartModel;
       model.quantity=quantity;
-      cartProductModel[productId].cartModel=model;
+      if(quantity=="0")
+        cartProductModel.remove(productId);
       subtotal=calculateSubTotal();
     });
   }

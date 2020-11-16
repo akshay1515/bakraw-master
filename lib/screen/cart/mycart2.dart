@@ -1,6 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/inherited/cart/cart_container.dart';
 import 'package:bakraw/screen/cart/widgets/cart_products_list.dart';
+import 'package:bakraw/screen/cart/widgets/fitted_box_widget.dart';
 import 'package:bakraw/screen/cart/widgets/sub_total_widget.dart';
 import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
@@ -61,7 +62,7 @@ class _MycartState2 extends State<Mycart2> {
                                 },
                               ),
                               SizedBox(width: spacing_standard_new),
-                              FittedBox(),
+                              FittedBoxWidget(),
                             ],
                           )
                         ],

@@ -41,106 +41,112 @@ import 'package:provider/provider.dart';class CartItem extends StatefulWidget {
 
 class _CartItemState extends State<CartItem> {
 
-  void incrementingItemCount(BuildContext context){
+  void updateItemCount(BuildContext context){
     CartContainer.of(context).updateCartPricing(widget.productid, widget.quantity);
+  }
+
+  var width;
+
+  Future<Widget> mRemoveItem()async {
+    await showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: IntrinsicHeight(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(spacing_large),
+                        topRight: Radius.circular(spacing_large)),
+                    color: grocery_color_white),
+                height: MediaQuery.of(context).size.height / 2.8,
+                padding: EdgeInsets.all(spacing_standard_new),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(
+                              right: spacing_standard_new, top: spacing_middle),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: grocery_color_red),
+                          padding: EdgeInsets.all(width * 0.02),
+                          child: Icon(Icons.delete, color: grocery_color_white),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              text(grocery_lbl_remove_an_item,
+                                  fontFamily: fontMedium,
+                                  fontSize: textSizeNormal),
+                              text(grocery_lbl_remove_confirmation,
+                                  textColor: grocery_textColorSecondary,
+                                  isLongText: true),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: spacing_large),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: text("$grocery_lbl_no",
+                                textColor: grocery_textColorSecondary,
+                                textAllCaps: true,
+                                fontFamily: fontMedium),
+                          ),
+                        ),
+                        SizedBox(width: spacing_standard_new),
+                        Container(
+                          width: width * 0.35,
+                          child: groceryButton(
+                            textContent: grocery_lbl_remove,
+                            onPressed: (() async {
+                              int i =
+                              await DatabaseHelper.instance.deleteCartItem({
+                                DatabaseHelper.productid: widget.productid,
+                                DatabaseHelper.optionvalueid: widget.optionvalueid
+                              });
+                              i > 0
+                                  ? Fluttertoast.showToast(
+                                  msg: 'Item Deleted Successfully',
+                                  toastLength: Toast.LENGTH_SHORT)
+                                  : Fluttertoast.showToast(
+                                  msg: 'Something Went Wrong',
+                                  toastLength: Toast.LENGTH_SHORT);
+                              Navigator.pop(context);
+                            }),
+                            bgColors: grocery_color_red,
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )),
+        );
+      },
+    ).whenComplete(() {
+      CartContainer.of(context).updateCartPricing(widget.productid, "0");
+    });
   }
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    Widget mRemoveItem() {
-      showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        isScrollControlled: true,
-        builder: (BuildContext context) {
-          return SingleChildScrollView(
-            child: IntrinsicHeight(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(spacing_large),
-                          topRight: Radius.circular(spacing_large)),
-                      color: grocery_color_white),
-                  height: MediaQuery.of(context).size.height / 2.8,
-                  padding: EdgeInsets.all(spacing_standard_new),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(
-                                right: spacing_standard_new, top: spacing_middle),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: grocery_color_red),
-                            padding: EdgeInsets.all(width * 0.02),
-                            child: Icon(Icons.delete, color: grocery_color_white),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                text(grocery_lbl_remove_an_item,
-                                    fontFamily: fontMedium,
-                                    fontSize: textSizeNormal),
-                                text(grocery_lbl_remove_confirmation,
-                                    textColor: grocery_textColorSecondary,
-                                    isLongText: true),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: spacing_large),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              child: text("$grocery_lbl_no",
-                                  textColor: grocery_textColorSecondary,
-                                  textAllCaps: true,
-                                  fontFamily: fontMedium),
-                            ),
-                          ),
-                          SizedBox(width: spacing_standard_new),
-                          Container(
-                            width: width * 0.35,
-                            child: groceryButton(
-                              textContent: grocery_lbl_remove,
-                              onPressed: (() async {
-                                int i =
-                                await DatabaseHelper.instance.deleteCartItem({
-                                  DatabaseHelper.productid: widget.productid,
-                                  DatabaseHelper.optionvalueid: widget.optionvalueid
-                                });
-                                i > 0
-                                    ? Fluttertoast.showToast(
-                                    msg: 'Item Deleted Successfully',
-                                    toastLength: Toast.LENGTH_SHORT)
-                                    : Fluttertoast.showToast(
-                                    msg: 'Something Went Wrong',
-                                    toastLength: Toast.LENGTH_SHORT);
-                                Navigator.pop(context);
-                              }),
-                              bgColors: grocery_color_red,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                )),
-          );
-        },
-      );
-    }
+    width = MediaQuery.of(context).size.width;
+
 
     return Container(
       decoration: boxDecoration(
@@ -240,7 +246,7 @@ class _CartItemState extends State<CartItem> {
                               setState(() {
                                 widget.quantity = temp.toString();
                               });
-                              incrementingItemCount(context);
+                              updateItemCount(context);
                             }
                           } else {}
                         }),
@@ -270,7 +276,7 @@ class _CartItemState extends State<CartItem> {
                               setState(() {
                                 widget.quantity = temp.toString();
                               });
-                              incrementingItemCount(context);
+                              updateItemCount(context);
                             }
                           } else {}
                         }),

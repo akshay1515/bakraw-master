@@ -23,9 +23,13 @@ class FittedBoxWidgetState extends State<FittedBoxWidget>{
     super.didChangeDependencies();
     CartContainerState state=CartContainer.of(context);
     subTotal=state.subtotal;
+    email=state.email;
   }
 
   Widget build(BuildContext context){
+    CartContainerState state=CartContainer.of(context);
+    subTotal=state.subtotal;
+    email=state.email;
     return FittedBox(
       child: groceryButton(
         bgColors: grocery_colorPrimary,
