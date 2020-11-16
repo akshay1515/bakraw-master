@@ -1,6 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/screen/FavouriteProduct.dart';
 import 'package:bakraw/screen/aboutus.dart';
+import 'package:bakraw/screen/cart/mycart2.dart';
 import 'package:bakraw/screen/home.dart';
 import 'package:bakraw/screen/mycart.dart';
 import 'package:bakraw/screen/orderhistory.dart';
@@ -229,7 +230,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           body: TabBarView(
             children: <Widget>[
               Home(istab: true),
-              Mycart(),
+              Mycart2(),
               UserFavouriteList(),
               GroceryProfile(istab: true)
             ],

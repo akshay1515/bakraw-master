@@ -20,6 +20,7 @@ import 'package:bakraw/provider/taxProvider.dart';
 import 'package:bakraw/provider/useraddressprovider.dart';
 import 'package:bakraw/provider/userprovider.dart';
 import 'package:bakraw/screen/addnumber.dart';
+import 'package:bakraw/screen/cart/mycart2.dart';
 import 'package:bakraw/screen/categoryproduct.dart';
 import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/screen/editadduseraddress.dart';
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
           GroceryProductDescription.tag: (ctx) => GroceryProductDescription(),
           Dashboard.Tag: (ctx) => Dashboard(),
           SignUp.tag: (ctx) => SignUp(),
-          Mycart.tag: (ctx) => Mycart(),
+          Mycart.tag: (ctx) => Mycart2(),
           GroceryAddNumber.tag: (ctx) => GroceryAddNumber(),
           GroceryForgotPassword.tag: (ctx) => GroceryForgotPassword(),
           UserAddressManager.tag: (ctx) => UserAddressManager(),

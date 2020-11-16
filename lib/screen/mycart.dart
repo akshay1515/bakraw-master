@@ -34,7 +34,7 @@ class _MycartState extends State<Mycart> {
   String email = '';
   String apikey = '';
   String userid = '';
-  List<CartProductModel> cartProducts;
+  Map<String,CartProductModel> cartProducts;
   @override
   void initState() {
     super.initState();
@@ -56,7 +56,7 @@ class _MycartState extends State<Mycart> {
   }
 
   double Subtotal() {
-    for (int i = 0; i < cartProducts.length; i++) {
+     for (int i = 0; i < cartProducts.length; i++) {
       double total = double.parse(cartProducts[i].cartModel.price);
       int qty = int.parse(cartProducts[i].cartModel.quantity);
       subtotal += total * qty;
@@ -66,7 +66,7 @@ class _MycartState extends State<Mycart> {
 
   Future fetchcartItems() async {
     subtotal = 0.0;
-    cartProducts = List<CartProductModel>();
+    cartProducts = Map<String,CartProductModel>();
     count = await DatabaseHelper.instance.getCount();
     rowlist = await DatabaseHelper.instance.getcartItems();
 
@@ -77,8 +77,7 @@ class _MycartState extends State<Mycart> {
                 .getProductDetails(element.productid);
         List<Data.Data> target = [];
         target.add(Data.Data(images: model.data.images, name: model.data.name));
-
-        cartProducts.add(new CartProductModel(element, target));
+        cartProducts.putIfAbsent(element.productid,()=>new CartProductModel(element, target));
       }
     }
     setState(() {
@@ -91,6 +90,13 @@ class _MycartState extends State<Mycart> {
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
     var width = MediaQuery.of(context).size.width;
+    updateVal(String quantity,String productId){
+
+      setState(() {
+        CartsModel model=cartProducts[productId].cartModel;
+        model.quantity=quantity;
+      });
+    }
     return Scaffold(
       body: isLoading
           ? Center(
@@ -182,13 +188,19 @@ class _MycartState extends State<Mycart> {
                           cartProducts[index].cartModel.productpriceincreased,
                           cartProducts[index].cartModel.price,
                           cartProducts[index].cartModel.quantity,
-                          cartProducts[index].target[0]);
+                          cartProducts[index].target[0],
+                          (quantity,productId){
+                            updateVal(quantity,productId);
+                          }
+                      );
                     },
                   ),
                 ],
               ),
             ),
     );
+
+
   }
 }
 
@@ -203,6 +215,7 @@ class Cart extends StatefulWidget {
   String price;
   String quantity;
   Data.Data mld;
+  Function callback;
 
   Cart(
     this.id,
@@ -215,6 +228,7 @@ class Cart extends StatefulWidget {
     this.price,
     this.quantity,
     this.mld,
+      this.callback
   );
 
   @override
@@ -418,6 +432,7 @@ class _CartState extends State<Cart> {
                               setState(() {
                                 widget.quantity = temp.toString();
                               });
+                              widget.callback(widget.quantity,widget.productid);
                             }
                           } else {}
                         }),
