@@ -304,17 +304,15 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
     for (int i = 0; i < cartProducts.length; i++) {
       if (cartProducts[i].target[0].isProductIsInSale == true) {
-        print(
-            'target ${cartProducts[i].target[0].productSaleDetails.saleProductId}');
         list.add(OrderProducts(
             productSaleDetails: ProductSaleDetails(
                 saleProductId: num.parse(cartProducts[i]
-                    .target[i]
+                    .target[0]
                     .productSaleDetails
                     .saleProductId)),
-            productId: cartProducts[i].target[i].productId,
-            productName: cartProducts[i].target[i].name,
-            isProductIsInSale: cartProducts[i].target[i].isProductIsInSale,
+            productId: cartProducts[i].target[0].productId,
+            productName: cartProducts[i].target[0].name,
+            isProductIsInSale: cartProducts[i].target[0].isProductIsInSale,
             qty: cartProducts[i].cartModel.quantity,
             unitPrice: cartProducts[i].cartModel.price,
             lineTotal: (double.parse(cartProducts[i].cartModel.price) *
@@ -324,9 +322,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
       } else {
         list.add(OrderProducts(
             productSaleDetails: ProductSaleDetails(),
-            productId: cartProducts[i].target[i].productId,
-            productName: cartProducts[i].target[i].name,
-            isProductIsInSale: cartProducts[i].target[i].isProductIsInSale,
+            productId: cartProducts[i].target[0].productId,
+            productName: cartProducts[i].target[0].name,
+            isProductIsInSale: cartProducts[i].target[0].isProductIsInSale,
             qty: cartProducts[i].cartModel.quantity,
             unitPrice: cartProducts[i].cartModel.price,
             lineTotal: (double.parse(cartProducts[i].cartModel.price) *
