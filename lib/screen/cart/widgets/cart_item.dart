@@ -42,7 +42,7 @@ import 'package:provider/provider.dart';class CartItem extends StatefulWidget {
 class _CartItemState extends State<CartItem> {
 
   void updateItemCount(BuildContext context){
-    CartContainer.of(context).updateCartPricing(widget.productid, widget.quantity);
+    CartContainer.of(context).updateCartPricing(widget.productid+widget.optionvalueid, widget.quantity);
   }
 
   var width;
@@ -140,7 +140,7 @@ class _CartItemState extends State<CartItem> {
         );
       },
     ).whenComplete(() {
-      CartContainer.of(context).updateCartPricing(widget.productid, "0");
+      CartContainer.of(context).updateCartPricing(widget.productid+widget.optionvalueid, "0");
     });
   }
   @override

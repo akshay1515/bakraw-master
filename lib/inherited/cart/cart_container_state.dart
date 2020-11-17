@@ -50,7 +50,7 @@ class CartContainerState extends State<CartContainer>{
             .getProductDetails(element.productid);
         List<Data.Data> target = [];
         target.add(Data.Data(images: model.data.images, name: model.data.name));
-        cartProductModel.putIfAbsent(element.productid,()=>new CartProductModel(element, target));
+        cartProductModel.putIfAbsent(element.productid+element.optionvalueId,()=>new CartProductModel(element, target));
       }
       subtotal=calculateSubTotal();
     }
@@ -60,13 +60,16 @@ class CartContainerState extends State<CartContainer>{
     });
   }
 
-  void updateCartPricing(String productId,String quantity){
+  void updateCartPricing(String productOptionLabelValueId,String quantity){
     setState(() {
 
-      CartsModel model=cartProductModel[productId].cartModel;
+      CartsModel model=cartProductModel[productOptionLabelValueId].cartModel;
       model.quantity=quantity;
-      if(quantity=="0")
-        cartProductModel.remove(productId);
+      if(quantity=="0"){
+        cartProductModel.remove(productOptionLabelValueId);
+        count--;
+      }
+
       subtotal=calculateSubTotal();
     });
   }
