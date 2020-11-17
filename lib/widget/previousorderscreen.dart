@@ -41,6 +41,7 @@ class _PreviousOrderState extends State<PreviousOrder> {
             children: [
               Container(
                 margin: EdgeInsets.only(
+                    top: spacing_standard_new,
                     left: spacing_standard_new,
                     right: spacing_standard_new,
                     bottom: spacing_standard),
@@ -53,19 +54,22 @@ class _PreviousOrderState extends State<PreviousOrder> {
                 ),
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.25,
-                child: ListView.builder(
-                  itemCount: flashsale[0].data.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (ctx, index) {
-                    return FlashsaleItem(
-                      id: flashsale[0].data[index].productId,
-                      image: flashsale[0].data[index].images[0],
-                      weight: flashsale[0].data[index].inStock,
-                      price: flashsale[0].data[index].price,
-                      name: flashsale[0].data[index].name,
-                    );
-                  },
+                height: 200,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: ListView.builder(
+                    itemCount: flashsale[0].data.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (ctx, index) {
+                      return FlashsaleItem(
+                        id: flashsale[0].data[index].productId,
+                        image: flashsale[0].data[index].images[0],
+                        weight: flashsale[0].data[index].inStock,
+                        price: flashsale[0].data[index].price,
+                        name: flashsale[0].data[index].name,
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

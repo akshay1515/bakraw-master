@@ -27,6 +27,7 @@ class _FlashSaleState extends State<FlashSale> {
         : Container(
             height: MediaQuery.of(context).size.height * 0.25,
             child: ListView.builder(
+              shrinkWrap: true,
               itemCount: flashsale[0].data[0].products.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (ctx, index) {

@@ -1,7 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
+import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/inherited/cart/cart_container.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
-import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
@@ -10,7 +10,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:provider/provider.dart';class CartItem extends StatefulWidget {
+
+class CartItem extends StatefulWidget {
   int id;
   String productid;
   String optionvalueid;
@@ -32,22 +33,21 @@ import 'package:provider/provider.dart';class CartItem extends StatefulWidget {
       this.productpriceincreased,
       this.price,
       this.quantity,
-      this.mld
-      );
+      this.mld);
 
   @override
   _CartItemState createState() => _CartItemState();
 }
 
 class _CartItemState extends State<CartItem> {
-
-  void updateItemCount(BuildContext context){
-    CartContainer.of(context).updateCartPricing(widget.productid, widget.quantity);
+  void updateItemCount(BuildContext context) {
+    CartContainer.of(context)
+        .updateCartPricing(widget.productid, widget.quantity);
   }
 
   var width;
 
-  Future<Widget> mRemoveItem()async {
+  Future<Widget> mRemoveItem() async {
     await showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
@@ -56,97 +56,95 @@ class _CartItemState extends State<CartItem> {
         return SingleChildScrollView(
           child: IntrinsicHeight(
               child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(spacing_large),
-                        topRight: Radius.circular(spacing_large)),
-                    color: grocery_color_white),
-                height: MediaQuery.of(context).size.height / 2.8,
-                padding: EdgeInsets.all(spacing_standard_new),
-                child: Column(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(spacing_large),
+                    topRight: Radius.circular(spacing_large)),
+                color: grocery_color_white),
+            height: MediaQuery.of(context).size.height / 2.8,
+            padding: EdgeInsets.all(spacing_standard_new),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(
-                              right: spacing_standard_new, top: spacing_middle),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: grocery_color_red),
-                          padding: EdgeInsets.all(width * 0.02),
-                          child: Icon(Icons.delete, color: grocery_color_white),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              text(grocery_lbl_remove_an_item,
-                                  fontFamily: fontMedium,
-                                  fontSize: textSizeNormal),
-                              text(grocery_lbl_remove_confirmation,
-                                  textColor: grocery_textColorSecondary,
-                                  isLongText: true),
-                            ],
-                          ),
-                        )
-                      ],
+                    Container(
+                      margin: EdgeInsets.only(
+                          right: spacing_standard_new, top: spacing_middle),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: grocery_color_red),
+                      padding: EdgeInsets.all(width * 0.02),
+                      child: Icon(Icons.delete, color: grocery_color_white),
                     ),
-                    SizedBox(height: spacing_large),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: text("$grocery_lbl_no",
-                                textColor: grocery_textColorSecondary,
-                                textAllCaps: true,
-                                fontFamily: fontMedium),
-                          ),
-                        ),
-                        SizedBox(width: spacing_standard_new),
-                        Container(
-                          width: width * 0.35,
-                          child: groceryButton(
-                            textContent: grocery_lbl_remove,
-                            onPressed: (() async {
-                              int i =
-                              await DatabaseHelper.instance.deleteCartItem({
-                                DatabaseHelper.productid: widget.productid,
-                                DatabaseHelper.optionvalueid: widget.optionvalueid
-                              });
-                              i > 0
-                                  ? Fluttertoast.showToast(
-                                  msg: 'Item Deleted Successfully',
-                                  toastLength: Toast.LENGTH_SHORT)
-                                  : Fluttertoast.showToast(
-                                  msg: 'Something Went Wrong',
-                                  toastLength: Toast.LENGTH_SHORT);
-                              Navigator.pop(context);
-                            }),
-                            bgColors: grocery_color_red,
-                          ),
-                        )
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          text(grocery_lbl_remove_an_item,
+                              fontFamily: fontMedium, fontSize: textSizeNormal),
+                          text(grocery_lbl_remove_confirmation,
+                              textColor: grocery_textColorSecondary,
+                              isLongText: true),
+                        ],
+                      ),
                     )
                   ],
                 ),
-              )),
+                SizedBox(height: spacing_large),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: text("$grocery_lbl_no",
+                            textColor: grocery_textColorSecondary,
+                            textAllCaps: true,
+                            fontFamily: fontMedium),
+                      ),
+                    ),
+                    SizedBox(width: spacing_standard_new),
+                    Container(
+                      width: width * 0.35,
+                      child: groceryButton(
+                        textContent: grocery_lbl_remove,
+                        onPressed: (() async {
+                          int i = await DatabaseHelper.instance.deleteCartItem({
+                            DatabaseHelper.productid: widget.productid,
+                            DatabaseHelper.optionvalueid: widget.optionvalueid
+                          });
+                          i > 0
+                              ? Fluttertoast.showToast(
+                                  msg: 'Item Deleted Successfully',
+                                  toastLength: Toast.LENGTH_SHORT)
+                              : Fluttertoast.showToast(
+                                  msg: 'Something Went Wrong',
+                                  toastLength: Toast.LENGTH_SHORT);
+                          Navigator.pop(context);
+                        }),
+                        bgColors: grocery_color_red,
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          )),
         );
       },
     ).whenComplete(() {
       CartContainer.of(context).updateCartPricing(widget.productid, "0");
     });
   }
+
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-
 
     return Container(
       decoration: boxDecoration(
@@ -210,7 +208,7 @@ class _CartItemState extends State<CartItem> {
                         mRemoveItem();
                       },
                       icon:
-                      Icon(Icons.delete_outline, color: grocery_icon_color),
+                          Icon(Icons.delete_outline, color: grocery_icon_color),
                     )
                   ],
                 ),
@@ -233,13 +231,13 @@ class _CartItemState extends State<CartItem> {
                             i = await DatabaseHelper.instance.updateCartitem({
                               DatabaseHelper.productid: widget.productid,
                               DatabaseHelper.optionvalueid:
-                              widget.optionvalueid,
+                                  widget.optionvalueid,
                               DatabaseHelper.optionlable: widget.optionlable,
                               DatabaseHelper.price: widget.price,
                               DatabaseHelper.optionid: widget.optionid,
                               DatabaseHelper.optionname: widget.optionname,
                               DatabaseHelper.productpriceincreased:
-                              widget.productpriceincreased,
+                                  widget.productpriceincreased,
                               DatabaseHelper.quantity: temp.toString()
                             });
                             if (i > 0) {
@@ -263,12 +261,12 @@ class _CartItemState extends State<CartItem> {
                             i = await DatabaseHelper.instance.updateCartitem({
                               DatabaseHelper.productid: widget.productid,
                               DatabaseHelper.optionvalueid:
-                              widget.optionvalueid,
+                                  widget.optionvalueid,
                               DatabaseHelper.optionlable: widget.optionlable,
                               DatabaseHelper.optionid: widget.optionid,
                               DatabaseHelper.optionname: widget.optionname,
                               DatabaseHelper.productpriceincreased:
-                              widget.productpriceincreased,
+                                  widget.productpriceincreased,
                               DatabaseHelper.price: widget.price,
                               DatabaseHelper.quantity: temp.toString()
                             });

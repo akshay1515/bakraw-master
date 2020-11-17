@@ -49,20 +49,23 @@ class _RelatedProductState extends State<RelatedProduct> {
                     ),
                   ),
                   Container(
-                      height: MediaQuery.of(context).size.height * 0.25,
-                      child: ListView.builder(
-                        itemCount: flashsale[0].data.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (ctx, index) {
-                          return FlashsaleItem(
-                            id: flashsale[0].data[index].productId,
-                            image: flashsale[0].data[index].images[0],
-                            name: flashsale[0].data[index].name,
-                            price: flashsale[0].data[index].price,
-                            weight: flashsale[0].data[index].qty,
-                          );
-                        },
-                      )),
+                    height: 200,
+                    child: Container(
+                        height: MediaQuery.of(context).size.height * 0.25,
+                        child: ListView.builder(
+                          itemCount: flashsale[0].data.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (ctx, index) {
+                            return FlashsaleItem(
+                              id: flashsale[0].data[index].productId,
+                              image: flashsale[0].data[index].images[0],
+                              name: flashsale[0].data[index].name,
+                              price: flashsale[0].data[index].price,
+                              weight: flashsale[0].data[index].qty,
+                            );
+                          },
+                        )),
+                  ),
                 ],
               )
         : Container();

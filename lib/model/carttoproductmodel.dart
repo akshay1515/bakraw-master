@@ -13,7 +13,7 @@ class CartProductModel {
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    if (cartModel.id != null) {
+    if (cartModel.id != null || cartModel.optionvalueId != null) {
       map['id'] = cartModel.id;
     }
     map['cartModel'] = cartModel;

@@ -65,52 +65,56 @@ class _HomeState extends State<Home> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : Scaffold(
-            body: ListView(
-              children: [
-                Container(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height / 3.3,
-                    child: BannerSlider()),
-                Container(
-                  margin: EdgeInsets.only(
-                      top: spacing_standard_new,
-                      left: spacing_standard_new,
-                      right: spacing_standard_new,
-                      bottom: spacing_standard),
-                  child: Text(
-                    'Category',
-                    style: TextStyle(
-                        fontFamily: fontMedium,
-                        fontSize: textSizeLargeMedium,
-                        color: Colors.grey.shade700),
+        : SafeArea(
+            child: Scaffold(
+              body: ListView(
+                children: [
+                  Container(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height / 3.3,
+                      child: BannerSlider()),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: spacing_standard_new,
+                        left: spacing_standard_new,
+                        right: spacing_standard_new,
+                        bottom: spacing_standard),
+                    child: Text(
+                      'Category',
+                      style: TextStyle(
+                          fontFamily: fontMedium,
+                          fontSize: textSizeLargeMedium,
+                          color: Colors.grey.shade700),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: HorizontalScrollview(),
-                ),
-                flashsale > 0
-                    ? Container(
-                        margin: EdgeInsets.only(
-                            top: spacing_standard_new,
-                            left: spacing_standard_new,
-                            right: spacing_standard_new,
-                            bottom: spacing_standard),
-                        child: Text(
-                          'Flash Sale',
-                          style: TextStyle(
-                              fontFamily: fontMedium,
-                              fontSize: textSizeLargeMedium,
-                              color: Colors.grey.shade700),
-                        ))
-                    : Container(),
-                flashsale > 0
-                    ? Container(height: 200, child: FlashSale())
-                    : Container(),
-                email != null ? Container(child: PreviousOrder()) : Container()
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: HorizontalScrollview(),
+                  ),
+                  flashsale > 0
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              top: spacing_standard_new,
+                              left: spacing_standard_new,
+                              right: spacing_standard_new,
+                              bottom: spacing_standard),
+                          child: Text(
+                            'Flash Sale',
+                            style: TextStyle(
+                                fontFamily: fontMedium,
+                                fontSize: textSizeLargeMedium,
+                                color: Colors.grey.shade700),
+                          ))
+                      : Container(),
+                  flashsale > 0
+                      ? Container(height: 200, child: FlashSale())
+                      : Container(),
+                  email != null
+                      ? Container(child: PreviousOrder())
+                      : Container()
+                ],
+              ),
             ),
           );
   }
