@@ -125,161 +125,170 @@ class _UserAddressManagerState extends State<UserAddressManager> {
       });
     }
 
-    return email.isEmptyOrNull
-        ? DefaultUserProfile(
-            istab: false,
-          )
-        : Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: grocery_color_white,
-                  ),
-                  onPressed: () {
-                    if (argument != null) {
-                      Navigator.of(context).pop();
-                    } else {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          Dashboard.Tag, (route) => false);
-                    }
-                  }),
-              title: Text(
-                'User Addresss',
-                style: TextStyle(color: grocery_color_white),
-              ),
-              actions: <Widget>[
-                IconButton(
+    return WillPopScope(
+      child: email.isEmptyOrNull
+          ? DefaultUserProfile(
+              istab: false,
+            )
+          : Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
                     icon: Icon(
-                      Icons.add,
+                      Icons.arrow_back,
                       color: grocery_color_white,
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushNamed(EditUserAddress.tag);
-                    })
-              ],
-            ),
-            body: isloading
-                ? Container(
-                    color: grocery_color_white,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: EdgeInsets.only(top: spacing_middle),
-                    scrollDirection: Axis.vertical,
-                    itemCount: list.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: spacing_standard_new),
-                        child: Slidable(
-                          actionPane: SlidableDrawerActionPane(),
-                          actions: <Widget>[
-                            IconSlideAction(
-                              caption: 'Edit',
-                              color: Colors.green,
-                              icon: Icons.edit,
-                              onTap: () {
-                                editAddress(list[index]);
-                              },
-                            )
-                          ],
-                          child: InkWell(
-                            onTap: () async {
-                              PincodeModel model = await Provider.of<
-                                      PincodeProvider>(context, listen: false)
-                                  .checkpincodestatus(list[index].shippingZip);
-                              if (model.status == 200) {
-                                if (!model
-                                    .data.pincodeDeliveryStatus.allowDelivery) {
-                                  return showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            title: Text('Sorry......'),
-                                            content: Text(
-                                                'We aren\'t avaliable at your location yet'),
-                                            actions: <Widget>[
-                                              FlatButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text('Ok'))
-                                            ],
-                                          ));
-                                } else if (argument != null ||
-                                    argument['isnav'] == true) {
-                                  CheckPincode(model: list[index])
-                                      .launch(context);
+                      if (argument != null) {
+                        Navigator.of(context).pop();
+                      } else {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            Dashboard.Tag, (route) => false);
+                      }
+                    }),
+                title: Text(
+                  'User Addresss',
+                  style: TextStyle(color: grocery_color_white),
+                ),
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: grocery_color_white,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(EditUserAddress.tag);
+                      })
+                ],
+              ),
+              body: isloading
+                  ? Container(
+                      color: grocery_color_white,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: EdgeInsets.only(top: spacing_middle),
+                      scrollDirection: Axis.vertical,
+                      itemCount: list.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: spacing_standard_new),
+                          child: Slidable(
+                            actionPane: SlidableDrawerActionPane(),
+                            actions: <Widget>[
+                              IconSlideAction(
+                                caption: 'Edit',
+                                color: Colors.green,
+                                icon: Icons.edit,
+                                onTap: () {
+                                  editAddress(list[index]);
+                                },
+                              )
+                            ],
+                            child: InkWell(
+                              onTap: () async {
+                                PincodeModel model =
+                                    await Provider.of<PincodeProvider>(context,
+                                            listen: false)
+                                        .checkpincodestatus(
+                                            list[index].shippingZip);
+                                if (model.status == 200) {
+                                  if (!model.data.pincodeDeliveryStatus
+                                      .allowDelivery) {
+                                    return showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: Text('Sorry......'),
+                                              content: Text(
+                                                  'We aren\'t avaliable at your location yet'),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text('Ok'))
+                                              ],
+                                            ));
+                                  } else if (argument != null ||
+                                      argument['isnav'] == true) {
+                                    CheckPincode(model: list[index])
+                                        .launch(context);
+                                  }
                                 }
-                              }
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(spacing_standard_new),
-                              margin: EdgeInsets.only(
-                                right: spacing_standard_new,
-                                left: spacing_standard_new,
-                              ),
-                              color: grocery_app_background,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Radio(
-                                      value: list[index].id,
-                                      /*index*/
-                                      groupValue: selectedValue,
-                                      onChanged: (value) {
-                                        SelectedRadio(addressData(id: value));
-                                      },
-                                      activeColor: grocery_colorPrimary),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        text(
-                                            list[index].userFirstname +
-                                                " " +
-                                                list[index].userLastname,
-                                            textColor: textPrimaryColor,
-                                            fontFamily: fontMedium,
-                                            fontSize: textSizeLargeMedium),
-                                        text(
-                                            list[index].shippingAddress1 +
-                                                '\n' +
-                                                list[index].shippingAddress2,
-                                            textColor: textPrimaryColor,
-                                            fontSize: textSizeMedium),
-                                        text(
-                                            list[index].shippingCity +
-                                                "," +
-                                                list[index].shippingState,
-                                            textColor: textPrimaryColor,
-                                            fontSize: textSizeMedium),
-                                        text(
-                                            list[index].shippingCountry +
-                                                "," +
-                                                list[index].shippingZip,
-                                            textColor: textPrimaryColor,
-                                            fontSize: textSizeMedium),
-                                        SizedBox(
-                                          height: spacing_standard_new,
-                                        ),
-                                        text(list[index].userPhone,
-                                            textColor: textPrimaryColor,
-                                            fontSize: textSizeMedium),
-                                      ],
-                                    ),
-                                  )
-                                ],
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(spacing_standard_new),
+                                margin: EdgeInsets.only(
+                                  right: spacing_standard_new,
+                                  left: spacing_standard_new,
+                                ),
+                                color: grocery_app_background,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Radio(
+                                        value: list[index].id,
+                                        /*index*/
+                                        groupValue: selectedValue,
+                                        onChanged: (value) {
+                                          SelectedRadio(addressData(id: value));
+                                        },
+                                        activeColor: grocery_colorPrimary),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          text(
+                                              list[index].userFirstname +
+                                                  " " +
+                                                  list[index].userLastname,
+                                              textColor: textPrimaryColor,
+                                              fontFamily: fontMedium,
+                                              fontSize: textSizeLargeMedium),
+                                          text(
+                                              list[index].shippingAddress1 +
+                                                  '\n' +
+                                                  list[index].shippingAddress2,
+                                              textColor: textPrimaryColor,
+                                              fontSize: textSizeMedium),
+                                          text(
+                                              list[index].shippingCity +
+                                                  "," +
+                                                  list[index].shippingState,
+                                              textColor: textPrimaryColor,
+                                              fontSize: textSizeMedium),
+                                          text(
+                                              list[index].shippingCountry +
+                                                  "," +
+                                                  list[index].shippingZip,
+                                              textColor: textPrimaryColor,
+                                              fontSize: textSizeMedium),
+                                          SizedBox(
+                                            height: spacing_standard_new,
+                                          ),
+                                          text(list[index].userPhone,
+                                              textColor: textPrimaryColor,
+                                              fontSize: textSizeMedium),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
-          );
+                        );
+                      }),
+            ),
+      onWillPop: () {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(Dashboard.Tag, (route) => false);
+      },
+    );
   }
 }
