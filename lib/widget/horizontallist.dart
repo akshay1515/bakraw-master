@@ -78,16 +78,7 @@ class Category extends StatelessWidget {
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.35,
                       height: MediaQuery.of(context).size.height * 0.15,
-                      decoration: BoxDecoration(
-                          /*borderRadius: BorderRadius.circular(10),
-                          boxShadow: [BoxShadow(color: Colors.grey)],
-                          border: Border.all(color: grocery_colorPrimary),
-                          color: grocery_colorPrimary_light*/
-                          ),
-                      /* borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey),
-                        color: Colors.grey.shade100.withOpacity(0.5),*/
-
+                      decoration: BoxDecoration(),
                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -95,24 +86,31 @@ class Category extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.zero,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              height: MediaQuery.of(context).size.height * 0.15,
-                              decoration: BoxDecoration(
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                padding: EdgeInsets.zero,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.15,
+                                decoration: BoxDecoration(
 
-                                  /*image: DecorationImage(
-                                fit: BoxFit.fitWidth,
-                                image: NetworkImage(imageLocation,),),*/
+                                    /*image: DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  image: NetworkImage(imageLocation,),),*/
+                                    ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: CachedNetworkImage(
+                                    imageUrl: imageLocation.isNotEmpty
+                                        ? imageLocation
+                                        : defaultimage,
+                                    fit: BoxFit.contain,
+                                    placeholder: placeholderWidgetFn(),
+                                    errorWidget: (context, url, error) =>
+                                        new Icon(Icons.error),
                                   ),
-                              child: CachedNetworkImage(
-                                imageUrl: imageLocation.isNotEmpty
-                                    ? imageLocation
-                                    : defaultimage,
-                                fit: BoxFit.contain,
-                                placeholder: placeholderWidgetFn(),
-                                errorWidget: (context, url, error) =>
-                                    new Icon(Icons.error),
+                                ),
                               ),
                             ),
                             Container(

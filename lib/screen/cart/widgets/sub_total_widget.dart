@@ -6,28 +6,26 @@ import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:flutter/material.dart';
 
 class SubTotalWidget extends StatefulWidget {
-  SubTotalWidgetState createState()=>SubTotalWidgetState();
+  SubTotalWidgetState createState() => SubTotalWidgetState();
 }
 
-class SubTotalWidgetState extends State<SubTotalWidget>{
-
+class SubTotalWidgetState extends State<SubTotalWidget> {
   CartContainerState state;
-  double subTotal=0.0;
+  double subTotal = 0.0;
 
   @override
-  void didChangeDependencies(){
+  void didChangeDependencies() {
     super.didChangeDependencies();
-    state=CartContainer.of(context);
+    state = CartContainer.of(context);
   }
-  Widget build(BuildContext context){
-    state=CartContainer.of(context);
+
+  Widget build(BuildContext context) {
+    state = CartContainer.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        text(
-            '${grocery_lbl_subtotal}${' '}${'(${state.count} items)'}'),
-        text('₹ ${state.subtotal.toString()}',
-            fontFamily: fontMedium),
+        text('${grocery_lbl_subtotal}${' '}${'(${state.count} items)'}'),
+        text('₹ ${state.subtotal.toString()}', fontFamily: fontMedium),
       ],
     );
   }

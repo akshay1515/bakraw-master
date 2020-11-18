@@ -88,99 +88,101 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            body: Container(
-              margin: EdgeInsets.symmetric(vertical: 10),
-              child: Card(
-                margin: EdgeInsets.all(16),
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
-                child: InkWell(
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                  onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 3),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Text(model.status,
-                                style: boldTextStyle(
-                                  size: 23,
+            body: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Card(
+                  margin: EdgeInsets.all(16),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16))),
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    onTap: () {},
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 10),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(model.status,
+                                  style: boldTextStyle(
+                                    size: 23,
+                                  )),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Text('Order Id: ${model.orderId}',
+                                style: secondaryTextStyle(
+                                  size: 16,
                                 )),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Text('Order Id: ${model.orderId}',
-                              style: secondaryTextStyle(
-                                size: 16,
-                              )),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Text(
-                              'Amount Paid: ₹ ${double.parse(model.subTotal).toStringAsFixed(2)}',
-                              style: secondaryTextStyle(
-                                size: 16,
-                              )),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Text('Payment Method: ${model.paymentMethod}',
-                              style: secondaryTextStyle(
-                                size: 16,
-                              )),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Text('Order Date: ${model.createdAt}',
-                              style: secondaryTextStyle(
-                                size: 16,
-                              )),
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Text('Delivered At:',
-                              style: secondaryTextStyle(
-                                size: 16,
-                              )),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 16),
-                          child: Text(
-                              'Name : ${model.address.shippingFirstName + ' ' + model.address.shippingLastName}'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25, right: 16),
-                          child: Text('${model.address.shippingAddress1}'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25, right: 16),
-                          child: Text(
-                              '${model.address.shippingAddress2 + ' \,'}${model.address.shippingCity}'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25, right: 16),
-                          child: Text(
-                              '${model.address.shippingState + ' \,'}${model.address.shippingCountry + ' - ' + model.address.shippingZip}'),
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16, right: 16),
-                          child: Text('Products Ordered',
-                              style: secondaryTextStyle(
-                                size: 20,
-                              )),
-                        ),
-                        Container(
-                          child: ListView.builder(
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Text(
+                                'Amount Paid: ₹ ${double.parse(model.subTotal).toStringAsFixed(2)}',
+                                style: secondaryTextStyle(
+                                  size: 16,
+                                )),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child:
+                                Text('Payment Method: ${model.paymentMethod}',
+                                    style: secondaryTextStyle(
+                                      size: 16,
+                                    )),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Text('Order Date: ${model.createdAt}',
+                                style: secondaryTextStyle(
+                                  size: 16,
+                                )),
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Text('Delivered At:',
+                                style: secondaryTextStyle(
+                                  size: 16,
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25, right: 16),
+                            child: Text(
+                              'Name : ${model.address.shippingFirstName + ' ' + model.address.shippingLastName}',
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25, right: 16),
+                            child: Text('${model.address.shippingAddress1}'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25, right: 16),
+                            child: Text(
+                                '${model.address.shippingAddress2 + ' \,'}${model.address.shippingCity}'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25, right: 16),
+                            child: Text(
+                                '${model.address.shippingState + ' \,'}${model.address.shippingCountry + ' - ' + model.address.shippingZip}'),
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Text('Products Ordered',
+                                style: secondaryTextStyle(
+                                  size: 20,
+                                )),
+                          ),
+                          ListView.builder(
                               itemCount: productslist.length,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
@@ -202,7 +204,7 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                         child: CachedNetworkImage(
                                           imageUrl:
                                               productslist[index].images[range],
-                                          fit: BoxFit.contain,
+                                          fit: BoxFit.fill,
                                           placeholder: placeholderWidgetFn(),
                                           errorWidget: (context, url, error) =>
                                               new Icon(Icons.error),
@@ -214,16 +216,20 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: <Widget>[
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 10),
-                                            child: Text(
-                                              productslist[index].name,
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
+                                          Flexible(
+                                            child: Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 10,
+                                                  bottom: 5,
+                                                  right: 10),
+                                              child: Text(
+                                                productslist[index].name,
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           Padding(
@@ -237,7 +243,6 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                               textAlign: TextAlign.start,
                                             ),
                                           ),
-                                          Flexible(child: Container()),
                                           Padding(
                                             padding:
                                                 const EdgeInsets.only(left: 10),
@@ -276,9 +281,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                     ],
                                   ),
                                 );
-                              }),
-                        )
-                      ],
+                              })
+                        ],
+                      ),
                     ),
                   ),
                 ),

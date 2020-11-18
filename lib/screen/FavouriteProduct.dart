@@ -77,31 +77,35 @@ class _UserFavouriteListState extends State<UserFavouriteList> {
                 istab: true,
               )
             : Container(
-                margin: EdgeInsets.only(
-                    top: spacing_middle, right: spacing_standard_new),
-                child: mFavouriteList.isNotEmpty
-                    ? GridView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: 0.8),
-                        itemCount: mFavouriteList.length,
-                        itemBuilder: (context, index) {
-                          return StoreDeal(mFavouriteList[index], index);
-                        },
-                      )
-                    : Container(
-                        child: Center(
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
-                            fit: BoxFit.contain,
-                            placeholder: placeholderWidgetFn(),
-                            errorWidget: (context, url, error) =>
-                                new Icon(Icons.error),
+                height: 200,
+                child: Container(
+                  margin: EdgeInsets.only(
+                      top: spacing_middle, right: spacing_standard_new),
+                  child: mFavouriteList.isNotEmpty
+                      ? GridView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2, childAspectRatio: 0.8),
+                          itemCount: mFavouriteList.length,
+                          itemBuilder: (context, index) {
+                            return StoreDeal(mFavouriteList[index], index);
+                          },
+                        )
+                      : Container(
+                          child: Center(
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
+                              fit: BoxFit.contain,
+                              placeholder: placeholderWidgetFn(),
+                              errorWidget: (context, url, error) =>
+                                  new Icon(Icons.error),
+                            ),
                           ),
                         ),
-                      ),
+                ),
               );
   }
 }

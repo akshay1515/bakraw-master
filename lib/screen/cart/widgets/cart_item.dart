@@ -1,6 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/inherited/cart/cart_container.dart';
+import 'package:bakraw/inherited/cart/cart_container_state.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
@@ -40,9 +41,10 @@ class CartItem extends StatefulWidget {
 }
 
 class _CartItemState extends State<CartItem> {
+  CartContainerState state;
   void updateItemCount(BuildContext context) {
     CartContainer.of(context)
-        .updateCartPricing(widget.productid, widget.quantity);
+        .updateCartPricing(widget.optionvalueid, widget.quantity);
   }
 
   var width;
@@ -138,7 +140,8 @@ class _CartItemState extends State<CartItem> {
         );
       },
     ).whenComplete(() {
-      CartContainer.of(context).updateCartPricing(widget.productid, "0");
+      --CartContainer.of(context).count;
+      CartContainer.of(context).updateCartPricing(widget.optionvalueid, "0");
     });
   }
 

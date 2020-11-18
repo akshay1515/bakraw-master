@@ -69,11 +69,7 @@ class _HomeState extends State<Home> {
             child: Scaffold(
               body: ListView(
                 children: [
-                  Container(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height / 3.3,
-                      child: BannerSlider()),
+                  AspectRatio(aspectRatio: 3 / 2, child: BannerSlider()),
                   Container(
                     margin: EdgeInsets.only(
                         top: spacing_standard_new,

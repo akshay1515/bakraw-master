@@ -122,12 +122,15 @@ class FlashsaleItem extends StatelessWidget {
             SizedBox(height: 4),
             Align(
               alignment: Alignment.center,
-              child: CachedNetworkImage(
-                placeholder: placeholderWidgetFn(),
-                imageUrl: image,
-                fit: BoxFit.fill,
-                height: width * 0.25,
-                width: width * 0.27,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImage(
+                  placeholder: placeholderWidgetFn(),
+                  imageUrl: image,
+                  fit: BoxFit.fill,
+                  height: width * 0.25,
+                  width: width * 0.27,
+                ),
               ),
             ),
             SizedBox(height: 4),

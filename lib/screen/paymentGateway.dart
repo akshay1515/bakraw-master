@@ -352,7 +352,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
     print('amount ${widget.amount}');
     double amount = double.parse(widget.amount.toStringAsFixed(2));
     if (isdelivery) {
-      taxamount = num.parse((amount * 100).toString());
+      taxamount = num.parse((amount * 100).toStringAsFixed(2));
       openCheckout();
       setState(() {
         isdelivery = false;

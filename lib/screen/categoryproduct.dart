@@ -67,24 +67,27 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
           : SafeArea(
               child: mStoreDealList.isNotEmpty
                   ? Container(
-                      margin: EdgeInsets.only(
-                          left: spacing_middle,
-                          right: spacing_middle,
-                          top: spacing_middle),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.70),
-                        itemCount: mStoreDealList.length,
-                        itemBuilder: (context, index) {
-                          //print(mStoreDealList[index].name);
-                          return StoreDeal(mStoreDealList[index], index);
-                        },
-                      ))
+                      child: Container(
+                          margin: EdgeInsets.only(
+                              left: spacing_middle,
+                              right: spacing_middle,
+                              top: spacing_middle),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    childAspectRatio: 0.70),
+                            itemCount: mStoreDealList.length,
+                            itemBuilder: (context, index) {
+                              //print(mStoreDealList[index].name);
+                              return StoreDeal(mStoreDealList[index], index);
+                            },
+                          )),
+                    )
                   : Container(
                       child: Center(
                         child: CachedNetworkImage(
@@ -164,12 +167,15 @@ class _StoreDealState extends State<StoreDeal> {
                       SizedBox(
                         height: 2,
                       ),
-                      CachedNetworkImage(
-                        placeholder: placeholderWidgetFn(),
-                        imageUrl: widget.model.images[0],
-                        fit: BoxFit.fill,
-                        height: MediaQuery.of(context).size.width * 0.40,
-                        width: MediaQuery.of(context).size.width,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          placeholder: placeholderWidgetFn(),
+                          imageUrl: widget.model.images[0],
+                          fit: BoxFit.fill,
+                          height: MediaQuery.of(context).size.width * 0.40,
+                          width: MediaQuery.of(context).size.width,
+                        ),
                       ),
                       SizedBox(
                         height: 4,
@@ -225,12 +231,15 @@ class _StoreDealState extends State<StoreDeal> {
                     SizedBox(
                       height: 2,
                     ),
-                    CachedNetworkImage(
-                      placeholder: placeholderWidgetFn(),
-                      imageUrl: widget.model.images[0],
-                      fit: BoxFit.fill,
-                      height: MediaQuery.of(context).size.width * 0.40,
-                      width: MediaQuery.of(context).size.width,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        placeholder: placeholderWidgetFn(),
+                        imageUrl: widget.model.images[0],
+                        fit: BoxFit.fill,
+                        height: MediaQuery.of(context).size.width * 0.40,
+                        width: MediaQuery.of(context).size.width,
+                      ),
                     ),
                     SizedBox(
                       height: 4,
