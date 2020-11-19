@@ -62,21 +62,25 @@ class _BannerSliderState extends State<BannerSlider> {
                                 'names': e.name
                               });
                         },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  MediaQuery.of(context).size.width / 100,
-                              vertical: 5),
-                          height: MediaQuery.of(context).size.height / 4,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: CachedNetworkImage(
-                              imageUrl: e.image,
-                              width: double.infinity,
-                              height: MediaQuery.of(context).size.height / 4,
-                              fit: BoxFit.fill,
-                              placeholder: placeholderWidgetFn(),
+                        child: AspectRatio(
+                          aspectRatio: MediaQuery.of(context).orientation ==
+                                  Orientation.portrait
+                              ? 4 / 2
+                              : 2 / 4,
+                          child: Container(
+                            //width: MediaQuery.of(context).size.width*0.8,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            //height: MediaQuery.of(context).size.height*0.2,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: CachedNetworkImage(
+                                imageUrl: e.image,
+                                width: double.infinity,
+                                height: MediaQuery.of(context).size.height / 4,
+                                fit: BoxFit.fill,
+                                placeholder: placeholderWidgetFn(),
+                              ),
                             ),
                           ),
                         ),

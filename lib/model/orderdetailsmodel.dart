@@ -42,6 +42,8 @@ class Data {
   Coupon coupon;
   Address address;
   List<Products> products;
+  List<TaxDetails> taxDetails;
+  TransactionDetails transactionDetails;
 
   Data(
       {this.orderId,
@@ -62,7 +64,9 @@ class Data {
       this.createdAt,
       this.coupon,
       this.address,
-      this.products});
+      this.products,
+      this.taxDetails,
+      this.transactionDetails});
 
   Data.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
@@ -91,6 +95,15 @@ class Data {
         products.add(new Products.fromJson(v));
       });
     }
+    if (json['tax_details'] != null) {
+      taxDetails = new List<TaxDetails>();
+      json['tax_details'].forEach((v) {
+        taxDetails.add(new TaxDetails.fromJson(v));
+      });
+    }
+    transactionDetails = json['transaction_details'] != null
+        ? new TransactionDetails.fromJson(json['transaction_details'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -119,6 +132,12 @@ class Data {
     }
     if (this.products != null) {
       data['products'] = this.products.map((v) => v.toJson()).toList();
+    }
+    if (this.taxDetails != null) {
+      data['tax_details'] = this.taxDetails.map((v) => v.toJson()).toList();
+    }
+    if (this.transactionDetails != null) {
+      data['transaction_details'] = this.transactionDetails.toJson();
     }
     return data;
   }
@@ -296,6 +315,58 @@ class ProductOptions {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['value'] = this.value;
+    return data;
+  }
+}
+
+class TaxDetails {
+  String taxRateId;
+  String amount;
+
+  TaxDetails({this.taxRateId, this.amount});
+
+  TaxDetails.fromJson(Map<String, dynamic> json) {
+    taxRateId = json['tax_rate_id'];
+    amount = json['amount'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['tax_rate_id'] = this.taxRateId;
+    data['amount'] = this.amount;
+    return data;
+  }
+}
+
+class TransactionDetails {
+  String transactionId;
+  String paymentMethod;
+  String deletedAt;
+  String createdAt;
+  String updatedAt;
+
+  TransactionDetails(
+      {this.transactionId,
+      this.paymentMethod,
+      this.deletedAt,
+      this.createdAt,
+      this.updatedAt});
+
+  TransactionDetails.fromJson(Map<String, dynamic> json) {
+    transactionId = json['transaction_id'];
+    paymentMethod = json['payment_method'];
+    deletedAt = json['deleted_at'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['transaction_id'] = this.transactionId;
+    data['payment_method'] = this.paymentMethod;
+    data['deleted_at'] = this.deletedAt;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
     return data;
   }
 }

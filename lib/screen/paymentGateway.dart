@@ -286,7 +286,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
     mapData["shipping_state"] = widget.model.billingState;
     mapData["shipping_zip"] = widget.model.billingZip;
     mapData["shipping_country"] = widget.model.shippingCountry;
-    mapData["sub_total"] = widget.amount.toString();
+    mapData["sub_total"] =
+        (widget.amount - double.parse(widget.taxamount)).toStringAsFixed(2);
     mapData["shipping_method"] = widget.shippinglable;
     mapData["shipping_cost"] = widget.Shippingcost;
     mapData["coupon_id"] = "";

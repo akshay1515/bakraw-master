@@ -58,6 +58,7 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
             address: value.data.address,
             coupon: value.data.coupon,
             customerEmail: value.data.customerEmail,
+            taxDetails: value.data.taxDetails,
             products: value.data.products);
         value.data.products.forEach((element) {
           productslist.add(Products(
@@ -126,7 +127,23 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                           Padding(
                             padding: EdgeInsets.only(left: 16, right: 16),
                             child: Text(
-                                'Amount Paid: ₹ ${double.parse(model.subTotal).toStringAsFixed(2)}',
+                                'Order Total: ₹ ${double.parse(model.subTotal).toStringAsFixed(2)}',
+                                style: secondaryTextStyle(
+                                  size: 16,
+                                )),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Text(
+                                'Tax Amount: ₹ ${double.parse(model.taxDetails[0].amount).toStringAsFixed(2)}',
+                                style: secondaryTextStyle(
+                                  size: 16,
+                                )),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Text(
+                                'Amount Paid: ₹ ${double.parse(model.total).toStringAsFixed(2)}',
                                 style: secondaryTextStyle(
                                   size: 16,
                                 )),
