@@ -19,7 +19,7 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
     final categorydata = category.items;
 
     return Container(
-      height: MediaQuery.of(context).size.height / 4.75,
+      height: MediaQuery.of(context).size.height / 4,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: categorydata.length,
@@ -55,85 +55,71 @@ class Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Padding(
-        padding: const EdgeInsets.all(2),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              shadowColor: Colors.grey.shade100,
-              elevation: 3,
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          shadowColor: Colors.grey.shade100,
+          elevation: 3,
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).pushNamed(GrocerySubCategoryList.tag,
+                  arguments: {'catid': categoryId, 'name': imageCaption});
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  /*borderRadius: BorderRadius.circular(10),
+                  boxShadow: [BoxShadow(color: Colors.grey)],
+                  border: Border.all(color: grocery_colorPrimary),
+                  color: grocery_colorPrimary_light*/
+                  ),
+              /* borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey),
+                color: Colors.grey.shade100.withOpacity(0.5),*/
+
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(GrocerySubCategoryList.tag,
-                        arguments: {'catid': categoryId, 'name': imageCaption});
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.35,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.zero,
+                      width: MediaQuery.of(context).size.width * 0.30,
                       height: MediaQuery.of(context).size.height * 0.15,
                       decoration: BoxDecoration(
-                          /*borderRadius: BorderRadius.circular(10),
-                          boxShadow: [BoxShadow(color: Colors.grey)],
-                          border: Border.all(color: grocery_colorPrimary),
-                          color: grocery_colorPrimary_light*/
+
+                          /*image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: NetworkImage(imageLocation,),),*/
                           ),
-                      /* borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey),
-                        color: Colors.grey.shade100.withOpacity(0.5),*/
-
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.zero,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              height: MediaQuery.of(context).size.height * 0.15,
-                              decoration: BoxDecoration(
-
-                                  /*image: DecorationImage(
-                                fit: BoxFit.fitWidth,
-                                image: NetworkImage(imageLocation,),),*/
-                                  ),
-                              child: CachedNetworkImage(
-                                imageUrl: imageLocation.isNotEmpty
-                                    ? imageLocation
-                                    : defaultimage,
-                                fit: BoxFit.contain,
-                                placeholder: placeholderWidgetFn(),
-                                errorWidget: (context, url, error) =>
-                                    new Icon(Icons.error),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(bottom: 3),
-                              child: Text(
-                                imageCaption,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: Colors.black),
-                              ),
-                            ),
-                          ],
-                        ),
+                      child: CachedNetworkImage(
+                        imageUrl: imageLocation.isNotEmpty
+                            ? imageLocation
+                            : defaultimage,
+                        fit: BoxFit.contain,
+                        placeholder: placeholderWidgetFn(),
+                        errorWidget: (context, url, error) =>
+                            new Icon(Icons.error),
                       ),
                     ),
-                  ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3),
+                      child: Text(
+                        imageCaption,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            color: Colors.black),
+                      ),
+                    ),
+                  ],
                 ),
-              )),
-        ),
-      ),
+              ),
+            ),
+          )),
     );
   }
 }

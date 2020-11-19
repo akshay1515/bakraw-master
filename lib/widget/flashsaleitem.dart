@@ -1,4 +1,5 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
+import 'package:bakraw/model/PreviousOrderModel.dart';
 import 'package:bakraw/provider/flashsaleprovider.dart';
 import 'package:bakraw/screen/productdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
@@ -14,11 +15,22 @@ class FlashSale extends StatefulWidget {
 
 class _FlashSaleState extends State<FlashSale> {
   var isLoading = true;
+  var flashsale;
+  PreviousOrderProduct _previousOrderProduct;
+  void initState(){
+    super.initState();
+    getFlashSale();
+  }
+  Future getFlashSale() async{
+    final flash = Provider.of<FlashSaleProvider>(context);
+    setState(() {
+      flashsale= flash.items;
+      isLoading=false;
+    });
 
+  }
   @override
   Widget build(BuildContext context) {
-    final flash = Provider.of<FlashSaleProvider>(context);
-    final flashsale = flash.items;
 
     return isLoading
         ? Center(
@@ -27,19 +39,19 @@ class _FlashSaleState extends State<FlashSale> {
         : Container(
             height: MediaQuery.of(context).size.height * 0.25,
             child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: flashsale[0].data[0].products.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (ctx, index) {
-                return FlashsaleItem(
-                  id: flashsale[0].data[0].products[index].productId,
-                  image: flashsale[0].data[0].products[index].images[0],
-                  name: flashsale[0].data[0].products[index].name,
-                  price: flashsale[0].data[0].products[index].price,
-                  weight: flashsale[0].data[0].products[index].qty,
-                );
-              },
-            ),
+                  shrinkWrap: true,
+                  itemCount: flashsale[0].data[0].products.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (ctx, index) {
+                    return FlashsaleItem(
+                      id: flashsale[0].data[0].products[index].productId,
+                      image: flashsale[0].data[0].products[index].images[0],
+                      name: flashsale[0].data[0].products[index].name,
+                      price: flashsale[0].data[0].products[index].price,
+                      weight: flashsale[0].data[0].products[index].qty,
+                    );
+                  },
+                )
           );
   }
 

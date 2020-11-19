@@ -25,6 +25,11 @@ class _HomeState extends State<Home> {
   var flashsale;
   String userid = '', email = 'sample', apikey = '';
 
+  void initState(){
+    super.initState();
+    getUserInfo();
+    getFlashSaleInfo();
+  }
   Future<String> getUserInfo() async {
     SharedPreferences prefs;
     prefs = await SharedPreferences.getInstance();
@@ -38,9 +43,7 @@ class _HomeState extends State<Home> {
     return 'something';
   }
 
-  @override
-  Widget build(BuildContext context) {
-    getUserInfo();
+  getFlashSaleInfo() async{
     if (isLoading) {
       Provider.of<FlashSaleProvider>(context, listen: false)
           .getFlashSaleProduct()
@@ -61,6 +64,11 @@ class _HomeState extends State<Home> {
         }
       });
     }
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return isLoading
         ? Center(
             child: CircularProgressIndicator(),
@@ -70,9 +78,14 @@ class _HomeState extends State<Home> {
               body: ListView(
                 children: [
                   Container(
+                      margin: EdgeInsets.only(
+                          top: spacing_standard_new,
+                          left: spacing_standard_new,
+                          right: spacing_standard_new,
+                          bottom: spacing_standard),
                       padding: EdgeInsets.symmetric(vertical: 5),
                       width: double.infinity,
-                      height: MediaQuery.of(context).size.height / 3.3,
+                      //height: MediaQuery.of(context).size.height / 3.3,
                       child: BannerSlider()),
                   Container(
                     margin: EdgeInsets.only(
@@ -119,11 +132,4 @@ class _HomeState extends State<Home> {
           );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    if (isLoading) {
-      setState(() {});
-    }
-  }
 }
