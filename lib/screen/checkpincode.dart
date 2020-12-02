@@ -1,8 +1,7 @@
+import 'package:bakraw/model/deliveryslotmodel.dart';
 import 'package:bakraw/model/useraddressmodel.dart';
 import 'package:bakraw/provider/deliveryslotprovider.dart';
-import 'package:bakraw/provider/pincodeprovider.dart';
 import 'package:bakraw/screen/shippingMethod.dart';
-import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,48 +13,31 @@ class CheckPincode extends StatefulWidget {
   addressData model;
 
   CheckPincode({Key key, this.model}) : super(key: key);
+
   @override
   _CheckPincodeState createState() => _CheckPincodeState();
 }
 
 class _CheckPincodeState extends State<CheckPincode> {
-  bool pincodestatus = false;
-  bool isLoading = true;
   List<String> list = [];
   String deliveryslot;
 
   @override
   void initState() {
     super.initState();
-    if (isLoading) {
-      Provider.of<DeliverySlotProvider>(context, listen: false)
-          .getDeliverySlot()
-          .then((value) {
-        if (value.status == 200) {
-          value.data.forEach((element) {
-            list.add(element);
-          });
-        }
-      });
-    }
   }
+
+  /*Future<List<String>> getDeliverySlot() async {
+    Provider.of<DeliverySlotProvider>(context).getDeliverySlot().then((value) {
+        value.data.forEach((element) {
+          list.add(element);
+        });
+      return list;
+    });
+  }*/
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading)
-      Provider.of<PincodeProvider>(context, listen: false)
-          .checkpincodestatus(widget.model.shippingZip)
-          .then((value) {
-        if (value.status == 200) {
-          pincodestatus = value.data.pincodeDeliveryStatus.allowDelivery;
-        }
-        deliveryslot =
-            Provider.of<DeliverySlotProvider>(context, listen: false).value;
-        setState(() {
-          isLoading = false;
-        });
-      });
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -71,76 +53,40 @@ class _CheckPincodeState extends State<CheckPincode> {
           style: TextStyle(color: grocery_color_white),
         ),
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : !pincodestatus
-              ? showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Text('Sorry......'),
-                        content:
-                            Text('We aren\'t avaliable at your location yet'),
-                        actions: <Widget>[
-                          FlatButton(
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .popAndPushNamed(UserAddressManager.tag);
-                              },
-                              child: Text('Ok'))
-                        ],
-                      ))
-              : Container(
-                  child:
-                      /*ListView.builder(
-                    itemCount: list.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        child: SingleChildScrollView(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: Text(list[index]),
-                                ),
-                              )
-                              */ /*Padding(
-                            padding: ,
-                          )*/ /*
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),*/
-                      Column(
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Delivery Slots',
-                            style: TextStyle(
-                                fontSize: textSizeLarge,
-                                fontFamily: fontMedium),
-                          )),
+      body: FutureBuilder(
+          future: Provider.of<DeliverySlotProvider>(context).getDeliverySlot(),
+          builder: (BuildContext context,
+              AsyncSnapshot<DeliverySlotModel> snapshot) {
+            if (snapshot.data == null) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return Container(
+                  child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {},
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Delivery Slots',
+                          style: TextStyle(
+                              fontSize: textSizeLarge, fontFamily: fontMedium),
+                        )),
+                  ),
+                  Expanded(
+                    child: RadioListBuilder(
+                      optionlist: snapshot.data.data,
+                      model: widget.model,
                     ),
-                    Expanded(
-                      child: RadioListBuilder(
-                        optionlist: list,
-                        model: widget.model,
-                      ),
-                    ),
-                  ],
-                )),
+                  ),
+                ],
+              ));
+            }
+          }),
     );
   }
 }
@@ -157,6 +103,7 @@ class RadioListBuilder extends StatefulWidget {
 
 class _RadioListBuilderState extends State<RadioListBuilder> {
   var samp;
+
   SelectedRadio(String val) {
     setState(() {
       selectedValue = val;
@@ -176,6 +123,7 @@ class _RadioListBuilderState extends State<RadioListBuilder> {
   var selectedValue;
   var sOptionPrice;
   var sOptionLable;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(

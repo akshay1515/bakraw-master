@@ -4,6 +4,7 @@ import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/model/addtocartmodel.dart';
 import 'package:bakraw/model/carttoproductmodel.dart';
+import 'package:bakraw/model/couponcodemoel.dart';
 import 'package:bakraw/model/internalcart.dart';
 import 'package:bakraw/model/paymentGatewayModels.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
@@ -29,23 +30,32 @@ class PaymentsPage extends StatefulWidget {
   String Shippingcost;
   String Taxid;
   String taxamount;
+  String instruction;
+  bool paymentmode;
+  CouponModel couponModel;
 
   PaymentsPage(
     addressData model,
     String deliveryslot,
     double amount,
+    String instruction,
     String shippinglable,
     String Shippingcost,
     String Taxid,
     String taxamount,
+    bool paymentmode,
+    CouponModel couponModel,
   ) {
     this.model = model;
     this.deliveryslot = deliveryslot;
     this.amount = amount;
+    this.instruction = instruction;
     this.Shippingcost = Shippingcost;
     this.shippinglable = shippinglable;
     this.Taxid = Taxid;
     this.taxamount = taxamount;
+    this.paymentmode = paymentmode;
+    this.couponModel = couponModel;
   }
 
   @override
@@ -78,7 +88,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
   List<TaxDetails> taxdetails = [];
   List<CartProductModel> cartProducts = [];
   bool ispickup = false;
-  bool isdelivery = true;
+  bool isdelivery = false;
   String data = '';
   orderplacedmessage orderplaced;
   CircularProgressIndicator indicator = CircularProgressIndicator();
@@ -88,17 +98,21 @@ class _PaymentsPageState extends State<PaymentsPage> {
     super.initState();
     if (isLoading) {
       getUserInfo();
-      fetchcartItems();
       _razorpay = Razorpay();
       _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerpaymentSuccess);
       _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerpaymentError);
       _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerpaymentwallet);
-      Subtotal();
-      setState(() {
-        isdelivery = true;
-        isLoading = false;
+      fetchcartItems().then((value) {
+        Subtotal();
+        setState(() {
+          isdelivery = true;
+          isLoading = false;
+        });
       });
     }
+    print('taxdetails ${taxdetails.length}');
+    taxdetails.add(TaxDetails(
+        taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
   }
 
   @override
@@ -181,9 +195,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
     rowlist = await DatabaseHelper.instance.getcartItems();
 
     if (isinit == true) {
-      int index = 0;
-      List<Values> vList = new List();
-
       for (CartsModel element in rowlist) {
         Data.ProductModel model =
             await Provider.of<ProductProvider>(context, listen: false)
@@ -260,10 +271,16 @@ class _PaymentsPageState extends State<PaymentsPage> {
     Fluttertoast.showToast(msg: 'error', toastLength: Toast.LENGTH_SHORT);
   }
 
+  void CODTransaction() {
+    transactionDetails = new TransactionDetails(
+      transactionId: "",
+      paymentMethod: "COD",
+      createdAt: DateTime.now().toString(),
+      updatedAt: DateTime.now().toString(),
+    );
+  }
+
   PlaceOrder() {
-    taxdetails.add(TaxDetails(
-        taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
-    print('userid $userid');
     Map<String, dynamic> mapData = new Map();
     mapData["user_id"] = int.parse(userid);
     mapData["user_first_name"] = fname;
@@ -290,16 +307,24 @@ class _PaymentsPageState extends State<PaymentsPage> {
         (widget.amount - double.parse(widget.taxamount)).toStringAsFixed(2);
     mapData["shipping_method"] = widget.shippinglable;
     mapData["shipping_cost"] = widget.Shippingcost;
-    mapData["coupon_id"] = "";
-    mapData["discount"] = "0.0";
+    mapData["coupon_id"] = widget.couponModel != null
+        ? widget.couponModel.status == 200
+            ? widget.couponModel.data.couponId
+            : ""
+        : "";
+    mapData["discount"] = widget.couponModel != null
+        ? widget.couponModel.status == 200
+            ? widget.couponModel.data.discountAmount
+            : "0.0"
+        : "0.0";
     mapData["total"] = widget.amount.toString();
-    mapData["payment_method"] = "razorpay";
+    mapData["payment_method"] = widget.paymentmode == true ? "razorpay" : "COD";
     mapData["currency"] = "INR";
     mapData["currency_rate"] = "1.000";
     mapData["locale"] = "en";
     mapData["status"] = "pending";
     mapData["delivery_slot"] = widget.deliveryslot.toString();
-    mapData["note"] = "string";
+    mapData["note"] = widget.instruction;
     mapData["created_at"] = DateTime.now().toString();
     mapData["updated_at"] = DateTime.now().toString();
 
@@ -334,27 +359,33 @@ class _PaymentsPageState extends State<PaymentsPage> {
             productOptions: cartProducts[i].optionlist));
       }
     }
-
-    print('list ${list.length}');
     mapData["tax_details"] = taxdetails;
     mapData["order_products"] = list;
 
     mapData["transaction_details"] = transactionDetails.toJson();
     data = jsonEncode(mapData);
-
-    /* Provider.of<CartToserverProvider>(context, listen: false)
-        .PlaceOrderInCart(json, apikey)
-        .then((value) {});*/
   }
 
   @override
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
-    print('amount ${widget.amount}');
     double amount = double.parse(widget.amount.toStringAsFixed(2));
+
     if (isdelivery) {
       taxamount = num.parse((amount * 100).toStringAsFixed(2));
-      openCheckout();
+
+      if (widget.paymentmode == true) {
+        openCheckout();
+      } else {
+        setState(() {
+          ispickup = true;
+          indicator.visible(true);
+        });
+        if (ispickup) {
+          CODTransaction();
+          SendData();
+        }
+      }
       setState(() {
         isdelivery = false;
       });

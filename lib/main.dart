@@ -2,6 +2,7 @@ import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/categoryproductprovider.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
 import 'package:bakraw/provider/changepasswordprovider.dart';
+import 'package:bakraw/provider/couponprovider.dart';
 import 'package:bakraw/provider/deliveryslotprovider.dart';
 import 'package:bakraw/provider/favouriteproductprovider.dart';
 import 'package:bakraw/provider/flashsaleprovider.dart';
@@ -70,7 +71,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ShipmethodProvider()),
         ChangeNotifierProvider.value(value: CartToserverProvider()),
         ChangeNotifierProvider.value(value: SearchProvider()),
-        ChangeNotifierProvider.value(value: PreviousOrderProvider())
+        ChangeNotifierProvider.value(value: PreviousOrderProvider()),
+        ChangeNotifierProvider.value(value: CouponProvider())
       ],
       child: MaterialApp(
         home: SplashScreen(),
