@@ -159,10 +159,12 @@ class _CartItemState extends State<CartItem> {
           right: spacing_standard_new,
           bottom: spacing_standard_new),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
             flex: 1,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(top: 10),
@@ -175,115 +177,162 @@ class _CartItemState extends State<CartItem> {
                   ),
                 ),
                 SizedBox(height: spacing_control),
-                Row(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(
-                          left: spacing_standard, right: spacing_standard),
-                      decoration: boxDecoration(
-                          radius: spacing_control,
-                          bgColor: grocery_light_gray_color),
-                      margin: EdgeInsets.only(right: spacing_middle),
-                      child: text(widget.optionlable,
-                          fontSize: textSizeSmall, isCentered: true),
-                    ),
-                    text('₹ ${double.parse(widget.price).toStringAsFixed(2)}',
-                        fontSize: textSizeLargeMedium),
-                  ],
-                )
+                text(
+                    '₹ ${(double.parse(widget.price) * int.parse(widget.quantity)).toStringAsFixed(2)}',
+                    textColor: grocery_colorPrimary,
+                    fontSize: textSizeMedium,
+                    fontFamily: fontMedium),
               ],
             ),
           ),
           Expanded(
             flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    text(
-                        '₹ ${(double.parse(widget.price) * int.parse(widget.quantity)).toStringAsFixed(2)}',
-                        fontSize: textSizeLargeMedium,
-                        fontFamily: fontMedium),
-                    IconButton(
-                      onPressed: () {
-                        mRemoveItem();
-                      },
-                      icon:
-                          Icon(Icons.delete_outline, color: grocery_icon_color),
-                    )
-                  ],
-                ),
-                Container(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                    Expanded(
+                      flex:1,
+                      child:
+                    Container(
+                        transform: Matrix4.translationValues(0.0, -20.0, 0.0),
+                        child: text(widget.mld.name,
+                            textColor: grocery_colorPrimary)),
+                    ),
+                      Container(
+                        transform: Matrix4.translationValues(0.0, -20.0, 0.0),
+                        child: IconButton(
+
+                          onPressed: () {
+                            mRemoveItem();
+                          },
+                          icon:
+                              Icon(Icons.delete_outline, color: grocery_colorPrimary_light),
+                        ),
+                      )
+                    ],
+                  ),
+
+                  Container(
+                    transform: Matrix4.translationValues(0.0, -20.0, 0.0),
+                    child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        text('₹ ${double.parse(widget.price).toStringAsFixed(2)}',
+                            textColor: grocery_colorPrimary,
+                            fontSize: textSizeLargeMedium),
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: spacing_standard, right: spacing_standard),
+                          decoration: boxDecoration(
+                              radius: spacing_control,
+                              bgColor: grocery_light_gray_color),
+                          margin: EdgeInsets.only(right: spacing_middle),
+                          child: text(widget.optionlable,
+                              fontSize: textSizeSmall, isCentered: true),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
                     transform: Matrix4.translationValues(0.0, -10.0, 0.0),
-                    child: text(widget.mld.name,
-                        textColor: grocery_textColorSecondary)),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.remove_circle_outline,
-                            size: 28, color: grocery_icon_color),
-                        onPressed: () async {
-                          int temp = int.parse(widget.quantity);
-                          int i;
-                          if (temp > 1) {
-                            temp--;
-                            i = await DatabaseHelper.instance.updateCartitem({
-                              DatabaseHelper.productid: widget.productid,
-                              DatabaseHelper.optionvalueid:
-                                  widget.optionvalueid,
-                              DatabaseHelper.optionlable: widget.optionlable,
-                              DatabaseHelper.price: widget.price,
-                              DatabaseHelper.optionid: widget.optionid,
-                              DatabaseHelper.optionname: widget.optionname,
-                              DatabaseHelper.productpriceincreased:
-                                  widget.productpriceincreased,
-                              DatabaseHelper.quantity: temp.toString()
-                            });
-                            if (i > 0) {
-                              setState(() {
-                                widget.quantity = temp.toString();
-                              });
-                              updateItemCount(context);
-                            }
-                          } else {}
-                        }),
-                    text(widget.quantity,
-                        fontFamily: fontMedium, fontSize: textSizeNormal),
-                    IconButton(
-                        icon: Icon(Icons.add_circle_outline,
-                            size: 28, color: grocery_icon_color),
-                        onPressed: () async {
-                          int temp = int.parse(widget.quantity);
-                          int i;
-                          if (temp >= 1) {
-                            temp++;
-                            i = await DatabaseHelper.instance.updateCartitem({
-                              DatabaseHelper.productid: widget.productid,
-                              DatabaseHelper.optionvalueid:
-                                  widget.optionvalueid,
-                              DatabaseHelper.optionlable: widget.optionlable,
-                              DatabaseHelper.optionid: widget.optionid,
-                              DatabaseHelper.optionname: widget.optionname,
-                              DatabaseHelper.productpriceincreased:
-                                  widget.productpriceincreased,
-                              DatabaseHelper.price: widget.price,
-                              DatabaseHelper.quantity: temp.toString()
-                            });
-                            if (i > 0) {
-                              setState(() {
-                                widget.quantity = temp.toString();
-                              });
-                              updateItemCount(context);
-                            }
-                          } else {}
-                        }),
-                  ],
-                ),
-              ],
+                    child: SizedBox(
+                      width: 75,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                         GestureDetector(
+                           onTap: () async {
+                             int temp = int.parse(widget.quantity);
+                             int i;
+                             if (temp > 1) {
+                               temp--;
+                               i = await DatabaseHelper.instance.updateCartitem({
+                                 DatabaseHelper.productid: widget.productid,
+                                 DatabaseHelper.optionvalueid:
+                                 widget.optionvalueid,
+                                 DatabaseHelper.optionlable: widget.optionlable,
+                                 DatabaseHelper.price: widget.price,
+                                 DatabaseHelper.optionid: widget.optionid,
+                                 DatabaseHelper.optionname: widget.optionname,
+                                 DatabaseHelper.productpriceincreased:
+                                 widget.productpriceincreased,
+                                 DatabaseHelper.quantity: temp.toString()
+                               });
+                               if (i > 0) {
+                                 setState(() {
+                                   widget.quantity = temp.toString();
+                                 });
+                                 updateItemCount(context);
+                               }
+                             } else {}
+                           },
+                           child: Container(
+                             height: 20,
+                             width: 20,
+                             decoration: BoxDecoration(
+                                 color: grocery_colorPrimary_light,
+                                 borderRadius: BorderRadius.circular(17)
+                             ),
+                             child: Center(
+                               child:Icon(Icons.remove,
+                                   size: 20, color: grocery_color_white),
+                             ),
+                           ),
+                         ),
+                          text(widget.quantity,
+                              fontFamily: fontMedium, fontSize: textSizeNormal),
+                         GestureDetector(
+                           onTap: () async {
+                             int temp = int.parse(widget.quantity);
+                             int i;
+                             if (temp >= 1) {
+                               temp++;
+                               i = await DatabaseHelper.instance.updateCartitem({
+                                 DatabaseHelper.productid: widget.productid,
+                                 DatabaseHelper.optionvalueid:
+                                 widget.optionvalueid,
+                                 DatabaseHelper.optionlable: widget.optionlable,
+                                 DatabaseHelper.optionid: widget.optionid,
+                                 DatabaseHelper.optionname: widget.optionname,
+                                 DatabaseHelper.productpriceincreased:
+                                 widget.productpriceincreased,
+                                 DatabaseHelper.price: widget.price,
+                                 DatabaseHelper.quantity: temp.toString()
+                               });
+                               if (i > 0) {
+                                 setState(() {
+                                   widget.quantity = temp.toString();
+                                 });
+                                 updateItemCount(context);
+                               }
+                             } else {}
+                           },
+                           child: Container(
+                             height: 20,
+                             width: 20,
+                             decoration: BoxDecoration(
+                                 color: grocery_colorPrimary_light,
+                                 borderRadius: BorderRadius.circular(17)
+                             ),
+                             child: Center(
+                               child:Icon(Icons.add,
+                                   size: 20, color: grocery_color_white),
+                             ),
+                           ),
+                         )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         ],

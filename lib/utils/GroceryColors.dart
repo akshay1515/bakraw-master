@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const grocery_colorPrimary = Color(0xFF00c97b);
-const grocery_colorPrimary_light = Color(0xFFE7FAEE);
+const grocery_colorPrimary = Color.fromRGBO(31, 53, 25, 1);
+const grocery_colorPrimary_light = Color.fromRGBO(152, 158, 61, 1);
 const grocery_textColorPrimary = Color(0xFF333333);
 const grocery_textGreenColor = Color(0xFF00c97b);
 const grocery_textColorSecondary = Color(0xFFAAB3AC);

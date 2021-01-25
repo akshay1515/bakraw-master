@@ -1,4 +1,5 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
+import 'package:bakraw/model/relatedproductsmodels.dart';
 import 'package:bakraw/provider/relatedproductprovider.dart';
 import 'package:bakraw/screen/productdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
@@ -19,70 +20,70 @@ class RelatedProduct extends StatefulWidget {
 class _RelatedProductState extends State<RelatedProduct> {
   var isLoading = true;
   var flash;
-  var flashsale;
+  List flashsale = List();
 
   @override
   Widget build(BuildContext context) {
-    flash = Provider.of<RelatedProductProvier>(context, listen: false);
-    flashsale = flash.items;
-
-    return flashsale[0].data.length > 0
-        ? isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: spacing_standard_new,
-                        right: spacing_standard_new,
-                        bottom: spacing_standard),
-                    child: Text(
-                      'Related Products',
-                      style: TextStyle(
-                          fontFamily: fontMedium,
-                          fontSize: textSizeLargeMedium,
-                          color: Colors.grey.shade700),
-                    ),
-                  ),
-                  Container(
-                    height: 200,
-                    child: Container(
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        child: ListView.builder(
-                          itemCount: flashsale[0].data.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (ctx, index) {
-                            return FlashsaleItem(
-                              id: flashsale[0].data[index].productId,
-                              image: flashsale[0].data[index].images[0],
-                              name: flashsale[0].data[index].name,
-                              price: flashsale[0].data[index].price,
-                              weight: flashsale[0].data[index].qty,
-                            );
-                          },
-                        )),
-                  ),
-                ],
-              )
-        : Container();
+    return FutureBuilder(
+        future: Provider.of<RelatedProductProvier>(context, listen: false)
+            .getRelatedProducts(widget.ProductId),
+        builder: (context, AsyncSnapshot<RelatedProductModel> snapshot) {
+          if (snapshot.data != null) {
+            flash = Provider.of<RelatedProductProvier>(context, listen: false);
+            flashsale = flash.items;
+          }
+          return snapshot.data != null
+              ? snapshot.data.data.isNotEmpty || snapshot.data.data.length > 0
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: spacing_standard_new,
+                              right: spacing_standard_new,
+                              bottom: spacing_standard),
+                          child: Text(
+                            'Related Products',
+                            style: TextStyle(
+                                fontFamily: fontMedium,
+                                fontSize: textSizeLargeMedium,
+                                color: Colors.grey.shade700),
+                          ),
+                        ),
+                        Container(
+                          height: 200,
+                          child: Container(
+                              height: MediaQuery.of(context).size.height * 0.25,
+                              child: ListView.builder(
+                                itemCount: flashsale[0].data.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (ctx, index) {
+                                  return FlashsaleItem(
+                                    id: flashsale[0].data[index].productId,
+                                    image: flashsale[0].data[index].images[0],
+                                    name: flashsale[0].data[index].name,
+                                    price: flashsale[0].data[index].price,
+                                    weight: flashsale[0].data[index].qty,
+                                  );
+                                },
+                              )),
+                        ),
+                      ],
+                    )
+                  : Container()
+              : Center(
+                  child: CircularProgressIndicator(),
+                );
+        });
   }
 
-  @override
+/* @override
   void didChangeDependencies() {
     if (isLoading) {
-      (Provider.of<RelatedProductProvier>(context, listen: false)
-              .getRelatedProducts(widget.ProductId))
-          .then((value) {
-        setState(() {
-          isLoading = false;
-        });
-      });
+
     }
-  }
+  }*/
 }
 
 class FlashsaleItem extends StatelessWidget {

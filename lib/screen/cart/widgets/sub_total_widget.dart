@@ -2,6 +2,7 @@ import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/inherited/cart/cart_container.dart';
 import 'package:bakraw/inherited/cart/cart_container_state.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
+import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class SubTotalWidgetState extends State<SubTotalWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         text('${grocery_lbl_subtotal}${' '}${'(${state.count} items)'}'),
-        text('₹ ${state.subtotal.toString()}', fontFamily: fontMedium),
+        text('₹ ${state.subtotal.toString()}',textColor: grocery_colorPrimary_light, fontFamily: fontMedium),
       ],
     );
   }

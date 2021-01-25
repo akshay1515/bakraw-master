@@ -26,17 +26,16 @@ class UserProvider with ChangeNotifier {
     return userModel;
   }
 
-  Future<UserModel> usersignup(UserloginModel signup) async {
+  Future<UserModel> usersignup(Data signup) async {
     const url = '${Utility.BaseURL}${'signup.php'}';
     UserModel model;
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'first_name': signup.firstname,
-          'last_name': signup.lastname,
+          'first_name': signup.firstName,
+          'last_name': signup.lastName,
           'email': signup.email,
-          'phone_number': signup.mobile,
-          'password': signup.password
+          'phone_number': signup.phoneNumber,
         }));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);

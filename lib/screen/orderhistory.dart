@@ -43,7 +43,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
         userid = prefs.getString('id');
       });
     }
-    return email;
+    return userid;
   }
 
   @override
@@ -142,7 +142,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
           ).paddingOnly(left: 16, right: 16, top: 16).onTap(() {});
         });
 
-    return email.isEmptyOrNull
+    return userid.isEmptyOrNull
         ? DefaultUserProfile(
             istab: false,
           )

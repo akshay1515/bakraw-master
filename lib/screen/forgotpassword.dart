@@ -1,3 +1,4 @@
+/*
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/usermodel.dart';
 import 'package:bakraw/provider/passwordprovider.dart';
@@ -74,9 +75,12 @@ class _GroceryForgotPasswordState extends State<GroceryForgotPassword> {
                 alignment: Alignment.centerRight,
                 child: FittedBox(
                   child: groceryButton(
+                    bgColors: grocery_colorPrimary,
                     textContent: grocery_lbl_send,
                     onPressed: (() {
-                      /*print(forgot.text);*/
+                      */
+/*print(forgot.text);*//*
+
                       if (forgot.text.isEmptyOrNull) {
                         showDialog(
                             context: context,
@@ -149,3 +153,4 @@ class _GroceryForgotPasswordState extends State<GroceryForgotPassword> {
     );
   }
 }
+*/

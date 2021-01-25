@@ -2,6 +2,7 @@ import 'package:bakraw/provider/flashsaleprovider.dart';
 import 'package:bakraw/provider/previousorderprovider.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/widget/bannercarousel.dart';
+import 'package:bakraw/widget/couponsbanner.dart';
 import 'package:bakraw/widget/flashsaleitem.dart';
 import 'package:bakraw/widget/horizontallist.dart';
 import 'package:bakraw/widget/previousorderscreen.dart';
@@ -22,7 +23,7 @@ class _HomeState extends State<Home> {
   bool isLoading = true;
   bool isinit = false;
   int defaultvalue = 0;
-  var flashsale;
+  var flashsale=0;
   String userid = '', email = 'sample', apikey = '';
 
   Future<String> getUserInfo() async {
@@ -46,7 +47,7 @@ class _HomeState extends State<Home> {
           .getFlashSaleProduct()
           .then((value) {
         flashsale = value.data.length;
-        if (email != null) {
+        if (userid != null) {
           Provider.of<PreviousOrderProvider>(context, listen: false)
               .getFlashSaleProduct(apikey, userid, email)
               .then((value) {
@@ -76,13 +77,10 @@ class _HomeState extends State<Home> {
                         left: spacing_standard_new,
                         right: spacing_standard_new,
                         bottom: spacing_standard),
-                    child: Text(
-                      'Category',
-                      style: TextStyle(
-                          fontFamily: fontMedium,
-                          fontSize: textSizeLargeMedium,
-                          color: Colors.grey.shade700),
-                    ),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width/4,
+                        height: MediaQuery.of(context).size.height/35,
+                        child: Image.asset('images/bannerimage/Category.png',fit: BoxFit.contain,))
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -90,25 +88,25 @@ class _HomeState extends State<Home> {
                   ),
                   flashsale > 0
                       ? Container(
+                    alignment: Alignment.center,
                           margin: EdgeInsets.only(
                               top: spacing_standard_new,
                               left: spacing_standard_new,
                               right: spacing_standard_new,
                               bottom: spacing_standard),
-                          child: Text(
-                            'Flash Sale',
-                            style: TextStyle(
-                                fontFamily: fontMedium,
-                                fontSize: textSizeLargeMedium,
-                                color: Colors.grey.shade700),
-                          ))
+                          child: Container(
+                              width: MediaQuery.of(context).size.width/4,
+                              height: MediaQuery.of(context).size.height/35,
+                              child: Image.asset('images/bannerimage/Flash-sale.png',fit: BoxFit.contain,))
+                  )
                       : Container(),
                   flashsale > 0
                       ? Container(height: 200, child: FlashSale())
                       : Container(),
-                  email != null
+                  userid != null
                       ? Container(child: PreviousOrder())
-                      : Container()
+                      : Container(),
+                  Couponsslider()
                 ],
               ),
             ),

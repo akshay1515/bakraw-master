@@ -31,9 +31,6 @@ class CategoryProvider with ChangeNotifier {
               images: element.images));
         });
         _items = catlist;
-        /* _items.forEach((element) {
-          print(element.name);
-        });*/
       } else {
         category = CategoryModel(
             status: decodeddata['status'], message: decodeddata['message']);

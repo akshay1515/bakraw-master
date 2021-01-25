@@ -28,17 +28,15 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   SharedPreferences prefs;
 
-  List<IconData> listImage = [
-    Icons.insert_drive_file,
-    Icons.location_on,
-    Icons.shopping_cart,
-    Icons.store,
-    Icons.help,
-    Icons.question_answer,
-    Icons.question_answer,
-    Icons.question_answer,
-    Icons.question_answer,
-    Icons.question_answer,
+  List<String> listImage = [
+    'images/customicons/Icon-Home.png',
+    'images/customicons/Icon-My-Profile.png',
+    'images/customicons/Icon-My-Addresses.png',
+    'images/customicons/Icon-My-Past-Orders.png',
+    'images/customicons/Icon-Terms-&-Conditions.png',
+    'images/customicons/Icon-Privacy-Policy.png',
+    'images/customicons/Icon-Contact-Us.png',
+    'images/customicons/Icon-4About-Us.png',
   ];
 
   var listText = [
@@ -84,7 +82,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     Widget mMenuOption(var icon, var value, Widget tag) {
       return Container(
-        height: 70,
+        height: 50,
         child: GestureDetector(
           onTap: () {
             finish(context);
@@ -93,16 +91,16 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           child: Row(
             children: <Widget>[
               Container(
-                height: 50,
-                width: 50,
+                height: 40,
+                width: 40,
                 decoration: boxDecoration(
                     radius: 25.0, bgColor: grocery_colorPrimary_light),
-                child: Icon(icon, color: grocery_colorPrimary).paddingAll(12),
+                child: Image.asset(icon,height: 25,width: 25,).paddingAll(3),
               ).paddingOnly(
                   top: spacing_control,
                   left: spacing_standard,
                   bottom: spacing_control),
-              text(value, fontSize: textSizeLargeMedium, fontFamily: fontMedium)
+              text(value, fontSize: textSizeLargeMedium, fontFamily: fontMedium,textColor: grocery_color_white)
                   .paddingOnly(left: spacing_standard, right: spacing_standard),
             ],
           ),
@@ -130,26 +128,18 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                 children: <Widget>[
                   SizedBox(height: spacing_large),
                   Container(
-                    color: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.clear, color: grocery_light_gray_color)
-                            .onTap(() {
-                          finish(context);
-                        }),
-                        SizedBox(width: spacing_large),
-                        text("Grocery shopping app",
-                            textColor: grocery_Color_black,
-                            fontFamily: fontBold,
-                            fontSize: textSizeLargeMedium)
-                      ],
-                    ).paddingAll(16),
+                    alignment: Alignment.centerLeft,
+                    color: grocery_colorPrimary,
+                    child: Icon(Icons.clear, color: grocery_light_gray_color)
+                        .onTap(() {
+                      finish(context);
+                    }).paddingOnly(left: 20,right: 10,top: 10,bottom: 0)
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: spacing_standard),
+                    padding: EdgeInsets.only(left: spacing_standard,bottom: spacing_large),
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: grocery_colorPrimary,
                       borderRadius: BorderRadius.only(
                           bottomRight: Radius.circular(20),
                           bottomLeft: Radius.circular(20)),

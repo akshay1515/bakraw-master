@@ -1,7 +1,9 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/usermodel.dart';
+import 'package:bakraw/provider/OTPProvider.dart';
 import 'package:bakraw/provider/userprovider.dart';
 import 'package:bakraw/screen/dashboard.dart';
+import 'package:bakraw/screen/verifyOtp.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
@@ -24,34 +26,22 @@ class GroceryAddNumber extends StatefulWidget {
 class _GroceryAddNumberState extends State<GroceryAddNumber> {
   SharedPreferences prefs;
   bool isLoading = false;
-  String fname, lname, email, password;
   TextEditingController mobileController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
     var width = MediaQuery.of(context).size.width;
-
-    final signupdetails = ModalRoute.of(context).settings.arguments as Map;
-    fname = signupdetails['fname'];
-    lname = signupdetails['lname'];
-    email = signupdetails['email'];
-    password = signupdetails['password'];
-
+    
     Future setUser(Data userModel) async {
       prefs = await SharedPreferences.getInstance();
       if (prefs != null) {
         prefs.clear();
       }
       await prefs.setString('id', userModel.userId);
-      await prefs.setString('email', userModel.email);
-      await prefs.setString('fname', userModel.firstName);
-      await prefs.setString('lname', userModel.lastName);
-      await prefs.setString('mobile', userModel.phoneNumber);
-      await prefs.setString('password', userModel.password);
       await prefs.setString('apikey', userModel.token);
     }
-
+    
     return Scaffold(
         backgroundColor: grocery_app_background,
         appBar: PreferredSize(
@@ -140,7 +130,8 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
                         child: FittedBox(
                           child: GW
                               .groceryButton(
-                                textContent: grocery_lbl_Sign_Up,
+                            bgColors: grocery_colorPrimary,
+                                textContent: 'Send OTP',
                                 onPressed: (() {
                                   setState(() {
                                     isLoading = true;
@@ -184,33 +175,35 @@ class _GroceryAddNumberState extends State<GroceryAddNumber> {
                                                     child: Text('Ok'))
                                               ],
                                             ));
-                                  } else {
-                                    UserloginModel userSignup = UserloginModel(
-                                        email: email,
-                                        password: password,
-                                        firstname: fname,
-                                        lastname: lname,
-                                        mobile: mob);
-                                    Provider.of<UserProvider>(context,
-                                            listen: false)
-                                        .usersignup(userSignup)
-                                        .then((value) {
-                                      setUser(Data(
-                                          userId: value.data.userId,
-                                          email: email,
-                                          firstName: fname,
-                                          lastName: lname,
-                                          phoneNumber: mob,
-                                          token: value.data.token));
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      Fluttertoast.showToast(
-                                          msg: value.message,
-                                          toastLength: Toast.LENGTH_SHORT);
-                                      Navigator.of(context)
-                                          .pushReplacementNamed(Dashboard.Tag);
+                                  } 
+                                  else {
+                                    Provider.of<OTPProvider>(context,listen: false).sendOTP(mob).then((value){
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Text('OTP sent'),
+                                            content: Text(
+                                                value.message),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    if(value.status ==200){
+                                                      VerifyNumber(mobile: mob).launch(context);
+                                                    }else{
+
+                                                    }
+
+                                                  },
+                                                  child: Text('Ok'))
+                                            ],
+                                          ));
                                     });
+
                                   }
                                 }),
                               )

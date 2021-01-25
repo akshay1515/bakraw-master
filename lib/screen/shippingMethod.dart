@@ -171,7 +171,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
         userid = prefs.getString('id');
       });
     }
-    return email;
+    return userid;
   }
 
   Widget couponstatus() {
@@ -735,7 +735,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                             Fluttertoast.showToast(
                                 msg: paymentMode.toString(),
                                 toastLength: Toast.LENGTH_SHORT);
-                            !email.isEmptyOrNull
+                            !userid.isEmptyOrNull
                                 ? subtotal <= 0
                                     ? Fluttertoast.showToast(
                                         msg: 'Your cart is Empty',

@@ -27,7 +27,7 @@ class _PreviousOrderState extends State<PreviousOrder> {
         userid = prefs.getString('id');
       });
     }
-    return email;
+    return userid;
   }
 
   @override
@@ -45,14 +45,13 @@ class _PreviousOrderState extends State<PreviousOrder> {
                     left: spacing_standard_new,
                     right: spacing_standard_new,
                     bottom: spacing_standard),
-                child: Text(
-                  'Previously Ordered',
-                  style: TextStyle(
-                      fontFamily: fontMedium,
-                      fontSize: textSizeLargeMedium,
-                      color: Colors.grey.shade700),
+                child:Center(
+                  child: Container(
+                  width: MediaQuery.of(context).size.width/2.5,
+                  height: MediaQuery.of(context).size.height/20,
+                  child: Image.asset('images/bannerimage/Coupons.png',fit: BoxFit.contain,)),
+                )
                 ),
-              ),
               Container(
                 height: 200,
                 child: Container(
@@ -113,7 +112,7 @@ class FlashsaleItem extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.38,
         height: MediaQuery.of(context).size.height * 0.25,
         decoration: boxDecoration(
-            showShadow: true, radius: 10.0, bgColor: grocery_color_white),
+            radius: 10.0, bgColor: grocery_color_white),
         margin: EdgeInsets.only(left: 16, bottom: 16),
         padding: EdgeInsets.all(spacing_middle),
         child: Column(

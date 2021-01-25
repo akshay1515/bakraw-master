@@ -22,7 +22,7 @@ BoxDecoration boxDecoration(
 Widget text(
   String text, {
   var fontSize = textSizeLargeMedium,
-  textColor = grocery_Color_black,
+  var textColor,
   var fontFamily,
   var isCentered = false,
   var maxLine = 1,
@@ -39,7 +39,7 @@ Widget text(
     style: TextStyle(
       fontFamily: fontFamily ?? null,
       fontSize: fontSize,
-      color: textColor,
+      color: textColor==null?grocery_Color_black:textColor,
       height: 1.5,
       letterSpacing: latterSpacing,
       decoration:

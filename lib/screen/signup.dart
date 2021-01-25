@@ -1,25 +1,21 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/usermodel.dart';
 import 'package:bakraw/provider/userprovider.dart';
-import 'package:bakraw/screen/addnumber.dart';
 import 'package:bakraw/screen/dashboard.dart';
-import 'package:bakraw/screen/forgotpassword.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/utils/GroceryWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
   static String tag = '/GrocerySignUp';
-  bool isSignIn = true;
-  bool isSignUp = false;
+  final String Mobile;
 
-  SignUp({this.isSignIn, this.isSignUp});
+  const SignUp({Key key, this.Mobile}) : super(key: key);
 
   @override
   _SignUpState createState() => _SignUpState();
@@ -47,19 +43,17 @@ class _SignUpState extends State<SignUp> {
     var width = MediaQuery.of(context).size.width;
     changeStatusColor(grocery_color_white);
 
-    Future setUser(UserModel userModel) async {
+    Future setUser(Data userModel) async {
       prefs = await SharedPreferences.getInstance();
-
-      await prefs.setString('id', userModel.data.userId);
-      await prefs.setString('email', userModel.data.email);
-      await prefs.setString('fname', userModel.data.firstName);
-      await prefs.setString('lname', userModel.data.lastName);
-      await prefs.setString('mobile', userModel.data.phoneNumber);
-      await prefs.setString('password', userModel.data.password);
-      await prefs.setString('apikey', userModel.data.token);
+      await prefs.setString('fname', userModel.firstName);
+      await prefs.setString('lname', userModel.lastName);
+      await prefs.setString('mobile', userModel.phoneNumber);
+      await prefs.setString('email', userModel.email);
+      await prefs.setString('id', userModel.userId);
+      await prefs.setString('apikey', userModel.token);
     }
 
-    final signIn = Container(
+    /*final signIn = Container(
         child: SingleChildScrollView(
       child: Form(
         key: _formKeyValue,
@@ -207,7 +201,7 @@ class _SignUpState extends State<SignUp> {
                 ],
               ),
       ),
-    ));
+    ));*/
 
     final signUp = Container(
       child: Form(
@@ -285,39 +279,13 @@ class _SignUpState extends State<SignUp> {
                   border: InputBorder.none,
                 ),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value.trim().isEmpty) {
-                    return 'Please Enter Your Email Address';
-                  }
-                },
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-              child: TextFormField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  hintStyle: TextStyle(
-                      fontSize: textSizeMedium, fontFamily: fontRegular),
-                  labelText: grocery_lbl_Password,
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                  hintText: grocery_lbl_Password,
-                  border: InputBorder.none,
-                ),
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: true,
-                validator: (value) {
-                  if (value.trim().isEmpty) {
-                    return 'Please Enter Your Email Address';
-                  }
-                },
               ),
             ),
             Align(
               alignment: Alignment.centerRight,
               child: FittedBox(
                 child: groceryButton(
+                  bgColors: grocery_colorPrimary,
                   textContent: grocery_lbl_Next,
                   onPressed: (() {
                     if (_Signupformkey.currentState.validate() == true) {
@@ -326,19 +294,50 @@ class _SignUpState extends State<SignUp> {
                       });
                       var fname = fnameController.text;
                       var lname = lnameController.text;
-                      var password = passwordController.text;
                       var email = emailcontroller.text;
 
-                      setState(() {
-                        isLoading = false;
+                      Provider.of<UserProvider>(context,listen: false)
+                          .usersignup(Data(
+                              phoneNumber: widget.Mobile,
+                              firstName: fname,
+                              lastName: lname,
+                              email: email))
+                          .then((value) {
+                            if(value.status==200){
+                              setUser(Data(
+                                email: email,
+                                  firstName: fname,
+                                  lastName: lname,
+                                  phoneNumber: widget.Mobile,
+                                  userId: value.data.userId,
+                                  token: value.data.token))
+                                  .then((value) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                Dashboard().launch(context,isNewTask: true);
+                              });
+                            }else{
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Status'),
+                                    content: Text(
+                                        value.message),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop();
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                          },
+                                          child: Text('Ok'))
+                                    ],
+                                  ));
+                            }
                       });
-                      Navigator.of(context).pushNamed(GroceryAddNumber.tag,
-                          arguments: {
-                            'fname': fname,
-                            'lname': lname,
-                            'email': email,
-                            'password': password
-                          });
                     }
                   }),
                 ).paddingOnly(
@@ -380,38 +379,7 @@ class _SignUpState extends State<SignUp> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            text("Sign In",
-                                    textColor: widget.isSignIn == true
-                                        ? grocery_textGreenColor
-                                        : grocery_textColorPrimary,
-                                    fontSize: textSizeLargeMedium,
-                                    fontFamily: fontBold)
-                                .paddingAll(spacing_standard_new)
-                                .onTap(() {
-                              widget.isSignIn = true;
-                              widget.isSignUp = false;
-                              setState(() {});
-                            }),
-                            text("Sign Up",
-                                    textColor: widget.isSignUp == true
-                                        ? grocery_textGreenColor
-                                        : grocery_textColorPrimary,
-                                    fontSize: textSizeLargeMedium,
-                                    fontFamily: fontBold)
-                                .paddingAll(spacing_standard_new)
-                                .onTap(() {
-                              widget.isSignIn = false;
-                              widget.isSignUp = true;
-                              setState(() {});
-                            })
-                          ],
-                        ),
-                        widget.isSignUp ? signUp : signIn
-                      ],
+                      children: <Widget>[signUp],
                     ),
                   ),
                 ],

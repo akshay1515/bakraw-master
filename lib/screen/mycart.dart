@@ -52,7 +52,7 @@ class _MycartState extends State<Mycart> {
         userid = prefs.getString('id');
       });
     }
-    return email;
+    return userid;
   }
 
   double Subtotal() {
@@ -153,7 +153,7 @@ class _MycartState extends State<Mycart> {
                                 bgColors: grocery_colorPrimary,
                                 textContent: grocery_lbl_checkout,
                                 onPressed: (() {
-                                  !email.isEmptyOrNull
+                                  !userid.isEmptyOrNull
                                       ? subtotal <= 0
                                           ? Fluttertoast.showToast(
                                               msg: 'Your cart is Empty',

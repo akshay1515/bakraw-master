@@ -11,6 +11,7 @@ import 'package:bakraw/widget/relatedproductitems.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html/parser.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -35,8 +36,8 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
 
   @override
   void dispose() {
-    this.dispose();
     init = true;
+    this.dispose();
   }
 
   Future<String> getUserInfo() async {
@@ -49,7 +50,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
         userid = prefs.getString('id');
       });
     }
-    return email;
+    return userid;
   }
 
   void favouriteMark() {
@@ -70,9 +71,9 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   }
 
   Widget setProductFavourite() {
-    if (!email.isEmptyOrNull && isFavourite) {
+    if (!userid.isEmptyOrNull && isFavourite) {
       return Icon(Icons.favorite_outlined, color: grocery_color_red);
-    } else if (!email.isEmptyOrNull && !isFavourite) {
+    } else if (!userid.isEmptyOrNull && !isFavourite) {
       return Icon(Icons.favorite_outline, color: grocery_icon_color); /**/
     } else {
       return Container();
@@ -103,7 +104,11 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   @override
   Widget build(BuildContext context) {
     prodid = ModalRoute.of(context).settings.arguments as Map;
-    favouriteMark();
+    if(!userid.isEmptyOrNull){
+      favouriteMark();
+    }
+
+
     if (init == true) {
       Provider.of<ProductProvider>(context, listen: false)
           .getProductDetails(prodid['prodid'])
@@ -196,7 +201,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
     changeStatusColor(grocery_app_background);
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: grocery_app_background,
+      backgroundColor: grocery_colorPrimary,
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(),
@@ -216,13 +221,13 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                             children: <Widget>[
                               IconButton(
                                 icon: Icon(Icons.arrow_back,
-                                    color: grocery_icon_color),
+                                    color: grocery_color_white),
                                 onPressed: () {
                                   finish(context);
                                 },
                               ),
                               text(prodid['names'],
-                                  textColor: grocery_textColorPrimary,
+                                  textColor: grocery_color_white,
                                   fontSize: textSizeLargeMedium,
                                   fontFamily: fontBold),
                             ],
@@ -270,11 +275,13 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                             children: <Widget>[
                               SizedBox(height: width * 0.17),
                               text(model.name,
-                                  fontFamily: fontMedium,
-                                  fontSize: textSizeLargeMedium),
+                                  fontFamily: fontBold,
+                                  textColor: grocery_colorPrimary,
+                                  fontSize: textSizeLarge),
                               SizedBox(height: spacing_large),
                               text('₹ ${double.parse(CancelledPrice()).toStringAsFixed(2)}',
                                       fontFamily: fontMedium,
+                                      textColor: grocery_colorPrimary,
                                       lineThrough: true,
                                       fontSize: textSizeLargeMedium)
                                   .visible(model.isProductIsInSale == true
@@ -283,12 +290,14 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                               text(
                                   '₹ ${double.parse(PriceReturn()).toStringAsFixed(2)}',
                                   fontFamily: fontMedium,
+                                  textColor: grocery_colorPrimary,
                                   fontSize: textSizeLargeMedium),
                               SizedBox(height: spacing_large),
                               Container(
                                 child: text('Pack Size',
                                     isCentered: false,
                                     fontFamily: fontMedium,
+                                    textColor: grocery_colorPrimary,
                                     fontSize: textSizeLargeMedium),
                               ),
                               SizedBox(height: spacing_standard),
@@ -319,6 +328,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                               title: Text(
                                                 target[index].label,
                                                 style: TextStyle(
+                                                    color: grocery_colorPrimary,
                                                     fontFamily: fontMedium,
                                                     fontSize:
                                                         MediaQuery.of(context)
@@ -329,7 +339,7 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                               value:
                                                   target[index].optionValueId,
                                               groupValue: selectedValue,
-                                              activeColor: grocery_color_red,
+                                              activeColor: grocery_colorPrimary,
                                               onChanged: (val) {
                                                 setState(() {
                                                   SelectedRadio(Options(
@@ -353,57 +363,88 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                               ),
                               SizedBox(height: spacing_standard_new),
                               Container(
-                                child: Text(parseHtmlString(model.description)),
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(right:8,bottom: 8,left: 8),
+                                child: text('Description',
+                                    isCentered: false,
+                                    textColor: grocery_colorPrimary,
+                                    fontFamily: fontMedium,
+                                    fontSize: textSizeLargeMedium),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 8,right: 8),
+                                child: Html(data: model.description)
                               ),
                               SizedBox(height: spacing_standard_new),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.remove_circle_outline,
-                                        size: 35, color: grocery_icon_color),
-                                    onPressed: () {
+                                  GestureDetector(
+                                    onTap: (){
                                       setState(() {
                                         model.isProductIsInSale == true &&
-                                                model.productSaleDetails
-                                                        .isProductOutOfStock ==
-                                                    true
+                                            model.productSaleDetails
+                                                .isProductOutOfStock ==
+                                                true
                                             ? Fluttertoast.showToast(
-                                                msg:
-                                                    'Sorry We Are Out Of Stock',
-                                                toastLength: Toast.LENGTH_SHORT)
+                                            msg:
+                                            'Sorry We Are Out Of Stock',
+                                            toastLength: Toast.LENGTH_SHORT)
                                             : itemcount > 1
-                                                ? itemcount--
-                                                : Fluttertoast.showToast(
-                                                    msg:
-                                                        'Minimum 1 Quantity of item is required',
-                                                    toastLength:
-                                                        Toast.LENGTH_SHORT);
+                                            ? itemcount--
+                                            : Fluttertoast.showToast(
+                                            msg:
+                                            'Minimum 1 Quantity of item is required',
+                                            toastLength:
+                                            Toast.LENGTH_SHORT);
                                       });
                                     },
+                                    child: Container(
+                                      height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: grocery_colorPrimary,
+                                      borderRadius: BorderRadius.circular(17)
+                                    ),
+                                      child: Center(
+                                        child:Icon(Icons.remove,
+                                              size: 20, color: grocery_color_white),
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(width: spacing_standard_new),
                                   text(itemcount.toString(),
                                       fontFamily: fontMedium,
-                                      fontSize: textSizeLarge,
+                                      fontSize: textSizeNormal,
                                       isCentered: true),
                                   SizedBox(width: spacing_standard_new),
-                                  IconButton(
-                                      icon: Icon(Icons.add_circle_outline,
-                                          size: 35, color: grocery_icon_color),
-                                      onPressed: () {
-                                        model.isProductIsInSale == true &&
-                                                model.productSaleDetails
-                                                        .isProductOutOfStock ==
-                                                    true
-                                            ? Fluttertoast.showToast(
-                                                msg:
-                                                    'Sorry We Are Out Of Stock',
-                                                toastLength: Toast.LENGTH_SHORT)
-                                            : setState(() {
-                                                itemcount++;
-                                              });
-                                      }),
+                                  GestureDetector(
+                                    onTap: (){
+                                      model.isProductIsInSale == true &&
+                                          model.productSaleDetails
+                                              .isProductOutOfStock ==
+                                              true
+                                          ? Fluttertoast.showToast(
+                                          msg:
+                                          'Sorry We Are Out Of Stock',
+                                          toastLength: Toast.LENGTH_SHORT)
+                                          : setState(() {
+                                        itemcount++;
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 35,
+                                      width: 35,
+                                      decoration: BoxDecoration(
+                                          color: grocery_colorPrimary,
+                                          borderRadius: BorderRadius.circular(17)
+                                      ),
+                                      child: Center(
+                                        child: Icon(Icons.add,
+                                                size: 20, color: grocery_color_white),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                               SizedBox(height: spacing_standard_new),

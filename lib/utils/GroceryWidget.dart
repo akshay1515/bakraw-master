@@ -127,6 +127,7 @@ class EditText extends StatefulWidget {
   var text;
   var maxLine;
   var keyboardType;
+  var maxcharacter;
   TextEditingController mController;
 
   VoidCallback onPressed;
@@ -139,6 +140,7 @@ class EditText extends StatefulWidget {
       var this.isSecure = false,
       var this.text = "",
       var this.mController,
+      var this.maxcharacter,
       var this.keyboardType,
       var this.maxLine = 1});
 
@@ -157,6 +159,7 @@ class EditTextState extends State<EditText> {
         obscureText: widget.isPassword,
         cursorColor: grocery_textGreenColor,
         keyboardType: widget.keyboardType,
+        maxLength: widget.maxcharacter,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(0, 8, 4, 8),
           hintText: widget.text,

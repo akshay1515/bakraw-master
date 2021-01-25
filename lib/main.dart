@@ -1,8 +1,10 @@
+import 'package:bakraw/provider/OTPProvider.dart';
 import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/categoryproductprovider.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
 import 'package:bakraw/provider/changepasswordprovider.dart';
 import 'package:bakraw/provider/couponprovider.dart';
+import 'package:bakraw/provider/couponsliderProvider.dart';
 import 'package:bakraw/provider/deliveryslotprovider.dart';
 import 'package:bakraw/provider/favouriteproductprovider.dart';
 import 'package:bakraw/provider/flashsaleprovider.dart';
@@ -72,7 +74,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: CartToserverProvider()),
         ChangeNotifierProvider.value(value: SearchProvider()),
         ChangeNotifierProvider.value(value: PreviousOrderProvider()),
-        ChangeNotifierProvider.value(value: CouponProvider())
+        ChangeNotifierProvider.value(value: OTPProvider()),
+        ChangeNotifierProvider.value(value: CouponProvider()),
+        ChangeNotifierProvider.value(value: couponslideProvider())
       ],
       child: MaterialApp(
         home: SplashScreen(),
@@ -89,7 +93,6 @@ class MyApp extends StatelessWidget {
           SignUp.tag: (ctx) => SignUp(),
           Mycart.tag: (ctx) => Mycart2(),
           GroceryAddNumber.tag: (ctx) => GroceryAddNumber(),
-          GroceryForgotPassword.tag: (ctx) => GroceryForgotPassword(),
           UserAddressManager.tag: (ctx) => UserAddressManager(),
           EditUserAddress.tag: (ctx) => EditUserAddress(),
         },

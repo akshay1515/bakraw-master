@@ -39,11 +39,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               widget.navigationDrawer,
-              Text(
-                widget.title,
-                style:
-                    TextStyle(color: grocery_color_white, fontFamily: fontBold),
-              ),
+              Image.asset('images/Bakraw.png',height: 25,width: 25,fit: BoxFit.contain,)
             ],
           ),
         ),

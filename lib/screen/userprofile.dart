@@ -32,6 +32,7 @@ class _GroceryProfileState extends State<GroceryProfile> {
   String phone = '';
   String fname = '';
   String lname = '';
+  String userid = '';
   bool isloading = true;
 
   Future<String> getUserInfo() async {
@@ -40,12 +41,14 @@ class _GroceryProfileState extends State<GroceryProfile> {
     if (prefs != null) {
       setState(() {
         email = prefs.getString('email');
+        userid = prefs.getString('id');
         phone = prefs.getString('mobile');
         fname = prefs.getString('fname');
         lname = prefs.getString('lname');
       });
     }
-    return email;
+    print(' fname $fname');
+    return userid;
   }
 
   @override
@@ -59,7 +62,7 @@ class _GroceryProfileState extends State<GroceryProfile> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return widget.istab
-        ? email.isEmptyOrNull
+        ? userid.isEmptyOrNull
             ? DefaultUserProfile(
                 istab: true,
               )
@@ -88,11 +91,11 @@ class _GroceryProfileState extends State<GroceryProfile> {
                                   .paddingOnly(
                                       left: spacing_standard,
                                       right: spacing_standard),
-                              text(email, textColor: grocery_textColorSecondary)
+                              text(email != null ? email:'NA', textColor: grocery_textColorSecondary)
                                   .paddingOnly(
                                       left: spacing_standard,
                                       right: spacing_standard),
-                              text(phone, textColor: grocery_textColorSecondary)
+                              text(phone != null ?phone :'NA', textColor: grocery_textColorSecondary)
                                   .paddingOnly(
                                       left: spacing_standard,
                                       right: spacing_standard)
@@ -196,7 +199,7 @@ class _GroceryProfileState extends State<GroceryProfile> {
                   ),
                   onPressed: () => Navigator.of(context).pop()),
             ),
-            body: email.isEmptyOrNull
+            body: userid.isEmptyOrNull
                 ? DefaultUserProfile(
                     istab: true,
                   )
@@ -225,7 +228,7 @@ class _GroceryProfileState extends State<GroceryProfile> {
                                       .paddingOnly(
                                           left: spacing_standard,
                                           right: spacing_standard),
-                                  text(email,
+                                  text(phone.isEmptyOrNull?email:'NA',
                                           textColor: grocery_textColorSecondary)
                                       .paddingOnly(
                                           left: spacing_standard,

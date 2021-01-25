@@ -72,7 +72,7 @@ class _UserFavouriteListState extends State<UserFavouriteList> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : email == null || email.isEmpty
+        :userid == null || userid.isEmpty
             ? DefaultUserProfile(
                 istab: true,
               )

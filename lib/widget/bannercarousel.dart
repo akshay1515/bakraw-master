@@ -44,8 +44,8 @@ class _BannerSliderState extends State<BannerSlider> {
             children: <Widget>[
               CarouselSlider(
                   options: CarouselOptions(
-                    viewportFraction: 0.95,
-                    height: MediaQuery.of(context).size.height / 3.5,
+                    viewportFraction: 1,
+                    height: MediaQuery.of(context).size.height / 3.25,
                     initialPage: 0,
                     enableInfiniteScroll: true,
                     autoPlay: true,
@@ -67,20 +67,14 @@ class _BannerSliderState extends State<BannerSlider> {
                                   Orientation.portrait
                               ? 4 / 2
                               : 2 / 4,
-                          child: Container(
-                            //width: MediaQuery.of(context).size.width*0.8,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            //height: MediaQuery.of(context).size.height*0.2,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: CachedNetworkImage(
-                                imageUrl: e.image,
-                                width: double.infinity,
-                                height: MediaQuery.of(context).size.height / 4,
-                                fit: BoxFit.fill,
-                                placeholder: placeholderWidgetFn(),
-                              ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: CachedNetworkImage(
+                              imageUrl: e.image,
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height / 4.5,
+                              fit: BoxFit.fill,
+                              placeholder: placeholderWidgetFn(),
                             ),
                           ),
                         ),
