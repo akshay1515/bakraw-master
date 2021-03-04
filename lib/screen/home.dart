@@ -1,3 +1,4 @@
+import 'package:bakraw/provider/couponsliderProvider.dart';
 import 'package:bakraw/provider/flashsaleprovider.dart';
 import 'package:bakraw/provider/previousorderprovider.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
@@ -24,6 +25,7 @@ class _HomeState extends State<Home> {
   bool isinit = false;
   int defaultvalue = 0;
   var flashsale=0;
+  var cuopon = 0;
   String userid = '', email = 'sample', apikey = '';
 
   Future<String> getUserInfo() async {
@@ -40,28 +42,32 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    getUserInfo();
-    if (isLoading) {
-      Provider.of<FlashSaleProvider>(context, listen: false)
-          .getFlashSaleProduct()
-          .then((value) {
-        flashsale = value.data.length;
-        if (userid != null) {
-          Provider.of<PreviousOrderProvider>(context, listen: false)
-              .getFlashSaleProduct(apikey, userid, email)
-              .then((value) {
-            setState(() {
-              isLoading = false;
-            });
-          });
-        } else {
+    getUserInfo().then((value) {
+      if (isLoading) {
+        Provider.of<couponslideProvider>(context,listen: false).getCategory().then((value) {
+          cuopon = value.data.length;
+        });
+        Provider.of<FlashSaleProvider>(context, listen: false)
+            .getFlashSaleProduct()
+            .then((value) {
+          flashsale = value.data.length;
           setState(() {
             isLoading = false;
           });
+        });
+        if (userid != null) {
+          Provider.of<PreviousOrderProvider>(context, listen: false)
+              .getFlashSaleProduct(apikey, userid, email);
         }
-      });
-    }
+      }
+    });
     return isLoading
         ? Center(
             child: CircularProgressIndicator(),
@@ -106,7 +112,7 @@ class _HomeState extends State<Home> {
                   userid != null
                       ? Container(child: PreviousOrder())
                       : Container(),
-                  Couponsslider()
+                 cuopon > 0 ? Couponsslider():Container()
                 ],
               ),
             ),
@@ -115,9 +121,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+
     super.initState();
-    if (isLoading) {
-      setState(() {});
-    }
   }
 }

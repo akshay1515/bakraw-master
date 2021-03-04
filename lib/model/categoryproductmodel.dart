@@ -1,7 +1,7 @@
 class CategoryProduct {
   int status;
   String message;
-  List<Datum> data;
+  List<Data> data;
 
   CategoryProduct({this.status, this.message, this.data});
 
@@ -9,9 +9,9 @@ class CategoryProduct {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = new List<Datum>();
+      data = new List<Data>();
       json['data'].forEach((v) {
-        data.add(new Datum.fromJson(v));
+        data.add(new Data.fromJson(v));
       });
     }
   }
@@ -27,7 +27,7 @@ class CategoryProduct {
   }
 }
 
-class Datum {
+class Data {
   String productId;
   String price;
   String specialPrice;
@@ -42,26 +42,28 @@ class Datum {
   bool isProductNew;
   bool isProductHasSpecialPrice;
   bool isProductIsInSale;
-  ProductSaleDetails productSaleDetails;
+  var productSaleDetails;
+  ProductRating productRating;
 
-  Datum(
+  Data(
       {this.productId,
-      this.price,
-      this.specialPrice,
-      this.specialPriceType,
-      this.sku,
-      this.manageStock,
-      this.qty,
-      this.inStock,
-      this.name,
-      this.shortDescription,
-      this.images,
-      this.isProductNew,
-      this.isProductHasSpecialPrice,
-      this.isProductIsInSale,
-      this.productSaleDetails});
+        this.price,
+        this.specialPrice,
+        this.specialPriceType,
+        this.sku,
+        this.manageStock,
+        this.qty,
+        this.inStock,
+        this.name,
+        this.shortDescription,
+        this.images,
+        this.isProductNew,
+        this.isProductHasSpecialPrice,
+        this.isProductIsInSale,
+        this.productSaleDetails,
+        this.productRating});
 
-  Datum.fromJson(Map<String, dynamic> json) {
+  Data.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
     price = json['price'];
     specialPrice = json['special_price'];
@@ -76,8 +78,11 @@ class Datum {
     isProductNew = json['is_product_new'];
     isProductHasSpecialPrice = json['is_product_has_special_price'];
     isProductIsInSale = json['is_product_is_in_sale'];
-    productSaleDetails = json['product_sale_details'] != null
+    productSaleDetails = json['product_sale_details'].length > 0
         ? new ProductSaleDetails.fromJson(json['product_sale_details'])
+        : null;
+    productRating = json['product_rating'] != null
+        ? new ProductRating.fromJson(json['product_rating'])
         : null;
   }
 
@@ -100,6 +105,9 @@ class Datum {
     if (this.productSaleDetails != null) {
       data['product_sale_details'] = this.productSaleDetails.toJson();
     }
+    if (this.productRating != null) {
+      data['product_rating'] = this.productRating.toJson();
+    }
     return data;
   }
 }
@@ -114,11 +122,11 @@ class ProductSaleDetails {
 
   ProductSaleDetails(
       {this.saleId,
-      this.saleProductId,
-      this.inStock,
-      this.productSalePrice,
-      this.qty,
-      this.sold});
+        this.saleProductId,
+        this.inStock,
+        this.productSalePrice,
+        this.qty,
+        this.sold});
 
   ProductSaleDetails.fromJson(Map<String, dynamic> json) {
     saleId = json['sale_id'];
@@ -137,6 +145,25 @@ class ProductSaleDetails {
     data['product_sale_price'] = this.productSalePrice;
     data['qty'] = this.qty;
     data['sold'] = this.sold;
+    return data;
+  }
+}
+
+class ProductRating {
+  int totalReviewsCount;
+  var avgRating;
+
+  ProductRating({this.totalReviewsCount, this.avgRating});
+
+  ProductRating.fromJson(Map<String, dynamic> json) {
+    totalReviewsCount = json['total_reviews_count'];
+    avgRating = json['avg_rating'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total_reviews_count'] = this.totalReviewsCount;
+    data['avg_rating'] = this.avgRating;
     return data;
   }
 }

@@ -11,6 +11,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:bakraw/screen/productdetail.dart';
 
 class CartItem extends StatefulWidget {
   int id;
@@ -42,6 +44,8 @@ class CartItem extends StatefulWidget {
 
 class _CartItemState extends State<CartItem> {
   CartContainerState state;
+  var price ;
+
   void updateItemCount(BuildContext context) {
     CartContainer.of(context)
         .updateCartPricing(widget.optionvalueid, widget.quantity);
@@ -145,197 +149,243 @@ class _CartItemState extends State<CartItem> {
     });
   }
 
+  getPrice(){
+   price = widget.mld.productOptions[0].options.where((element){
+     return element.optionValueId.contains(widget.optionvalueid);
+   }).toList();
+   return price;
+  }
+
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-
-    return Container(
-      decoration: boxDecoration(
-          showShadow: true, bgColor: grocery_color_white.withOpacity(0.9)),
-      padding: EdgeInsets.fromLTRB(
-          spacing_middle, 0, spacing_middle, spacing_middle),
-      margin: EdgeInsets.only(
-          left: spacing_standard_new,
-          right: spacing_standard_new,
-          bottom: spacing_standard_new),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: CachedNetworkImage(
-                    placeholder: placeholderWidgetFn(),
-                    imageUrl: widget.mld.images[0].path,
-                    fit: BoxFit.fill,
-                    height: width * 0.25,
-                    width: width * 0.40,
-                  ),
-                ),
-                SizedBox(height: spacing_control),
-                text(
-                    '₹ ${(double.parse(widget.price) * int.parse(widget.quantity)).toStringAsFixed(2)}',
-                    textColor: grocery_colorPrimary,
-                    fontSize: textSizeMedium,
-                    fontFamily: fontMedium),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).pushNamed(GroceryProductDescription.tag,
+            arguments: {'prodid': widget.productid, 'names': widget.mld.name});
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(7),
+        child: Container(
+          padding: EdgeInsets.zero,
+          height: 152,
+          decoration: boxDecoration(
+              showShadow: true, bgColor: grocery_color_white.withOpacity(0.9)),
+          /* padding: EdgeInsets.fromLTRB(
+              spacing_middle, 0, spacing_middle, spacing_middle),*/
+          margin: EdgeInsets.only(
+              left: spacing_standard_new,
+              right: spacing_standard_new,
+              bottom: spacing_standard_new),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                    Expanded(
-                      flex:1,
-                      child:
-                    Container(
-                        transform: Matrix4.translationValues(0.0, -20.0, 0.0),
-                        child: text(widget.mld.name,
-                            textColor: grocery_colorPrimary)),
-                    ),
-                      Container(
-                        transform: Matrix4.translationValues(0.0, -20.0, 0.0),
-                        child: IconButton(
-
-                          onPressed: () {
-                            mRemoveItem();
-                          },
-                          icon:
-                              Icon(Icons.delete_outline, color: grocery_colorPrimary_light),
-                        ),
-                      )
-                    ],
-                  ),
-
-                  Container(
-                    transform: Matrix4.translationValues(0.0, -20.0, 0.0),
-                    child:  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        text('₹ ${double.parse(widget.price).toStringAsFixed(2)}',
-                            textColor: grocery_colorPrimary,
-                            fontSize: textSizeLargeMedium),
-                        Container(
-                          padding: EdgeInsets.only(
-                              left: spacing_standard, right: spacing_standard),
-                          decoration: boxDecoration(
-                              radius: spacing_control,
-                              bgColor: grocery_light_gray_color),
-                          margin: EdgeInsets.only(right: spacing_middle),
-                          child: text(widget.optionlable,
-                              fontSize: textSizeSmall, isCentered: true),
-                        ),
-                      ],
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(7),
+                    child: CachedNetworkImage(
+                      placeholder: placeholderWidgetFn(),
+                      imageUrl: widget.mld.images[0].path,
+                      fit: BoxFit.cover,
+                      width: 175,
+                      height: 150,
                     ),
                   ),
-                  Container(
-                    transform: Matrix4.translationValues(0.0, -10.0, 0.0),
-                    child: SizedBox(
-                      width: 75,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                         GestureDetector(
-                           onTap: () async {
-                             int temp = int.parse(widget.quantity);
-                             int i;
-                             if (temp > 1) {
-                               temp--;
-                               i = await DatabaseHelper.instance.updateCartitem({
-                                 DatabaseHelper.productid: widget.productid,
-                                 DatabaseHelper.optionvalueid:
-                                 widget.optionvalueid,
-                                 DatabaseHelper.optionlable: widget.optionlable,
-                                 DatabaseHelper.price: widget.price,
-                                 DatabaseHelper.optionid: widget.optionid,
-                                 DatabaseHelper.optionname: widget.optionname,
-                                 DatabaseHelper.productpriceincreased:
-                                 widget.productpriceincreased,
-                                 DatabaseHelper.quantity: temp.toString()
-                               });
-                               if (i > 0) {
-                                 setState(() {
-                                   widget.quantity = temp.toString();
-                                 });
-                                 updateItemCount(context);
-                               }
-                             } else {}
-                           },
-                           child: Container(
-                             height: 20,
-                             width: 20,
-                             decoration: BoxDecoration(
-                                 color: grocery_colorPrimary_light,
-                                 borderRadius: BorderRadius.circular(17)
-                             ),
-                             child: Center(
-                               child:Icon(Icons.remove,
-                                   size: 20, color: grocery_color_white),
-                             ),
-                           ),
-                         ),
-                          text(widget.quantity,
-                              fontFamily: fontMedium, fontSize: textSizeNormal),
-                         GestureDetector(
-                           onTap: () async {
-                             int temp = int.parse(widget.quantity);
-                             int i;
-                             if (temp >= 1) {
-                               temp++;
-                               i = await DatabaseHelper.instance.updateCartitem({
-                                 DatabaseHelper.productid: widget.productid,
-                                 DatabaseHelper.optionvalueid:
-                                 widget.optionvalueid,
-                                 DatabaseHelper.optionlable: widget.optionlable,
-                                 DatabaseHelper.optionid: widget.optionid,
-                                 DatabaseHelper.optionname: widget.optionname,
-                                 DatabaseHelper.productpriceincreased:
-                                 widget.productpriceincreased,
-                                 DatabaseHelper.price: widget.price,
-                                 DatabaseHelper.quantity: temp.toString()
-                               });
-                               if (i > 0) {
-                                 setState(() {
-                                   widget.quantity = temp.toString();
-                                 });
-                                 updateItemCount(context);
-                               }
-                             } else {}
-                           },
-                           child: Container(
-                             height: 20,
-                             width: 20,
-                             decoration: BoxDecoration(
-                                 color: grocery_colorPrimary_light,
-                                 borderRadius: BorderRadius.circular(17)
-                             ),
-                             child: Center(
-                               child:Icon(Icons.add,
-                                   size: 20, color: grocery_color_white),
-                             ),
-                           ),
-                         )
-                        ],
-                      ),
-                    ),
-                  ),
+                  /* text(
+                      '₹ ${(widget.mld.isProductIsInSale? double.parse(widget.mld.productSaleDetails.price) * int.parse(widget.quantity):double.parse(widget.mld.price) * int.parse(widget.quantity)).toStringAsFixed(2)}',
+                      textColor: grocery_colorPrimary,
+                      fontSize: textSizeMedium,
+                      fontFamily: fontMedium),*/
                 ],
               ),
-            ),
-          )
-        ],
+              ClipRRect(
+                borderRadius: BorderRadius.circular(7),
+                child: Container(
+                  transform: Matrix4.translationValues(0.0, -10.0, 0.0),
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.only(left: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.33,
+                            child: Text(
+                              widget.mld.name,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                              softWrap: true,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Container(
+                            child: IconButton(
+                              onPressed: () {
+                                mRemoveItem();
+                              },
+                              icon: Icon(Icons.delete_outline,
+                                  color: grocery_colorPrimary_light),
+                            ),
+                          )
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                      ),
+                      Container(
+                        transform: Matrix4.translationValues(0.0, -10.0, 0.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            SmoothStarRating(
+                              color: Colors.amber.shade500,
+                              allowHalfRating: true,
+                              isReadOnly: true,
+                              starCount: 5,
+                              rating: double.parse(widget.mld.productRating.avgRating),
+                              size: 17,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 1),
+                              child: Text(
+                                '(${widget.mld.productRating.totalReviewsCount})',
+                                style: TextStyle(fontSize: 10),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        transform: Matrix4.translationValues(0.0, 0.0, 0.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Container(
+                              height:10,
+                              width:7,
+                              padding: EdgeInsets.only(
+                                  left: spacing_standard, right: spacing_standard),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade700,
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(50),bottomRight: Radius.circular(50))
+                              ),
+                              margin: EdgeInsets.only(right: spacing_middle),
+
+                            ),
+                            Text(
+                              '₹ ${(widget.mld.isProductIsInSale ? double.parse(widget.mld.productSaleDetails.price + double.parse(getPrice()[0].price)) : (double.parse(getPrice()[0].price)+double.parse(widget.mld.price)))}',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.green.shade700
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        transform: Matrix4.translationValues(15.0, 7.0, 0.0),
+                        child: SizedBox(
+                          width: 75,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () async {
+                                  int temp = int.parse(widget.quantity);
+                                  int i;
+                                  if (temp > 1) {
+                                    temp--;
+                                    i = await DatabaseHelper.instance.updateCartitem({
+                                      DatabaseHelper.productid: widget.productid,
+                                      DatabaseHelper.optionvalueid:
+                                          widget.optionvalueid,
+                                      DatabaseHelper.optionlable: widget.optionlable,
+                                      DatabaseHelper.price: widget.price,
+                                      DatabaseHelper.optionid: widget.optionid,
+                                      DatabaseHelper.optionname: widget.optionname,
+                                      DatabaseHelper.productpriceincreased:
+                                          widget.productpriceincreased,
+                                      DatabaseHelper.quantity: temp.toString()
+                                    });
+                                    if (i > 0) {
+                                      setState(() {
+                                        widget.quantity = temp.toString();
+                                      });
+                                      updateItemCount(context);
+                                    }
+                                  } else {}
+                                },
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      color: grocery_colorPrimary_light,
+                                      borderRadius: BorderRadius.circular(17)),
+                                  child: Center(
+                                    child: Icon(Icons.remove,
+                                        size: 20, color: grocery_color_white),
+                                  ),
+                                ),
+                              ),
+                              text(widget.quantity,
+                                  fontFamily: fontMedium, fontSize: textSizeNormal),
+                              GestureDetector(
+                                onTap: () async {
+                                  int temp = int.parse(widget.quantity);
+                                  int i;
+                                  if (temp >= 1) {
+                                    temp++;
+                                    i = await DatabaseHelper.instance.updateCartitem({
+                                      DatabaseHelper.productid: widget.productid,
+                                      DatabaseHelper.optionvalueid:
+                                          widget.optionvalueid,
+                                      DatabaseHelper.optionlable: widget.optionlable,
+                                      DatabaseHelper.optionid: widget.optionid,
+                                      DatabaseHelper.optionname: widget.optionname,
+                                      DatabaseHelper.productpriceincreased:
+                                          widget.productpriceincreased,
+                                      DatabaseHelper.price: widget.price,
+                                      DatabaseHelper.quantity: temp.toString()
+                                    });
+                                    if (i > 0) {
+                                      setState(() {
+                                        widget.quantity = temp.toString();
+                                      });
+                                      updateItemCount(context);
+                                    }
+                                  } else {}
+                                },
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      color: grocery_colorPrimary_light,
+                                      borderRadius: BorderRadius.circular(17)),
+                                  child: Center(
+                                    child: Icon(Icons.add,
+                                        size: 20, color: grocery_color_white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

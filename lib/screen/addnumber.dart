@@ -26,13 +26,15 @@ class GroceryAddNumber extends StatefulWidget {
 class _GroceryAddNumberState extends State<GroceryAddNumber> {
   SharedPreferences prefs;
   bool isLoading = false;
+  String status='';
   TextEditingController mobileController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
     var width = MediaQuery.of(context).size.width;
-    
+
     Future setUser(Data userModel) async {
       prefs = await SharedPreferences.getInstance();
       if (prefs != null) {

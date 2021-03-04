@@ -1,8 +1,6 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/couponsslidermodel.dart';
 import 'package:bakraw/provider/couponsliderProvider.dart';
-import 'package:bakraw/provider/sliderprovider.dart';
-import 'package:bakraw/screen/productdetail.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -16,32 +14,39 @@ class Couponsslider extends StatefulWidget {
 
 class _CouponssliderState extends State<Couponsslider> {
   var isLoading = true;
-
+  int current = 0;
+  List<Data> sliderimg = [];
   @override
   void initState() {
     super.initState();
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    int current = 0;
-    Provider.of<couponslideProvider>(context).getCategory().then((value) {
+    if(isLoading) {
+    Provider.of<couponslideProvider>(context,listen: false).getCategory().then((value) {
       setState(() {
         isLoading = false;
       });
     });
-    List<Data> sliderimg = [];
+      final slider = Provider
+          .of<couponslideProvider>(context, listen: false)
+          .items
+          .forEach((element) {
+            setState(() {
+              sliderimg.add(Data(
+                  filePath: element.filePath,
+                  couponId: element.couponId
+              ));
+            });
 
-    final slider = Provider.of<couponslideProvider>(context, listen: false)
-        .items
-        .forEach((element) {
-      setState(() {
-        sliderimg.add(Data(
-          filePath: element.filePath,
-          couponId: element.couponId
-        ));
       });
-    });
+    }
 
     return !isLoading
         ? Column(
@@ -63,8 +68,8 @@ class _CouponssliderState extends State<Couponsslider> {
               viewportFraction: 0.7,
               height: MediaQuery.of(context).size.height / 4,
               initialPage: 0,
-              enableInfiniteScroll: true,
-              autoPlay: true,
+              enableInfiniteScroll: false,
+              autoPlay: false,
               autoPlayInterval: Duration(seconds: 3),
             ),
             items: sliderimg.map((e) {

@@ -3,7 +3,6 @@ import 'package:bakraw/screen/FavouriteProduct.dart';
 import 'package:bakraw/screen/aboutus.dart';
 import 'package:bakraw/screen/cart/mycart2.dart';
 import 'package:bakraw/screen/home.dart';
-import 'package:bakraw/screen/mycart.dart';
 import 'package:bakraw/screen/orderhistory.dart';
 import 'package:bakraw/screen/privacypolicy.dart';
 import 'package:bakraw/screen/searchscreen.dart';

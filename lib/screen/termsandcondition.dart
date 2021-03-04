@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class Terms extends StatefulWidget {
+  static String tag = '/TermsandCondition';
   @override
   _TermsState createState() => _TermsState();
 }

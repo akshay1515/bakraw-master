@@ -126,9 +126,7 @@ class _GroceryProfileState extends State<GroceryProfile> {
                               /*else if (index == 2) {
                         GroceryAddPaymentScreen().launch(context);
                       }*/
-                              if (index == 1) {
-                                GroceryChangePassword().launch(context);
-                              } else if (index == 2) {
+                             else if (index == 1) {
                                 showLogoutBottomSheetDialog(context);
                               }
                             },

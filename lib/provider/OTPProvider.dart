@@ -24,13 +24,12 @@ class OTPProvider with ChangeNotifier {
           status: data['status']
         );
       } else {
-        userModel = OTPverifyModel(status: data['status'], message: data['message']);
+        userModel = OTPverifyModel(status: data['status'], message: data['message'],data: data['data']);
       }
     }
     notifyListeners();
     return userModel;
   }
-
   Future<OTPverifyModel> VerifyOTP(String mobilenumber,String otp) async {
     const url = '${Utility.BaseURL}${'verify-otp.php'}';
     OTPverifyModel model;

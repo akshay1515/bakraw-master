@@ -23,7 +23,6 @@ class couponslideProvider with ChangeNotifier {
       if (data['status'] == 200) {
         slider = couponSliderModel.fromJson(data);
         slider.data.forEach((element) {
-          print(element.filePath);
           sliderdata.add(Data(
             filePath: element.filePath,
             couponId: element.couponId

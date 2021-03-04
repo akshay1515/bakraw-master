@@ -1,16 +1,15 @@
 import 'package:bakraw/model/deliveryslotmodel.dart';
-import 'package:bakraw/model/useraddressmodel.dart';
+import 'package:bakraw/model/useraddressmodel.dart' as user;
 import 'package:bakraw/provider/deliveryslotprovider.dart';
 import 'package:bakraw/screen/shippingMethod.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
-import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CheckPincode extends StatefulWidget {
-  addressData model;
+  user.Data model;
 
   CheckPincode({Key key, this.model}) : super(key: key);
 
@@ -21,21 +20,17 @@ class CheckPincode extends StatefulWidget {
 class _CheckPincodeState extends State<CheckPincode> {
   List<String> list = [];
   String deliveryslot;
+  String Selected = '';
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
   }
-
-  /*Future<List<String>> getDeliverySlot() async {
-    Provider.of<DeliverySlotProvider>(context).getDeliverySlot().then((value) {
-        value.data.forEach((element) {
-          list.add(element);
-        });
-      return list;
-    });
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,94 +57,96 @@ class _CheckPincodeState extends State<CheckPincode> {
                 child: CircularProgressIndicator(),
               );
             } else {
-              return Container(
-                  child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {},
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 50,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Delivery Slots',
-                          style: TextStyle(
-                              fontSize: textSizeLarge, fontFamily: fontMedium),
-                        )),
-                  ),
-                  Expanded(
-                    child: RadioListBuilder(
-                      optionlist: snapshot.data.data,
-                      model: widget.model,
-                    ),
-                  ),
-                ],
-              ));
+              return ListView.builder(
+                  itemCount: snapshot.data.data.length+1,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+
+                    if(index < snapshot.data.data.length) {
+                      return ExpansionTile(
+                        title: Text(snapshot.data.data[index].day),
+                        children: [
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.data[index].options.length,
+                              itemBuilder: (ctx, ind) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: EdgeInsets.symmetric(vertical:8,horizontal: 8),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      if(snapshot.data.data[index].options[ind]
+                                          .value ==
+                                          Selected){
+                                        setState(() {
+                                          Selected = '';
+                                        });
+                                      }else{
+                                        setState(() {
+                                          Selected = snapshot.data.data[index].options[ind]
+                                              .value;
+                                        });
+                                      }
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            snapshot.data.data[index].options[ind]
+                                                .value ==
+                                                Selected
+                                                ? Icons.check_box
+                                                : Icons
+                                                .check_box_outline_blank_outlined,
+                                            color: grocery_colorPrimary,
+                                          ),
+                                          Text(snapshot.data.data[index].options[ind]
+                                              .title)
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              })
+                        ],
+                      );
+                    }
+                    else{
+                     return Container(
+                       width: MediaQuery.of(context).size.width/2.5,
+                       padding: EdgeInsets.symmetric(
+                           vertical: 08,
+                           horizontal: MediaQuery.of(context).size.width/3),
+                       child: FlatButton(
+                            onPressed: (){
+                              if(Selected != ''){
+                                ShippingMethod(widget.model, Selected).launch(context);
+                              }else{
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('No Slot Selected'),
+                                      content: Text(
+                                          'Please Select Delivery Time',textAlign: TextAlign.center,),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop();
+                                            },
+                                            child: Text('Ok'))
+                                      ],
+                                    ));
+                              }
+                            },
+                            color: grocery_colorPrimary,
+                            child: Text('Next',style: TextStyle(color: grocery_color_white),)),
+                     );
+                    }
+                  });
             }
           }),
-    );
-  }
-}
-
-class RadioListBuilder extends StatefulWidget {
-  List<String> optionlist;
-  addressData model;
-
-  RadioListBuilder({Key key, this.optionlist, this.model}) : super(key: key);
-
-  @override
-  _RadioListBuilderState createState() => _RadioListBuilderState();
-}
-
-class _RadioListBuilderState extends State<RadioListBuilder> {
-  var samp;
-
-  SelectedRadio(String val) {
-    setState(() {
-      selectedValue = val;
-    });
-    Provider.of<DeliverySlotProvider>(context, listen: false)
-        .UpdateOptionValue(val)
-        .then((value) {
-      ShippingMethod(widget.model, selectedValue).launch(context);
-    });
-  }
-
-  @override
-  void dispose() {
-    this.dispose();
-  }
-
-  var selectedValue;
-  var sOptionPrice;
-  var sOptionLable;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: widget.optionlist.length,
-      itemBuilder: (context, index) {
-        return SizedBox(
-          width: MediaQuery.of(context).size.width / 2.3,
-          child: RadioListTile(
-              toggleable: false,
-              controlAffinity: ListTileControlAffinity.platform,
-              dense: true,
-              title: Text(
-                widget.optionlist[index],
-                style: TextStyle(
-                    fontFamily: fontMedium,
-                    fontSize: MediaQuery.of(context).size.width / 23),
-              ),
-              value: widget.optionlist[index],
-              groupValue: selectedValue,
-              onChanged: (val) {
-                SelectedRadio(selectedValue = val);
-              }),
-        );
-      },
     );
   }
 }

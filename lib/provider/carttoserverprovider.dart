@@ -11,8 +11,6 @@ class CartToserverProvider with ChangeNotifier {
       String model, String apikey) async {
     print(apikey);
     const url = '${Utility.BaseURL}${'add-order-details-in-server-db.php'}';
-    print(model);
-    log(model);
     orderplacedmessage modelm;
     try {
       final response = await http.post(url,

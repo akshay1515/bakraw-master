@@ -18,11 +18,11 @@ List<GroceryProfileModel> groceryProfileList() {
   list3.color = grocery_orangeColor;
   list.add(list3);*/
 
-  var list4 = GroceryProfileModel();
+  /*var list4 = GroceryProfileModel();
   list4.title = grocery_lbl_Change_Password;
   list4.icon = Grocery_ic_Lock;
   list4.color = grocery_RedLight_Color;
-  list.add(list4);
+  list.add(list4);*/
 
   var list5 = GroceryProfileModel();
   list5.title = grocery_lbl_Logout;

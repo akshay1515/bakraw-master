@@ -7,7 +7,7 @@ import 'package:bakraw/model/internalcart.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/model/shipmethod.dart' as dw;
 import 'package:bakraw/model/taxmodel.dart';
-import 'package:bakraw/model/useraddressmodel.dart';
+import 'package:bakraw/model/useraddressmodel.dart' as net;
 import 'package:bakraw/provider/couponprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
 import 'package:bakraw/provider/shipmethodprovider.dart';
@@ -25,10 +25,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShippingMethod extends StatefulWidget {
-  addressData model;
+  net.Data model;
   String deliveryslot;
 
-  ShippingMethod(addressData model, String deliveryslot) {
+  ShippingMethod(net.Data model, String deliveryslot) {
     this.model = model;
     this.deliveryslot = deliveryslot;
   }
@@ -230,7 +230,8 @@ class _ShippingMethodState extends State<ShippingMethod> {
           visiblity = true;
           textcolor = grocery_colorPrimary;
           coupontext =
-              "You have saved ₹ ${double.parse(value.data.discountAmount).toStringAsFixed(2)}";
+          "You have saved ₹ ${double.parse(value.data.discountAmount)
+              .toStringAsFixed(2)}";
           icons = Icons.check_circle;
         });
       } else {
@@ -252,7 +253,10 @@ class _ShippingMethodState extends State<ShippingMethod> {
   @override
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
-    var width = MediaQuery.of(context).size.width;
+    var width = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     Future<List<dw.Data>> getDeliveryMethod() async {
       Provider.of<ShipmethodProvider>(context)
@@ -286,7 +290,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
     }
 
     return FutureBuilder(
-        future: Future.wait([getDeliveryMethod(), getTaxdetails()]),
+        future: Future.wait([getTaxdetails(), getDeliveryMethod(),]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
             return Scaffold(
@@ -336,7 +340,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                             children: <Widget>[
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   text(
                                       '${grocery_lbl_subtotal}${' '}${'(${count} items)'}'),
@@ -347,7 +351,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                               SizedBox(height: spacing_control),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   text('Tax (${tempTax.toStringAsFixed(2)}%)',
                                       textColor: grocery_textColorSecondary),
@@ -361,15 +365,17 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                     SizedBox(height: spacing_control),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         text('Discount ',
                                             textColor: grocery_color_red),
                                         text(
                                             couponclass != null
                                                 ? couponclass.status == 200
-                                                    ? "- ₹ ${double.parse(couponclass.data.discountAmount).toStringAsFixed(2)}"
-                                                    : ""
+                                                ? "- ₹ ${double.parse(
+                                                couponclass.data.discountAmount)
+                                                .toStringAsFixed(2)}"
+                                                : ""
                                                 : "",
                                             textColor: grocery_color_red),
                                       ],
@@ -378,8 +384,8 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 ),
                                 visible: couponclass != null
                                     ? couponclass.status == 200
-                                        ? true
-                                        : false
+                                    ? true
+                                    : false
                                     : false,
                               ),
                               SizedBox(height: spacing_standard_new),
@@ -394,27 +400,28 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                           ),
                                           decoration: BoxDecoration(
                                               border: Border.all(color: grey)),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width *
                                               0.63,
                                           child: TextFormField(
                                             textCapitalization:
-                                                TextCapitalization.characters,
+                                            TextCapitalization.characters,
                                             controller: coupon,
                                             keyboardType: TextInputType.text,
                                             decoration: InputDecoration(
                                               border: InputBorder.none,
                                               contentPadding:
-                                                  EdgeInsets.only(left: 7),
+                                              EdgeInsets.only(left: 7),
                                               hintText:
-                                                  'Enter Coupon Code Here',
+                                              'Enter Coupon Code Here',
                                             ),
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 8.0),
+                                          const EdgeInsets.only(left: 8.0),
                                           child: groceryButton(
                                             bgColors: grocery_colorPrimary,
                                             onPressed: () {
@@ -467,7 +474,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding:
-                                      EdgeInsets.only(left: 3, right: 7),
+                                  EdgeInsets.only(left: 3, right: 7),
                                   hintText: 'Delivery Instructions',
                                 ),
                               ),
@@ -476,7 +483,10 @@ class _ShippingMethodState extends State<ShippingMethod> {
                         ),
                         Container(
                             padding: EdgeInsets.only(left: 10),
-                            width: MediaQuery.of(context).size.width,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
                             alignment: Alignment.centerLeft,
                             child: text('Select Delivery Method',
                                 fontFamily: fontMedium)),
@@ -526,7 +536,8 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                           ),
                                         ),
                                         Text(
-                                          '₹ ${Shippinglist[0].freeShippingMinAmount}',
+                                          '₹ ${Shippinglist[0]
+                                              .freeShippingMinAmount}',
                                           style: TextStyle(
                                             fontSize: 20,
                                             color: !isdelivery
@@ -582,7 +593,8 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                           ),
                                         ),
                                         Text(
-                                            '₹ ${Shippinglist[1].localPickupCost}',
+                                            '₹ ${Shippinglist[1]
+                                                .localPickupCost}',
                                             style: TextStyle(
                                               fontSize: 20,
                                               color: !ispickup
@@ -600,7 +612,10 @@ class _ShippingMethodState extends State<ShippingMethod> {
                         Container(
                             margin: EdgeInsets.only(top: spacing_standard_new),
                             padding: EdgeInsets.only(left: 10),
-                            width: MediaQuery.of(context).size.width,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
                             alignment: Alignment.centerLeft,
                             child: text('Select Payment Method',
                                 fontFamily: fontMedium)),
@@ -631,7 +646,10 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                               color: grocery_lightGrey))),
                                   padding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 5),
-                                  width: MediaQuery.of(context).size.width,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width,
                                   child: Stack(
                                     children: [
                                       Align(
@@ -675,7 +693,10 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                                 color: grocery_color_white))),
                                     padding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 5),
-                                    width: MediaQuery.of(context).size.width,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width,
                                     child: Stack(
                                       children: [
                                         Align(
@@ -737,25 +758,25 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 toastLength: Toast.LENGTH_SHORT);
                             !userid.isEmptyOrNull
                                 ? subtotal <= 0
-                                    ? Fluttertoast.showToast(
-                                        msg: 'Your cart is Empty',
-                                        toastLength: Toast.LENGTH_SHORT)
-                                    : PaymentsPage(
-                                            widget.model,
-                                            widget.deliveryslot,
-                                            finalTotal(),
-                                            deliveryinstructions,
-                                            Shippinglable,
-                                            shippingcost,
-                                            taxmodel
-                                                .data[0].taxRates[0].taxRateId,
-                                            Calculatetax().toStringAsFixed(2),
-                                            paymentMode,
-                                            couponclass)
-                                        .launch(context)
+                                ? Fluttertoast.showToast(
+                                msg: 'Your cart is Empty',
+                                toastLength: Toast.LENGTH_SHORT)
+                                : PaymentsPage(
+                                widget.model,
+                                widget.deliveryslot,
+                                finalTotal(),
+                                deliveryinstructions,
+                                Shippinglable,
+                                shippingcost,
+                                taxmodel
+                                    .data[0].taxRates[0].taxRateId,
+                                Calculatetax().toStringAsFixed(2),
+                                paymentMode,
+                                couponclass)
+                                .launch(context)
                                 : Fluttertoast.showToast(
-                                    msg: 'Please Login',
-                                    toastLength: Toast.LENGTH_SHORT);
+                                msg: 'Please Login',
+                                toastLength: Toast.LENGTH_SHORT);
                           }
                         }),
                       ),

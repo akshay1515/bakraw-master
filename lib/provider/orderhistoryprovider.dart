@@ -14,25 +14,35 @@ class OrderHistoryProvider with ChangeNotifier {
 
   Future<OrderHistoryModel> getPastOrder(
       {String apikey, String userid, String email}) async {
-    //print('object $userid, $email, $apikey');
     const url = '${Utility.BaseURL}${'past-orders.php'}';
     OrderHistoryModel model;
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({'user_id': userid, 'user_email': email}));
+    print(response.body);
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       List<Data> list = [];
-      model = OrderHistoryModel.fromJson(data);
-      model.data.forEach((element) {
-        list.add(Data(
-            status: element.status,
-            createdAt: element.createdAt,
-            orderId: element.orderId,
-            subTotal: element.subTotal,
-            total: element.total));
-      });
-      _items = list;
+      if(data['data'] != null){
+        model = OrderHistoryModel.fromJson(data);
+        model.data.forEach((element) {
+          list.add(Data(
+              status: element.status,
+              createdAt: element.createdAt,
+              orderId: element.orderId,
+              subTotal: element.subTotal,
+              total: element.total));
+        });
+        _items = list;
+      }else{
+        model = OrderHistoryModel(
+        status: data['status'],
+        message: data['message'],
+        data: data['data']
+        );
+      }
+
+
       notifyListeners();
       return model;
     }

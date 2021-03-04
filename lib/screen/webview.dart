@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ContentDisplay extends StatefulWidget {
+  static String tag = '/ContactUs';
   @override
   _ContentDisplayState createState() => _ContentDisplayState();
 }

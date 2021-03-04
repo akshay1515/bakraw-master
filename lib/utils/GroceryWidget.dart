@@ -51,7 +51,6 @@ class groceryButton extends StatefulWidget {
   @override
   groceryButtonState createState() => groceryButtonState();
 }
-
 class groceryButtonState extends State<groceryButton> {
   @override
   Widget build(BuildContext context) {
@@ -70,6 +69,53 @@ class groceryButtonState extends State<groceryButton> {
         decoration: widget.isStroked
             ? boxDecoration(
                 bgColor: Colors.transparent, color: grocery_colorPrimary)
+            : boxDecoration(bgColor: widget.bgColors, radius: widget.radius),
+      ),
+    );
+  }
+}
+
+class productdecButton extends StatefulWidget {
+  static String tag = '/dpButton';
+  var textContent;
+  VoidCallback onPressed;
+  var isStroked = false;
+  var height = 50.0;
+  var radius = 5.0;
+  var bgColors = grocery_colorPrimary;
+  var color = grocery_colorPrimary;
+
+  productdecButton(
+      {@required this.textContent,
+        @required this.onPressed,
+        this.isStroked = false,
+        this.height = 50.0,
+        this.radius = 5.0,
+        this.color,
+        this.bgColors});
+
+  @override
+  productdecButtonState createState() => productdecButtonState();
+}
+
+class productdecButtonState extends State<productdecButton> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onPressed,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+        alignment: Alignment.center,
+        child: text(widget.textContent,
+            textColor:
+            widget.isStroked ? grocery_colorPrimary : grocery_color_white,
+            fontSize: textSizeMedium,
+            isCentered: true,
+            fontFamily: fontSemiBold,
+            textAllCaps: true),
+        decoration: widget.isStroked
+            ? boxDecoration(
+            bgColor: Colors.transparent, color: grocery_colorPrimary)
             : boxDecoration(bgColor: widget.bgColors, radius: widget.radius),
       ),
     );

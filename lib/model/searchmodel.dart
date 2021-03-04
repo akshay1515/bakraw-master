@@ -42,22 +42,26 @@ class Data {
   bool isProductNew;
   bool isProductHasSpecialPrice;
   bool isProductIsInSale;
+  var productSaleDetails;
+  ProductRating productRating;
 
   Data(
       {this.productId,
-      this.price,
-      this.specialPrice,
-      this.specialPriceType,
-      this.sku,
-      this.manageStock,
-      this.qty,
-      this.inStock,
-      this.name,
-      this.shortDescription,
-      this.images,
-      this.isProductNew,
-      this.isProductHasSpecialPrice,
-      this.isProductIsInSale});
+        this.price,
+        this.specialPrice,
+        this.specialPriceType,
+        this.sku,
+        this.manageStock,
+        this.qty,
+        this.inStock,
+        this.name,
+        this.shortDescription,
+        this.images,
+        this.isProductNew,
+        this.isProductHasSpecialPrice,
+        this.isProductIsInSale,
+        this.productSaleDetails,
+        this.productRating});
 
   Data.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
@@ -74,6 +78,12 @@ class Data {
     isProductNew = json['is_product_new'];
     isProductHasSpecialPrice = json['is_product_has_special_price'];
     isProductIsInSale = json['is_product_is_in_sale'];
+    productSaleDetails = json['product_sale_details'].length > 0
+        ? new ProductSaleDetails.fromJson(json['product_sale_details'])
+        : null;
+    productRating = json['product_rating'] != null
+        ? new ProductRating.fromJson(json['product_rating'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -92,6 +102,68 @@ class Data {
     data['is_product_new'] = this.isProductNew;
     data['is_product_has_special_price'] = this.isProductHasSpecialPrice;
     data['is_product_is_in_sale'] = this.isProductIsInSale;
+    if (this.productSaleDetails != null) {
+      data['product_sale_details'] = this.productSaleDetails.toJson();
+    }
+    if (this.productRating != null) {
+      data['product_rating'] = this.productRating.toJson();
+    }
+    return data;
+  }
+}
+
+class ProductSaleDetails {
+  String saleId;
+  String saleProductId;
+  bool inStock;
+  String productSalePrice;
+  String qty;
+  int sold;
+
+  ProductSaleDetails(
+      {this.saleId,
+        this.saleProductId,
+        this.inStock,
+        this.productSalePrice,
+        this.qty,
+        this.sold});
+
+  ProductSaleDetails.fromJson(Map<String, dynamic> json) {
+    saleId = json['sale_id'];
+    saleProductId = json['sale_product_id'];
+    inStock = json['in_stock'];
+    productSalePrice = json['product_sale_price'];
+    qty = json['qty'];
+    sold = json['sold'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sale_id'] = this.saleId;
+    data['sale_product_id'] = this.saleProductId;
+    data['in_stock'] = this.inStock;
+    data['product_sale_price'] = this.productSalePrice;
+    data['qty'] = this.qty;
+    data['sold'] = this.sold;
+    return data;
+  }
+}
+
+class ProductRating {
+  int totalReviewsCount;
+  var avgRating;
+
+  ProductRating({this.totalReviewsCount, this.avgRating});
+
+  ProductRating.fromJson(Map<String, dynamic> json) {
+    totalReviewsCount = json['total_reviews_count'];
+    avgRating = json['avg_rating'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total_reviews_count'] = this.totalReviewsCount;
+    data['avg_rating'] = this.avgRating;
     return data;
   }
 }

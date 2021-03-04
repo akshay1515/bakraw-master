@@ -21,10 +21,22 @@ class _BannerSliderState extends State<BannerSlider> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     int current = 0;
-    Provider.of<SliderProvider>(context).getCategory().then((value) {
-      isLoading = false;
+    Provider.of<SliderProvider>(context, listen: false)
+        .getCategory()
+        .then((value) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
     List<Data> sliderimg = [];
 
@@ -45,8 +57,8 @@ class _BannerSliderState extends State<BannerSlider> {
               CarouselSlider(
                   options: CarouselOptions(
                     viewportFraction: 1,
-                    height: MediaQuery.of(context).size.height / 3.25,
-                    initialPage: 0,
+                    height: 250,
+                    initialPage: current,
                     enableInfiniteScroll: true,
                     autoPlay: true,
                     autoPlayInterval: Duration(seconds: 3),
@@ -62,21 +74,12 @@ class _BannerSliderState extends State<BannerSlider> {
                                 'names': e.name
                               });
                         },
-                        child: AspectRatio(
-                          aspectRatio: MediaQuery.of(context).orientation ==
-                                  Orientation.portrait
-                              ? 4 / 2
-                              : 2 / 4,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: CachedNetworkImage(
-                              imageUrl: e.image,
-                              width: double.infinity,
-                              height: MediaQuery.of(context).size.height / 4.5,
-                              fit: BoxFit.fill,
-                              placeholder: placeholderWidgetFn(),
-                            ),
-                          ),
+                        child: CachedNetworkImage(
+                          imageUrl: e.image,
+                          width: double.infinity,
+                          height: 250,
+                          fit: BoxFit.fill,
+                          placeholder: placeholderWidgetFn(),
                         ),
                       );
                     });

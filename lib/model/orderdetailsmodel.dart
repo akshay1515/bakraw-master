@@ -43,7 +43,7 @@ class Data {
   Address address;
   List<Products> products;
   List<TaxDetails> taxDetails;
-  TransactionDetails transactionDetails;
+  var transactionDetails;
 
   Data(
       {this.orderId,
@@ -101,7 +101,7 @@ class Data {
         taxDetails.add(new TaxDetails.fromJson(v));
       });
     }
-    transactionDetails = json['transaction_details'] != null
+    transactionDetails = json['transaction_details'].length > 0
         ? new TransactionDetails.fromJson(json['transaction_details'])
         : null;
   }

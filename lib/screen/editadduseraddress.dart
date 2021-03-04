@@ -1,5 +1,6 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/useraddressmodel.dart';
+import 'package:bakraw/model/usermodel.dart' as da;
 import 'package:bakraw/provider/pincodeprovider.dart';
 import 'package:bakraw/provider/useraddressprovider.dart';
 import 'package:bakraw/screen/useraddresslist.dart';
@@ -13,7 +14,7 @@ import 'package:provider/provider.dart';
 
 class EditUserAddress extends StatefulWidget {
   static const tag = '/EditUserAddress';
-  addressData model;
+  Data model;
 
   EditUserAddress({this.model});
 
@@ -68,7 +69,7 @@ bool status = false;
 bool copystatus = false;
 
 class _EditUserAddressState extends State<EditUserAddress> {
-  addressData userAddress;
+  Data userAddress;
   String Addressid = "";
   String email = '';
   String apikey = '';
@@ -76,7 +77,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
   String fname = '';
   String lname = '';
   String mobile = '';
-  List<addressData> list = [];
+  List<Data> list = [];
 
   bool isloading = false;
 
@@ -131,26 +132,25 @@ class _EditUserAddressState extends State<EditUserAddress> {
     countryCont.text = 'India';
     stateCont.text = 'Uttrakhand';
     cityCont.text = 'Dehradun';
-    shipstateCont.text = 'Uttrakhand';
-    shipcityCont.text = 'Dehradun';
+    shipstateCont.text = stateCont.text;
+    shipcityCont.text = cityCont.text;
     if (widget.model != null) {
-      firstNameCont.text = widget.model.shippingFirstName;
-      lastNameCont.text = widget.model.shippingLastName;
-      addressCont.text = widget.model.shippingAddress1;
-      shippingaddress1.text = widget.model.shippingAddress2;
-      cityCont.text = widget.model.shippingCity;
-      stateCont.text = widget.model.shippingState;
-      countryCont.text = widget.model.shippingCountry;
-      pinCodeCont.text = widget.model.shippingZip;
-      phoneNumberCont.text = widget.model.userPhone;
-      shipfirstNameCont.text = widget.model.billingFirstName;
-      shiplastNameCont.text = widget.model.billingLastName;
-      shipaddressCont.text = widget.model.billingAddress1;
-      shipshippingaddress1.text = widget.model.billingAddress2;
-      shipcityCont.text = widget.model.billingCity;
-      shipstateCont.text = widget.model.billingState;
-      shippinCodeCont.text = widget.model.billingZip;
-      shipphoneNumberCont.text = widget.model.userPhone;
+      print(widget.model.address2);
+      firstNameCont.text = widget.model.firstName;
+      lastNameCont.text = widget.model.lastName;
+      addressCont.text = widget.model.address1;
+      shippingaddress1.text = widget.model.address2;
+      cityCont.text = widget.model.city;
+      pinCodeCont.text = widget.model.zip;
+      phoneNumberCont.text = mobile;
+      shipfirstNameCont.text = widget.model.firstName;
+      shiplastNameCont.text = widget.model.lastName;
+      shipaddressCont.text = widget.model.address1;
+      shipshippingaddress1.text = widget.model.address2;
+      shipcityCont.text = widget.model.city;
+      shipstateCont.text = widget.model.state;
+      shippinCodeCont.text = widget.model.zip;
+      shipphoneNumberCont.text = mobile;
       Addressid = widget.model.id;
     }
   }
@@ -168,7 +168,6 @@ class _EditUserAddressState extends State<EditUserAddress> {
         mobile = prefs.getString('mobile');
       });
     }
-    print('apikey $apikey');
     return apikey;
   }
 
@@ -192,35 +191,30 @@ class _EditUserAddressState extends State<EditUserAddress> {
         isloading = true;
       });
 
-      userAddress = addressData(
-        addressTitle: 'Home',
+      userAddress = Data(
+        firstName: firstNameCont.text,
+        lastName: lastNameCont.text,
+        customerId: userid,
         id: Addressid,
-        shippingZip: pinCodeCont.text,
-        shippingCountry: countryCont.text,
-        shippingState: stateCont.text,
-        shippingCity: cityCont.text,
-        shippingAddress1: addressCont.text,
-        shippingAddress2: shippingaddress1.text,
-        shippingFirstName: firstNameCont.text,
-        shippingLastName: lastNameCont.text,
-        billingZip: shippinCodeCont.text,
-        billingState: shipstateCont.text,
-        billingCity: shipcityCont.text,
-        billingAddress1: shipaddressCont.text,
-        billingAddress2: shipshippingaddress1.text,
-        billingFirstName: shipfirstNameCont.text,
-        billingLastName: shiplastNameCont.text,
-        userEmail: email,
-        userPhone: mobile,
-        userFirstname: fname,
-        userLastname: lname,
-        userId: userid,
-        isActive: '1',
-        isDefault: '1',
+        address1: addressCont.text,
+        address2: shippingaddress1.text,
+        city: cityCont.text,
+        country: countryCont.text,
+        state: stateCont.text,
+        zip: pinCodeCont.text,
       );
 
       Provider.of<UserAddressProvider>(context, listen: false)
-          .AddUpdateAddress(userAddress, apikey)
+          .AddUpdateAddress(
+              userAddress,
+              da.Data(
+                userId: userid,
+                firstName: fname,
+                lastName: lname,
+                token: apikey,
+                email: email,
+                phoneNumber: mobile,
+              ))
           .then((value) {
         toast(value.message, length: Toast.LENGTH_SHORT);
 
@@ -229,27 +223,10 @@ class _EditUserAddressState extends State<EditUserAddress> {
         addressCont.clear();
         shippingaddress1.clear();
         cityCont.clear();
-
         stateCont.clear();
-
         countryCont.clear();
-
         pinCodeCont.clear();
-
         phoneNumberCont.clear();
-
-        shipfirstNameCont.clear();
-
-        shiplastNameCont.clear();
-
-        shipaddressCont.clear();
-
-        shipshippingaddress1.clear();
-
-        shipcityCont.clear();
-        shipstateCont.clear();
-        shippinCodeCont.clear();
-
         Navigator.of(context).popAndPushNamed(UserAddressManager.tag);
         setState(() {
           isloading = false;
@@ -438,8 +415,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       shape:
           RoundedRectangleBorder(borderRadius: new BorderRadius.circular(40.0)),
       onPressed: () {
-        if (_billingform.currentState.validate() &&
-            _shippingform.currentState.validate()) {
+        if (_billingform.currentState.validate()) {
           onSaveClicked();
         } else {
           Fluttertoast.showToast(
@@ -487,6 +463,10 @@ class _EditUserAddressState extends State<EditUserAddress> {
               ),
               Expanded(child: pinCode),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+            child: saveButton,
           ),
         ]));
 
@@ -684,12 +664,12 @@ class _EditUserAddressState extends State<EditUserAddress> {
               child: CircularProgressIndicator(),
             )
           : Container(
-              width: double.infinity,
-              child: SingleChildScrollView(
-                  child: Column(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
                 children: <Widget>[
                   Container(
-                    width: double.infinity,
+                    width: MediaQuery.of(context).size.width,
                     color: grocery_lightGrey,
                     child: Center(
                         child: Padding(
@@ -701,63 +681,67 @@ class _EditUserAddressState extends State<EditUserAddress> {
                       ),
                     )),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: body,
-                  ),
                   Container(
                     width: double.infinity,
-                    color: grocery_lightGrey,
-                    child: Center(
-                        child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Billing Address',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    )),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: body,
+                    ),
+                  )
+                  /* Container(
+                width: double.infinity,
+                color: grocery_lightGrey,
+                child: Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Billing Address',
+                    style: TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            setState(() {
-                              copystatus = !copystatus;
-                            });
-                            if (copystatus == true) {
-                              shipfirstNameCont.text = firstNameCont.text;
-                              shiplastNameCont.text = lastNameCont.text;
-                              shipaddressCont.text = addressCont.text;
-                              shipshippingaddress1.text = shippingaddress1.text;
-                              shipcityCont.text = cityCont.text;
-                              shippinCodeCont.text = pinCodeCont.text;
-                            } else if (copystatus) {
-                              shipfirstNameCont.clear();
-                              shiplastNameCont.clear();
-                              shipaddressCont.clear();
-                              shipshippingaddress1.clear();
-                              shipcityCont.clear();
-                              shippinCodeCont.clear();
-                            }
-                          },
-                          icon: !copystatus
-                              ? Icon(Icons.check_box_outline_blank_outlined)
-                              : Icon(
-                                  Icons.check_box_sharp,
-                                  color: grocery_colorPrimary,
-                                )),
-                      Text('Same as shipping address'),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: shipbody,
-                  ),
+                )),
+              ),*/
+                  /* Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        setState(() {
+                          copystatus = !copystatus;
+                        });
+                        if (copystatus == true) {
+                          shipfirstNameCont.text = firstNameCont.text;
+                          shiplastNameCont.text = lastNameCont.text;
+                          shipaddressCont.text = addressCont.text;
+                          shipshippingaddress1.text = shippingaddress1.text;
+                          shipcityCont.text = cityCont.text;
+                          shippinCodeCont.text = pinCodeCont.text;
+                        } else if (copystatus) {
+                          shipfirstNameCont.clear();
+                          shiplastNameCont.clear();
+                          shipaddressCont.clear();
+                          shipshippingaddress1.clear();
+                          shipcityCont.clear();
+                          shippinCodeCont.clear();
+                        }
+                      },
+                      icon: !copystatus
+                          ? Icon(Icons.check_box_outline_blank_outlined)
+                          : Icon(
+                              Icons.check_box_sharp,
+                              color: grocery_colorPrimary,
+                            )),
+                  Text('Same as shipping address'),
                 ],
-              ))),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: shipbody,
+              ),*/
+                ],
+              )),
     );
   }
 }

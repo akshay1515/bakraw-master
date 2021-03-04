@@ -9,10 +9,11 @@ import 'package:bakraw/model/internalcart.dart';
 import 'package:bakraw/model/paymentGatewayModels.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/model/taxmodel.dart';
-import 'package:bakraw/model/useraddressmodel.dart';
+import 'package:bakraw/model/useraddressmodel.dart' as net;
 import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
 import 'package:bakraw/screen/dashboard.dart';
+import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/widget/success_dialogue.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymentsPage extends StatefulWidget {
-  addressData model;
+  net.Data model;
   String deliveryslot;
   double amount;
   String shippinglable;
@@ -35,7 +36,7 @@ class PaymentsPage extends StatefulWidget {
   CouponModel couponModel;
 
   PaymentsPage(
-    addressData model,
+    net.Data model,
     String deliveryslot,
     double amount,
     String instruction,
@@ -155,11 +156,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
     var options = {
       "key": "rzp_test_uQ7Wk2tHdgWxS3",
       "amount": taxamount,
-      "name": '${widget.model.userFirstname + ' '}${widget.model.userLastname}',
+      "name": '${widget.model.firstName + ' '}${widget.model.lastName}',
       "description": 'Purchased Meat',
       "prefill": {
-        "contact": widget.model.userPhone,
-        "email": widget.model.userEmail,
+        "contact": mobile,
+        "email": email,
       },
       "external": {
         "wallets": ['paytm']
@@ -289,20 +290,20 @@ class _PaymentsPageState extends State<PaymentsPage> {
     mapData["user_email"] = email;
     mapData["billing_first_name"] = fname;
     mapData["billing_last_name"] = lname;
-    mapData["billing_address_1"] = widget.model.shippingAddress1;
-    mapData["billing_address_2"] = widget.model.shippingAddress2;
-    mapData["billing_city"] = widget.model.billingCity;
-    mapData["billing_state"] = widget.model.billingState;
-    mapData["billing_zip"] = widget.model.billingZip;
-    mapData["billing_country"] = widget.model.shippingCountry;
+    mapData["billing_address_1"] = widget.model.address1;
+    mapData["billing_address_2"] = widget.model.address2;
+    mapData["billing_city"] = widget.model.city;
+    mapData["billing_state"] = widget.model.state;
+    mapData["billing_zip"] = widget.model.zip;
+    mapData["billing_country"] = widget.model.country;
     mapData["shipping_first_name"] = fname;
     mapData["shipping_last_name"] = lname;
-    mapData["shipping_address_1"] = widget.model.shippingAddress1;
-    mapData["shipping_address_2"] = widget.model.shippingAddress2;
-    mapData["shipping_city"] = widget.model.billingCity;
-    mapData["shipping_state"] = widget.model.billingState;
-    mapData["shipping_zip"] = widget.model.billingZip;
-    mapData["shipping_country"] = widget.model.shippingCountry;
+    mapData["shipping_address_1"] = widget.model.address1;
+    mapData["shipping_address_2"] = widget.model.address2;
+    mapData["shipping_city"] = widget.model.city;
+    mapData["shipping_state"] = widget.model.state;
+    mapData["shipping_zip"] = widget.model.zip;
+    mapData["shipping_country"] = widget.model.country;
     mapData["sub_total"] =
         (widget.amount - double.parse(widget.taxamount)).toStringAsFixed(2);
     mapData["shipping_method"] = widget.shippinglable;
@@ -405,7 +406,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
             body: WillPopScope(
               onWillPop: () {
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil(Dashboard.Tag, (route) => false);
+                    .pushNamedAndRemoveUntil(NewHomepage.Tag, (route) => false,arguments: {'id' : 0});
               },
               child: Container(
                 child: Center(

@@ -1,7 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/orderhistorymodel.dart';
 import 'package:bakraw/provider/orderhistoryprovider.dart';
-import 'package:bakraw/screen/dashboaruderprofile.dart';
+import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/scheduler.dart';
 
 class GroceryOrderHistoryScreen extends StatefulWidget {
   static String tag = '/GroceryOrderHistoryScreen';
@@ -26,6 +27,8 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
   List<Data> list = [];
   List<Data> sortedlist = [];
   bool isLoading = true;
+  bool onLoad = false;
+  int count = 0;
 
   @override
   void initState() {
@@ -43,11 +46,15 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
         userid = prefs.getString('id');
       });
     }
+    setState(() {
+      onLoad = true;
+    });
     return userid;
   }
 
   @override
   Widget build(BuildContext context) {
+
     if (isLoading == true && isinit == true) {
       Provider.of<OrderHistoryProvider>(context, listen: false)
           .getPastOrder(email: email, apikey: apikey, userid: userid)
@@ -59,11 +66,11 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
               orderId: element.orderId,
               createdAt: element.createdAt,
               status: element.status));
-
-          setState(() {
-            isinit = false;
-            isLoading = false;
-          });
+        });
+        setState(() {
+         /* onLoad = false;*/
+          isinit = false;
+          isLoading = false;
         });
       });
     }
@@ -142,69 +149,106 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
           ).paddingOnly(left: 16, right: 16, top: 16).onTap(() {});
         });
 
-    return userid.isEmptyOrNull
-        ? DefaultUserProfile(
-            istab: false,
-          )
-        : Scaffold(
-            backgroundColor: grocery_app_background,
-            body: SafeArea(
-              child: Scaffold(
-                appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(AppBar(
-                    title: Text(
-                      'Order History',
-                      style: TextStyle(color: grocery_color_white),
-                    ),
-                    leading: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: grocery_color_white,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        }),
-                  ).preferredSize.height),
-                  child: Container(
-                      color: grocery_colorPrimary,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 16,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.clear,
-                                size: 30,
-                                color: grocery_color_white,
-                              ).paddingOnly(right: 24).onTap(() {
-                                finish(context);
-                              }),
-                              Expanded(
-                                  child: text(grocery_orderHistory,
-                                      fontSize: textSizeNormal,
-                                      textColor: grocery_color_white,
-                                      fontFamily: fontBold)),
-                            ],
-                          ).paddingOnly(left: 12, right: 16),
-                          SizedBox(
-                            height: 8,
-                          ),
-                        ],
-                      )),
-                ),
-                body: isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: Container(child: compleated),
+
+    if(onLoad){
+
+      if(userid.isEmptyOrNull && count<1){
+        count++;
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushNamed(
+              NewHomepage.Tag, arguments: {'id': 4});
+        });
+        return Container(
+          color: Colors.white,
+        );
+      }else{
+        return  Scaffold(
+          backgroundColor: grocery_app_background,
+          body: SafeArea(
+            child: Scaffold(
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(AppBar(
+                  title: Text(
+                    'Order History',
+                    style: TextStyle(color: grocery_color_white),
+                  ),
+                  leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: grocery_color_white,
                       ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                ).preferredSize.height),
+                child: Container(
+                    color: grocery_colorPrimary,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.clear,
+                              size: 30,
+                              color: grocery_color_white,
+                            ).paddingOnly(right: 24).onTap(() {
+                              finish(context);
+                            }),
+                            Expanded(
+                                child: text(grocery_orderHistory,
+                                    fontSize: textSizeNormal,
+                                    textColor: grocery_color_white,
+                                    fontFamily: fontBold)),
+                          ],
+                        ).paddingOnly(left: 12, right: 16),
+                        SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    )),
+              ),
+              body: isLoading
+                  ? Center(
+                child: CircularProgressIndicator(),
+              )
+                  : Container(
+                width: MediaQuery.of(context).size.width,
+                child: list.length > 0
+                    ? Container(child: compleated)
+                    : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.inbox,
+                            color: grocery_colorPrimary,
+                            size: MediaQuery.of(context)
+                                .size
+                                .height /
+                                5,
+                          ),
+                        ),
+                        Text(
+                            '${'You Haven\'t Placed Any Order Yet '} '),
+                      ],
+                    )),
               ),
             ),
-          );
+          ),
+        );
+      }
+    }else{
+      return Container(
+        color: Colors.white,
+      );
+    }
   }
 }

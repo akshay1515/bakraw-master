@@ -1,12 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
-import 'package:bakraw/model/usermodel.dart';
-import 'package:bakraw/screen/dashboard.dart';
-import 'package:bakraw/utils/GeoceryStrings.dart';
+import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
-import 'package:bakraw/utils/GroceryConstant.dart';
-import 'package:bakraw/utils/GroceryImages.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class SplashScreen extends StatelessWidget {
   @override
@@ -16,7 +11,7 @@ class SplashScreen extends StatelessWidget {
     changeStatusColor(grocery_colorPrimary);
 
     Future.delayed(Duration(seconds: 2), () async {
-      Navigator.of(context).pushReplacementNamed(Dashboard.Tag);
+      Navigator.of(context).pushReplacementNamed(NewHomepage.Tag,arguments: {'id' : 0});
     });
 
     return Scaffold(

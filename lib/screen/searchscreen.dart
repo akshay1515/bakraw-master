@@ -3,12 +3,15 @@ import 'package:bakraw/model/searchmodel.dart';
 import 'package:bakraw/provider/searchprovider.dart';
 import 'package:bakraw/screen/productdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
+
+  static String Tag = '/SearchScreen';
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -18,10 +21,58 @@ class _SearchScreenState extends State<SearchScreen> {
   SearchModel model;
   Data searchData;
   bool isLoading = false;
+  var navigtab = null;
+  bool isready = false;
   TextEditingController textcontroller = TextEditingController();
+
+  void performSearch(String text){
+    Provider.of<SearchProvider>(context,
+        listen: false)
+        .searchProducts(text)
+        .then((value) {
+      if (value.data != null) {
+        value.data.forEach((element) {
+          searchList.add(Data(
+            name: element.name,
+            price: element.price,
+            shortDescription:
+            element.shortDescription,
+            productId: element.productId,
+            images: element.images,
+            specialPrice: element.specialPrice,
+            isProductIsInSale: element.isProductIsInSale,
+            productSaleDetails: element.productSaleDetails,
+            productRating: element.productRating,
+          ));
+        });
+        setState(() {
+          isLoading = false;
+        });
+      } else {}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if(isready==false) {
+      navigtab = ModalRoute
+          .of(context)
+          .settings
+          .arguments as Map;
+      textcontroller.text = navigtab['word'];
+    }
+
+    if(textcontroller.text != null || textcontroller.text.isNotEmpty){
+      if(isready == false) {
+        setState(() {
+          isLoading = true;
+        });
+        navigtab = null;
+        performSearch(textcontroller.text);
+        isready = true;
+      }
+    }
+
     return Scaffold(
         appBar: PreferredSize(
             child: Container(
@@ -54,32 +105,12 @@ class _SearchScreenState extends State<SearchScreen> {
                               alignment: Alignment.center,
                               child: TextFormField(
                                 textInputAction: TextInputAction.search,
-                                onSaved: (text) {
+                                onFieldSubmitted:(text){
                                   searchList = [];
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  Provider.of<SearchProvider>(context,
-                                          listen: false)
-                                      .searchProducts(text)
-                                      .then((value) {
-                                    if (value.data != null) {
-                                      value.data.forEach((element) {
-                                        searchList.add(Data(
-                                          name: element.name,
-                                          price: element.price,
-                                          shortDescription:
-                                              element.shortDescription,
-                                          productId: element.productId,
-                                          images: element.images,
-                                          specialPrice: element.specialPrice,
-                                        ));
-                                      });
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                    } else {}
-                                  });
+                                  performSearch(text);
                                 },
                                 controller: textcontroller,
                                 decoration: InputDecoration(
@@ -96,30 +127,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                             setState(() {
                                               isLoading = true;
                                             });
-                                            Provider.of<SearchProvider>(context,
-                                                    listen: false)
-                                                .searchProducts(
-                                                    textcontroller.text)
-                                                .then((value) {
-                                              if (value.data != null) {
-                                                value.data.forEach((element) {
-                                                  searchList.add(Data(
-                                                    name: element.name,
-                                                    price: element.price,
-                                                    shortDescription: element
-                                                        .shortDescription,
-                                                    productId:
-                                                        element.productId,
-                                                    images: element.images,
-                                                    specialPrice:
-                                                        element.specialPrice,
-                                                  ));
-                                                });
-                                                setState(() {
-                                                  isLoading = false;
-                                                });
-                                              } else {}
-                                            });
+                                            performSearch(textcontroller.text);
                                           },
                                           child: Text(
                                             'Search',
@@ -165,79 +173,61 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(
                                     height: 100,
-                                    width: 150,
+                                    width: 100,
                                     child: CachedNetworkImage(
                                       imageUrl: searchList[index].images[0],
-                                      fit: BoxFit.contain,
+                                      fit: BoxFit.fill,
                                       placeholder: placeholderWidgetFn(),
                                       errorWidget: (context, url, error) =>
                                           new Icon(Icons.error),
                                     ),
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          searchList[index].name,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          ' ',
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5,bottom: 5),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            searchList[index].name,
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                          textAlign: TextAlign.start,
                                         ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          'Price : ₹ ${double.parse(searchList[index].price).toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 10,top: 3),
+                                          child:  SmoothStarRating(
+                                            color: Colors.amber.shade500,
+                                            allowHalfRating: true,
+                                            isReadOnly: true,
+                                            starCount: 5,
+                                            rating: double.parse(
+                                                searchList[index].productRating.avgRating.toString()),
+                                            size: 17,
                                           ),
-                                          textAlign: TextAlign.start,
                                         ),
-                                      ),
-                                      /*Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text(
-                                        'Quantity :${int.parse(productslist[index].qty)}',
-                                        style: TextStyle(
-                                          fontSize: 15,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            'Price : ₹ ${double.parse(searchList[index].price).toStringAsFixed(2)}',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
                                         ),
-                                        textAlign: TextAlign.start,
-                                      ),
+                                      ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text(
-                                        'Total : ₹ ${double.parse(productslist[index].lineTotal).toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                        ),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),*/
-                                    ],
                                   )
                                 ],
                               ),
@@ -246,14 +236,23 @@ class _SearchScreenState extends State<SearchScreen> {
                         })
                     : Container(
                         child: Center(
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
-                            fit: BoxFit.contain,
-                            placeholder: placeholderWidgetFn(),
-                            errorWidget: (context, url, error) =>
-                                new Icon(Icons.error),
-                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.inbox_rounded,size: 150,color: grocery_colorPrimary,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('No Result Found For'),
+                                  Text(' ${textcontroller.text}',style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black
+                                  ),)
+                                ],
+                              )
+                            ],
+                          )
                         ),
                       ),
               ));

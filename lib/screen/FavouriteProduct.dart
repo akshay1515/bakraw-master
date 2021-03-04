@@ -1,7 +1,6 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/favouritemodel.dart';
 import 'package:bakraw/provider/favouriteproductprovider.dart';
-import 'package:bakraw/screen/dashboaruderprofile.dart';
 import 'package:bakraw/screen/productdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class UserFavouriteList extends StatefulWidget {
   @override
@@ -17,14 +17,22 @@ class UserFavouriteList extends StatefulWidget {
 }
 
 class _UserFavouriteListState extends State<UserFavouriteList> {
-  List<Datas> mFavouriteList = [];
+  List<Data> mFavouriteList = [];
   String userid = '', email = '', apikey = '';
   bool favinit = true;
 
   @override
   void initState() {
     super.initState();
-    setUser();
+    setUser().then((value) {
+      Provider.of<UserFavouriteProvider>(context, listen: false)
+          .getUserFavProduct(userid, apikey).then((value) {
+        if (favinit) {
+          mFavouriteList = Provider.of<UserFavouriteProvider>(context,listen: false).items;
+          print(mFavouriteList.length);
+        }
+      });
+    });
   }
 
   Future setUser() async {
@@ -39,145 +47,284 @@ class _UserFavouriteListState extends State<UserFavouriteList> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    if (favinit) {
-      Provider.of<UserFavouriteProvider>(context, listen: false)
-          .getUserFavProduct(userid, apikey)
-          .then((value) {
-        value.data.forEach((element) {
-          mFavouriteList.add(Datas(
-              specialPriceType: element.specialPriceType,
-              specialPrice: element.specialPrice,
-              sku: element.sku,
-              shortDescription: element.shortDescription,
-              qty: element.qty,
-              manageStock: element.manageStock,
-              isProductNew: element.isProductNew,
-              isProductIsInSale: element.isProductIsInSale,
-              isProductHasSpecialPrice: element.isProductHasSpecialPrice,
-              inStock: element.inStock,
-              images: element.images,
-              price: element.price,
-              productId: element.productId,
-              name: element.name));
-        });
-        setState(() {
-          favinit = false;
-        });
-      });
-    }
 
-    return favinit
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        :userid == null || userid.isEmpty
+
+    return Container(
+      margin: EdgeInsets.only(
+          top: spacing_middle, right: spacing_standard_new, bottom: 80),
+      child: mFavouriteList.length > 0
+          ? GridView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, childAspectRatio: 0.85),
+        itemCount: mFavouriteList.length,
+        itemBuilder: (context, index) {
+          return StoreDeal(mFavouriteList[index], index);
+        },
+      )
+          : Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.inbox,
+                  color: grocery_colorPrimary,
+                  size: MediaQuery.of(context).size.height / 5,
+                ),
+              ),
+              Text('No Don\'t Have Favourite Item\'s List yet'),
+            ],
+          )),
+    );
+
+    /*return FutureBuilder(
+        future:   Provider.of<UserFavouriteProvider>(context, listen: false)
+        .getUserFavProduct('425', 'UpRnu2a66HOzCg6y6HijyQHExsrjG8s0G'),
+        builder: (context, AsyncSnapshot<FavouriteModel> snapshot) {
+          if(snapshot.hasData){
+            print(snapshot.data.data.length);
+          }
+      return snapshot.hasData
+          ?
+          *//*  :userid == null || userid.isEmpty
             ? DefaultUserProfile(
                 istab: true,
-              )
-            : Container(
-                height: 200,
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: spacing_middle, right: spacing_standard_new),
-                  child: mFavouriteList.isNotEmpty
-                      ? GridView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2, childAspectRatio: 0.8),
-                          itemCount: mFavouriteList.length,
-                          itemBuilder: (context, index) {
-                            return StoreDeal(mFavouriteList[index], index);
-                          },
-                        )
-                      : Container(
-                          child: Center(
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://cdn.dribbble.com/users/453325/screenshots/5573953/empty_state.png',
-                              fit: BoxFit.contain,
-                              placeholder: placeholderWidgetFn(),
-                              errorWidget: (context, url, error) =>
-                                  new Icon(Icons.error),
-                            ),
-                          ),
-                        ),
-                ),
-              );
+              )*//*
+          : Center(
+              child: CircularProgressIndicator(),
+            );
+    });*/
   }
 }
 
 class StoreDeal extends StatelessWidget {
-  Datas model;
+  Data model;
 
-  StoreDeal(Datas model, int pos) {
+  StoreDeal(Data model, int pos) {
     this.model = model;
   }
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
+    var width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed(GroceryProductDescription.tag,
-            arguments: {'prodid': model.productId, 'names': model.name});
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.38,
-        decoration: boxDecoration(
-            showShadow: true, radius: 10.0, bgColor: grocery_color_white),
-        margin: EdgeInsets.only(left: 16, bottom: 16),
-        padding: EdgeInsets.all(spacing_middle),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        onTap: () {
+          Navigator.of(context).pushNamed(GroceryProductDescription.tag,
+              arguments: {'prodid': model.productId, 'names': model.name});
+        },
+        child:
+        Banner(
+          location: BannerLocation.topEnd,
+          message: 'Sale',
+          color: Colors.red.shade900,
+          child: Container(
+            width: 175,
+            height: 270,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black45,
+                      blurRadius: 5,
+                      spreadRadius: 2),
+                ],
+                borderRadius:
+                BorderRadius.vertical(top: Radius.circular(5))),
+            margin: EdgeInsets.only(left: 16, bottom: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                      left: spacing_control, right: spacing_control),
-                  decoration: boxDecoration(
-                      radius: spacing_control, bgColor: grocery_color_white),
-                  child: text('', fontSize: textSizeSmall, isCentered: true),
+                ClipRRect(
+                  borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(5)),
+                  child: CachedNetworkImage(
+                    placeholder: placeholderWidgetFn(),
+                    imageUrl: model.images[0],
+                    fit: BoxFit.cover,
+                    height: 125,
+                    width: double.infinity,
+                  ),
                 ),
-                Icon(Icons.favorite, color: grocery_color_red)
+                SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SmoothStarRating(
+                        color: Colors.amber.shade500,
+                        allowHalfRating: true,
+                        isReadOnly: true,
+                        starCount: 5,
+                        rating: 5,
+                        size: 17,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 1),
+                        child: Text(
+                          '(${6})',
+                          style: TextStyle(fontSize: 10),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 4),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(model.name),
+                ),
+                SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Colors.grey.shade300, width: 1))),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Container(
+                  margin: EdgeInsets.only(top: 4),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 7,
+                        height: 14,
+                        decoration: BoxDecoration(
+                            color: Colors.green.shade700,
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(25),
+                              topRight: Radius.circular(25),
+                            )),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text(
+                          '₹ ${double.parse(model.price).toStringAsFixed(2)}',
+                          style: TextStyle(
+                              color: Colors.green.shade700,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
-            SizedBox(height: 4),
-            Align(
-              alignment: Alignment.center,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: CachedNetworkImage(
-                  placeholder: placeholderWidgetFn(),
-                  imageUrl: model.images[0],
-                  fit: BoxFit.fill,
-                  height: width * 0.25,
-                  width: width * 0.27,
-                ),
-              ),
-            ),
-            SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.only(left: 4, right: 4),
+          ),
+        )
+      /* : Container(
+              width: 175,
+              height: 270,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(color: Colors.black45, blurRadius: 5),
+                  ],
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(5))),
+              margin: EdgeInsets.only(left: 16, bottom: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  text(model.name,
-                      fontFamily: fontMedium,
-                      textColor: grocery_textColorPrimary.withOpacity(0.7)),
-                  text("₹ ${double.parse(model.price).toStringAsFixed(2)}"),
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(5)),
+                    child: CachedNetworkImage(
+                      placeholder: placeholderWidgetFn(),
+                      imageUrl: model.images[0],
+                      fit: BoxFit.cover,
+                      height: 125,
+                      width: double.infinity,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SmoothStarRating(
+                          color: Colors.amber.shade500,
+                          allowHalfRating: true,
+                          isReadOnly: true,
+                          starCount: 5,
+                          rating: 5,
+                          size: 17,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 1),
+                          child: Text(
+                            '(${6})',
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(model.name),
+                  ),
+                  SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.grey.shade300, width: 1))),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Container(
+                    margin: EdgeInsets.only(top: 4),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 7,
+                          height: 14,
+                          decoration: BoxDecoration(
+                              color: Colors.green.shade700,
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(25),
+                                topRight: Radius.circular(25),
+                              )),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 10),
+                          child: Text(
+                            '₹ ${double.parse(model.price).toStringAsFixed(2)}',
+                            style: TextStyle(
+                                color: Colors.green.shade700,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
-            )
-          ],
-        ),
-      ),
+            ),*/ /*
+        );
+  }*/
     );
   }
 }
+

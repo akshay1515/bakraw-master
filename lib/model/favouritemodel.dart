@@ -1,7 +1,7 @@
 class FavouriteModel {
   int status;
   String message;
-  List<Datas> data;
+  List<Data> data;
 
   FavouriteModel({this.status, this.message, this.data});
 
@@ -9,9 +9,9 @@ class FavouriteModel {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = new List<Datas>();
+      data = new List<Data>();
       json['data'].forEach((v) {
-        data.add(new Datas.fromJson(v));
+        data.add(new Data.fromJson(v));
       });
     }
   }
@@ -27,7 +27,7 @@ class FavouriteModel {
   }
 }
 
-class Datas {
+class Data {
   String productId;
   String price;
   String specialPrice;
@@ -41,25 +41,25 @@ class Datas {
   List<String> images;
   bool isProductNew;
   bool isProductHasSpecialPrice;
-  String isProductIsInSale;
+  var isProductIsInSale;
 
-  Datas(
+  Data(
       {this.productId,
-      this.price,
-      this.specialPrice,
-      this.specialPriceType,
-      this.sku,
-      this.manageStock,
-      this.qty,
-      this.inStock,
-      this.name,
-      this.shortDescription,
-      this.images,
-      this.isProductNew,
-      this.isProductHasSpecialPrice,
-      this.isProductIsInSale});
+        this.price,
+        this.specialPrice,
+        this.specialPriceType,
+        this.sku,
+        this.manageStock,
+        this.qty,
+        this.inStock,
+        this.name,
+        this.shortDescription,
+        this.images,
+        this.isProductNew,
+        this.isProductHasSpecialPrice,
+        this.isProductIsInSale});
 
-  Datas.fromJson(Map<String, dynamic> json) {
+  Data.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
     price = json['price'];
     specialPrice = json['special_price'];

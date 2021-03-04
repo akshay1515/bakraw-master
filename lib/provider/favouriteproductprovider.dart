@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 import '../backend.dart';
 
 class UserFavouriteProvider with ChangeNotifier {
-  List<Datas> _items = [];
+  List<Data> _items = [];
 
-  List<Datas> get items {
+  List<Data> get items {
     return [..._items];
   }
 
@@ -20,11 +20,11 @@ class UserFavouriteProvider with ChangeNotifier {
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({'user_id': userid, 'product_id': '5'}));
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
-    List<Datas> list = [];
+    List<Data> list = [];
     if (decodeddata['status'] == 200) {
       model = FavouriteModel.fromJson(decodeddata);
       model.data.forEach((element) {
-        list.add(Datas(
+        list.add(Data(
             name: element.name,
             productId: element.productId,
             price: element.price,
@@ -43,6 +43,7 @@ class UserFavouriteProvider with ChangeNotifier {
     } else {
       model = FavouriteModel.fromJson(decodeddata);
     }
+    _items = list;
     notifyListeners();
     return model;
   }

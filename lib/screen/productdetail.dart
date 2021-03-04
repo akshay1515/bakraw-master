@@ -3,6 +3,7 @@ import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/model/productmodel.dart';
 import 'package:bakraw/provider/markfavouriteprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
+import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
@@ -104,10 +105,9 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
   @override
   Widget build(BuildContext context) {
     prodid = ModalRoute.of(context).settings.arguments as Map;
-    if(!userid.isEmptyOrNull){
+    if (!userid.isEmptyOrNull) {
       favouriteMark();
     }
-
 
     if (init == true) {
       Provider.of<ProductProvider>(context, listen: false)
@@ -361,54 +361,40 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                       },
                                     )),
                               ),
-                              SizedBox(height: spacing_standard_new),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.only(right:8,bottom: 8,left: 8),
-                                child: text('Description',
-                                    isCentered: false,
-                                    textColor: grocery_colorPrimary,
-                                    fontFamily: fontMedium,
-                                    fontSize: textSizeLargeMedium),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 8,right: 8),
-                                child: Html(data: model.description)
-                              ),
-                              SizedBox(height: spacing_standard_new),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       setState(() {
                                         model.isProductIsInSale == true &&
-                                            model.productSaleDetails
-                                                .isProductOutOfStock ==
-                                                true
+                                                model.productSaleDetails
+                                                        .isProductOutOfStock ==
+                                                    true
                                             ? Fluttertoast.showToast(
-                                            msg:
-                                            'Sorry We Are Out Of Stock',
-                                            toastLength: Toast.LENGTH_SHORT)
+                                                msg:
+                                                    'Sorry We Are Out Of Stock',
+                                                toastLength: Toast.LENGTH_SHORT)
                                             : itemcount > 1
-                                            ? itemcount--
-                                            : Fluttertoast.showToast(
-                                            msg:
-                                            'Minimum 1 Quantity of item is required',
-                                            toastLength:
-                                            Toast.LENGTH_SHORT);
+                                                ? itemcount--
+                                                : Fluttertoast.showToast(
+                                                    msg:
+                                                        'Minimum 1 Quantity of item is required',
+                                                    toastLength:
+                                                        Toast.LENGTH_SHORT);
                                       });
                                     },
                                     child: Container(
                                       height: 35,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                      color: grocery_colorPrimary,
-                                      borderRadius: BorderRadius.circular(17)
-                                    ),
+                                      width: 35,
+                                      decoration: BoxDecoration(
+                                          color: grocery_colorPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(17)),
                                       child: Center(
-                                        child:Icon(Icons.remove,
-                                              size: 20, color: grocery_color_white),
+                                        child: Icon(Icons.remove,
+                                            size: 20,
+                                            color: grocery_color_white),
                                       ),
                                     ),
                                   ),
@@ -419,125 +405,278 @@ class GroceryProductDescriptionState extends State<GroceryProductDescription> {
                                       isCentered: true),
                                   SizedBox(width: spacing_standard_new),
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       model.isProductIsInSale == true &&
-                                          model.productSaleDetails
-                                              .isProductOutOfStock ==
-                                              true
+                                              model.productSaleDetails
+                                                      .isProductOutOfStock ==
+                                                  true
                                           ? Fluttertoast.showToast(
-                                          msg:
-                                          'Sorry We Are Out Of Stock',
-                                          toastLength: Toast.LENGTH_SHORT)
+                                              msg: 'Sorry We Are Out Of Stock',
+                                              toastLength: Toast.LENGTH_SHORT)
                                           : setState(() {
-                                        itemcount++;
-                                      });
+                                              itemcount++;
+                                            });
                                     },
                                     child: Container(
                                       height: 35,
                                       width: 35,
                                       decoration: BoxDecoration(
                                           color: grocery_colorPrimary,
-                                          borderRadius: BorderRadius.circular(17)
-                                      ),
+                                          borderRadius:
+                                              BorderRadius.circular(17)),
                                       child: Center(
                                         child: Icon(Icons.add,
-                                                size: 20, color: grocery_color_white),
+                                            size: 20,
+                                            color: grocery_color_white),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                               SizedBox(height: spacing_standard_new),
-                              FittedBox(
-                                  child: groceryButton(
-                                      bgColors: model.isProductIsInSale ==
-                                                  true &&
-                                              model.productSaleDetails
-                                                      .isProductOutOfStock ==
-                                                  true
-                                          ? Colors.grey.shade300
-                                          : grocery_colorPrimary,
-                                      onPressed: () async {
-                                        if (option == null) {
-                                          Fluttertoast.showToast(
-                                              msg: 'Please select pack Size');
-                                        } else {
-                                          if (model.isProductIsInSale ==
-                                              false) {
-                                            int i = await DatabaseHelper
-                                                .instance
-                                                .addtoCart({
-                                              DatabaseHelper.productid:
-                                                  model.productId,
-                                              DatabaseHelper.optionid:
-                                                  productoptions[0].optionId,
-                                              DatabaseHelper.optionname:
-                                                  productoptions[0].name,
-                                              DatabaseHelper.optionvalueid:
-                                                  option.optionValueId,
-                                              DatabaseHelper.optionlable:
-                                                  option.label,
-                                              DatabaseHelper
-                                                      .productpriceincreased:
-                                                  option.increaseProductPriceBy,
-                                              DatabaseHelper.quantity:
-                                                  itemcount.toString(),
-                                              DatabaseHelper.price:
-                                                  PriceReturn()
-                                            });
-                                            i > 0 ? count = 1 : count = count;
-                                            Fluttertoast.showToast(
-                                                msg: i > 0
-                                                    ? "Product Added to Cart"
-                                                    : 'Product Already Exist In Cart');
-                                            setState(() {
-                                              itemcount = 1;
-                                            });
-                                          } else if (model.isProductIsInSale ==
-                                                  true &&
-                                              model.productSaleDetails
-                                                      .isProductOutOfStock ==
-                                                  false) {
-                                            int i = await DatabaseHelper
-                                                .instance
-                                                .addtoCart({
-                                              DatabaseHelper.productid:
-                                                  model.productId,
-                                              DatabaseHelper.optionid:
-                                                  productoptions[0].optionId,
-                                              DatabaseHelper.optionname:
-                                                  productoptions[0].name,
-                                              DatabaseHelper.optionvalueid:
-                                                  option.optionValueId,
-                                              DatabaseHelper.optionlable:
-                                                  option.label,
-                                              DatabaseHelper
-                                                      .productpriceincreased:
-                                                  option.increaseProductPriceBy,
-                                              DatabaseHelper.quantity:
-                                                  itemcount.toString(),
-                                              DatabaseHelper.price:
-                                                  PriceReturn()
-                                            });
-                                            i > 0 ? count = 1 : count = count;
-                                            Fluttertoast.showToast(
-                                                msg: i > 0
-                                                    ? "Product Added to Cart"
-                                                    : 'Product Already Exist In Cart');
-                                            setState(() {
-                                              itemcount = 1;
-                                            });
-                                          } else {}
-                                        }
-                                      },
-                                      textContent: model.isProductIsInSale ==
-                                                  true &&
-                                              model.productSaleDetails
-                                                      .isProductOutOfStock ==
-                                                  true
-                                          ? 'Sold Out'
-                                          : grocery_lbl_add_to_cart)),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    FittedBox(
+                                        child: productdecButton(
+                                            bgColors: model.isProductIsInSale ==
+                                                        true &&
+                                                    model.productSaleDetails
+                                                            .isProductOutOfStock ==
+                                                        true
+                                                ? Colors.grey.shade300
+                                                : grocery_colorPrimary,
+                                            onPressed: () async {
+                                              if (option == null) {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        'Please select pack Size');
+                                              } else {
+                                                if (model.isProductIsInSale ==
+                                                    false) {
+                                                  int i = await DatabaseHelper
+                                                      .instance
+                                                      .addtoCart({
+                                                    DatabaseHelper.productid:
+                                                        model.productId,
+                                                    DatabaseHelper.optionid:
+                                                        productoptions[0]
+                                                            .optionId,
+                                                    DatabaseHelper.optionname:
+                                                        productoptions[0].name,
+                                                    DatabaseHelper
+                                                            .optionvalueid:
+                                                        option.optionValueId,
+                                                    DatabaseHelper.optionlable:
+                                                        option.label,
+                                                    DatabaseHelper
+                                                            .productpriceincreased:
+                                                        option
+                                                            .increaseProductPriceBy,
+                                                    DatabaseHelper.quantity:
+                                                        itemcount.toString(),
+                                                    DatabaseHelper.price:
+                                                        PriceReturn()
+                                                  });
+                                                  i > 0
+                                                      ? count = 1
+                                                      : count = count;
+                                                  Fluttertoast.showToast(
+                                                      msg: i > 0
+                                                          ? "Product Added to Cart"
+                                                          : 'Product Already Exist In Cart');
+                                                  setState(() {
+                                                    itemcount = 1;
+                                                  });
+                                                } else if (model
+                                                            .isProductIsInSale ==
+                                                        true &&
+                                                    model.productSaleDetails
+                                                            .isProductOutOfStock ==
+                                                        false) {
+                                                  int i = await DatabaseHelper
+                                                      .instance
+                                                      .addtoCart({
+                                                    DatabaseHelper.productid:
+                                                        model.productId,
+                                                    DatabaseHelper.optionid:
+                                                        productoptions[0]
+                                                            .optionId,
+                                                    DatabaseHelper.optionname:
+                                                        productoptions[0].name,
+                                                    DatabaseHelper
+                                                            .optionvalueid:
+                                                        option.optionValueId,
+                                                    DatabaseHelper.optionlable:
+                                                        option.label,
+                                                    DatabaseHelper
+                                                            .productpriceincreased:
+                                                        option
+                                                            .increaseProductPriceBy,
+                                                    DatabaseHelper.quantity:
+                                                        itemcount.toString(),
+                                                    DatabaseHelper.price:
+                                                        PriceReturn()
+                                                  });
+                                                  i > 0
+                                                      ? count = 1
+                                                      : count = count;
+                                                  Fluttertoast.showToast(
+                                                      msg: i > 0
+                                                          ? "Product Added to Cart"
+                                                          : 'Product Already Exist In Cart');
+                                                  setState(() {
+                                                    itemcount = 1;
+                                                  });
+                                                } else {}
+                                              }
+                                            },
+                                            textContent: model
+                                                            .isProductIsInSale ==
+                                                        true &&
+                                                    model.productSaleDetails
+                                                            .isProductOutOfStock ==
+                                                        true
+                                                ? 'Sold Out'
+                                                : grocery_lbl_add_to_cart)),
+                                    FittedBox(
+                                        child: productdecButton(
+                                            bgColors: model.isProductIsInSale ==
+                                                        true &&
+                                                    model.productSaleDetails
+                                                            .isProductOutOfStock ==
+                                                        true
+                                                ? Colors.grey.shade300
+                                                : grocery_colorPrimary,
+                                            onPressed: () async {
+                                              if (option == null) {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        'Please select pack Size');
+                                              } else {
+                                                if (model.isProductIsInSale ==
+                                                    false) {
+                                                  int i = await DatabaseHelper
+                                                      .instance
+                                                      .addtoCart({
+                                                    DatabaseHelper.productid:
+                                                        model.productId,
+                                                    DatabaseHelper.optionid:
+                                                        productoptions[0]
+                                                            .optionId,
+                                                    DatabaseHelper.optionname:
+                                                        productoptions[0].name,
+                                                    DatabaseHelper
+                                                            .optionvalueid:
+                                                        option.optionValueId,
+                                                    DatabaseHelper.optionlable:
+                                                        option.label,
+                                                    DatabaseHelper
+                                                            .productpriceincreased:
+                                                        option
+                                                            .increaseProductPriceBy,
+                                                    DatabaseHelper.quantity:
+                                                        itemcount.toString(),
+                                                    DatabaseHelper.price:
+                                                        PriceReturn()
+                                                  }).then((value) {
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                            UserAddressManager
+                                                                .tag,
+                                                            arguments: {
+                                                          'isnav': true
+                                                        });
+                                                  });
+                                                  i > 0
+                                                      ? count = 1
+                                                      : count = count;
+                                                  Fluttertoast.showToast(
+                                                      msg: i > 0
+                                                          ? "Product Added to Cart"
+                                                          : 'Product Already Exist In Cart');
+                                                  setState(() {
+                                                    itemcount = 1;
+                                                  });
+                                                } else if (model
+                                                            .isProductIsInSale ==
+                                                        true &&
+                                                    model.productSaleDetails
+                                                            .isProductOutOfStock ==
+                                                        false) {
+                                                  int i = await DatabaseHelper
+                                                      .instance
+                                                      .addtoCart({
+                                                    DatabaseHelper.productid:
+                                                        model.productId,
+                                                    DatabaseHelper.optionid:
+                                                        productoptions[0]
+                                                            .optionId,
+                                                    DatabaseHelper.optionname:
+                                                        productoptions[0].name,
+                                                    DatabaseHelper
+                                                            .optionvalueid:
+                                                        option.optionValueId,
+                                                    DatabaseHelper.optionlable:
+                                                        option.label,
+                                                    DatabaseHelper
+                                                            .productpriceincreased:
+                                                        option
+                                                            .increaseProductPriceBy,
+                                                    DatabaseHelper.quantity:
+                                                        itemcount.toString(),
+                                                    DatabaseHelper.price:
+                                                        PriceReturn()
+                                                  }).then((value) {
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                            UserAddressManager
+                                                                .tag,
+                                                            arguments: {
+                                                          'isnav': true
+                                                        });
+                                                  });
+                                                  i > 0
+                                                      ? count = 1
+                                                      : count = count;
+                                                  Fluttertoast.showToast(
+                                                      msg: i > 0
+                                                          ? "Product Added to Cart"
+                                                          : 'Product Already Exist In Cart');
+                                                  setState(() {
+                                                    itemcount = 1;
+                                                  });
+                                                } else {}
+                                              }
+                                            },
+                                            textContent: model
+                                                            .isProductIsInSale ==
+                                                        true &&
+                                                    model.productSaleDetails
+                                                            .isProductOutOfStock ==
+                                                        true
+                                                ? 'Sold Out'
+                                                : 'CheckOut')),
+                                  ],
+                                ),
+                              ),
                               SizedBox(height: spacing_standard_new),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(
+                                    right: 8, bottom: 8, left: 8),
+                                child: text('Description',
+                                    isCentered: false,
+                                    textColor: grocery_colorPrimary,
+                                    fontFamily: fontMedium,
+                                    fontSize: textSizeLargeMedium),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.only(left: 8, right: 8),
+                                  child: Html(data: model.description)),
                             ],
                           ),
                         ),

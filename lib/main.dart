@@ -1,4 +1,5 @@
 import 'package:bakraw/provider/OTPProvider.dart';
+import 'package:bakraw/provider/bestsellerprovider.dart';
 import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/categoryproductprovider.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
@@ -22,15 +23,14 @@ import 'package:bakraw/provider/sliderprovider.dart';
 import 'package:bakraw/provider/taxProvider.dart';
 import 'package:bakraw/provider/useraddressprovider.dart';
 import 'package:bakraw/provider/userprovider.dart';
-import 'package:bakraw/screen/addnumber.dart';
 import 'package:bakraw/screen/cart/mycart2.dart';
-import 'package:bakraw/screen/categoryproduct.dart';
-import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/screen/editadduseraddress.dart';
-import 'package:bakraw/screen/forgotpassword.dart';
-import 'package:bakraw/screen/mycart.dart';
+import 'package:bakraw/screen/newui/newcategory.dart';
+import 'package:bakraw/screen/newui/newdashboard.dart';
+import 'package:bakraw/screen/newui/newproductdetail.dart';
+import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/screen/productdetail.dart';
-import 'package:bakraw/screen/signup.dart';
+import 'package:bakraw/screen/searchscreen.dart';
 import 'package:bakraw/screen/splashscreen.dart';
 import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
@@ -38,6 +38,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:bakraw/screen/orderhistory.dart';
+import 'package:bakraw/screen/termsandcondition.dart';
+import 'package:bakraw/screen/privacypolicy.dart';
+import 'package:bakraw/screen/webview.dart';
+import 'package:bakraw/screen/aboutus.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,7 +81,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: PreviousOrderProvider()),
         ChangeNotifierProvider.value(value: OTPProvider()),
         ChangeNotifierProvider.value(value: CouponProvider()),
-        ChangeNotifierProvider.value(value: couponslideProvider())
+        ChangeNotifierProvider.value(value: couponslideProvider()),
+        ChangeNotifierProvider.value(value: BestSellerProvider())
       ],
       child: MaterialApp(
         home: SplashScreen(),
@@ -87,14 +93,21 @@ class MyApp extends StatelessWidget {
           primaryColor: grocery_colorPrimary,
         ),
         routes: {
-          GrocerySubCategoryList.tag: (ctx) => GrocerySubCategoryList(),
-          GroceryProductDescription.tag: (ctx) => GroceryProductDescription(),
-          Dashboard.Tag: (ctx) => Dashboard(),
-          SignUp.tag: (ctx) => SignUp(),
-          Mycart.tag: (ctx) => Mycart2(),
-          GroceryAddNumber.tag: (ctx) => GroceryAddNumber(),
+          NewCategory.TAG:(ctx)=> NewCategory(),
+          NewHomepage.Tag:(ctx)=> NewDashboard(),
+          SearchScreen.Tag:(ctx)=>SearchScreen(),
+          GroceryProductDescription.tag: (ctx) => NewProductDetails(),
           UserAddressManager.tag: (ctx) => UserAddressManager(),
+          Mycart2.tag: (ctx) => Mycart2(),
           EditUserAddress.tag: (ctx) => EditUserAddress(),
+          GroceryOrderHistoryScreen.tag: (ctx)=> GroceryOrderHistoryScreen(),
+          Terms.tag: (ctx) => Terms(),
+          Privacy.tag: (ctx) =>Privacy(),
+          ContentDisplay.tag: (ctx) => ContentDisplay(),
+          AboutUs.tag: (ctx) => AboutUs()
+
+
+
         },
       ),
     );

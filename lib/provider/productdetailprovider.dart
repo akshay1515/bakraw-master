@@ -19,7 +19,6 @@ class ProductProvider with ChangeNotifier {
     const url = '${Utility.BaseURL}${'product-details.php?product_id='}';
     ProductModel productModel;
     final response = await http.get('${url}${id}');
-    //print('reponse${response.body}');
     var decodeddata = json.decode(response.body);
 
     /*  ProductSaleDetails pd = ProductSaleDetails(
@@ -32,19 +31,13 @@ class ProductProvider with ChangeNotifier {
         sold: 4,
         saleName: 'demo');*/
 
-    if (decodeddata['data']['product_sale_details'].length > 0) {
-    } else {
-      decodeddata['data']['product_sale_details'] = null;
-    }
 
     if (decodeddata['status'] == 200) {
-      print(decodeddata['data']);
       productModel = ProductModel.fromJson(decodeddata);
     } else {
       productModel = ProductModel(
           status: decodeddata['status'], message: decodeddata['message']);
     }
-    //print(productModel.data.name);
     notifyListeners();
     return productModel;
   }
@@ -59,8 +52,6 @@ class ProductProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       model = FavouriteModel.fromJson(data);
-      /*print(
-          'my status: ${model.data.firstWhere((element) => element.productId == productid).name}');*/
     }
     return model;
   }

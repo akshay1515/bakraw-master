@@ -48,7 +48,7 @@ class CartContainerState extends State<CartContainer> {
             await Provider.of<ProductProvider>(context, listen: false)
                 .getProductDetails(element.productid);
         List<Data.Data> target = [];
-        target.add(Data.Data(images: model.data.images, name: model.data.name));
+        target.add(model.data);
         cartProductModel.putIfAbsent(
             element.optionvalueId, () => new CartProductModel(element, target));
       }

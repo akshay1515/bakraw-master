@@ -22,11 +22,46 @@ class SubTotalWidgetState extends State<SubTotalWidget> {
 
   Widget build(BuildContext context) {
     state = CartContainer.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        text('${grocery_lbl_subtotal}${' '}${'(${state.count} items)'}'),
-        text('₹ ${state.subtotal.toString()}',textColor: grocery_colorPrimary_light, fontFamily: fontMedium),
+        Padding(
+          padding: const EdgeInsets.only(left: 25),
+          child: Text('${grocery_lbl_subtotal}${' '}${'(${state.count} items)'}',style: TextStyle(
+            color: grocery_colorPrimary,
+            fontWeight: FontWeight.w600,
+            fontSize: 17
+          ),),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+         children: [
+
+           Container(
+             height:20,
+             width:10,
+             padding: EdgeInsets.only(
+                 left: spacing_standard, right: spacing_standard),
+             decoration: BoxDecoration(
+                 color: Colors.green.shade700,
+                 borderRadius: BorderRadius.only(topRight: Radius.circular(50),bottomRight: Radius.circular(50))
+             ),
+             margin: EdgeInsets.only(right: spacing_middle),
+
+           ),
+           Padding(
+             padding: const EdgeInsets.only(left:15.0),
+             child: Text('₹ ${state.subtotal.toString()}',style: TextStyle(
+               color: Colors.green.shade700,
+               fontSize: 20,
+               fontWeight: FontWeight.w700
+             ),),
+           ),
+         ],
+        )
       ],
     );
   }

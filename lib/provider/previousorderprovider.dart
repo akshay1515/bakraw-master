@@ -23,8 +23,8 @@ class PreviousOrderProvider with ChangeNotifier {
     List<PreviousOrderProduct> list = [];
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      model = PreviousOrderProduct.fromJson(decodeddata);
-      list.add(model);
+        model = PreviousOrderProduct.fromJson(decodeddata);
+        list.add(model);
     }
     _items = list;
     notifyListeners();

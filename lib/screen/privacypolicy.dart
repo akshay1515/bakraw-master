@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class Privacy extends StatefulWidget {
+  static String tag = '/PrivacyScreen';
   @override
   _PrivacyState createState() => _PrivacyState();
 }

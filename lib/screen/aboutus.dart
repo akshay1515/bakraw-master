@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AboutUs extends StatefulWidget {
+  static String tag = '/Aboutus';
   @override
   _AboutUsState createState() => _AboutUsState();
 }

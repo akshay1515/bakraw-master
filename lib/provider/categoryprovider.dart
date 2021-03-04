@@ -13,6 +13,10 @@ class CategoryProvider with ChangeNotifier {
     return [..._items];
   }
 
+  String categoryid ='';
+
+  int selectedid = 0;
+
   Future<CategoryModel> getCategories() async {
     const url = '${Utility.BaseURL}${'categories.php'}';
     CategoryModel category;
@@ -35,10 +39,14 @@ class CategoryProvider with ChangeNotifier {
         category = CategoryModel(
             status: decodeddata['status'], message: decodeddata['message']);
       }
-      //print('"message :"${decodeddata['message']}');
-      //print('"Data:"${decodeddata['data']}');
     }
     notifyListeners();
     return category;
+  }
+
+  void ChangeCategory(String SelectedCategory,int selected){
+    categoryid = SelectedCategory;
+    selectedid = selected;
+    notifyListeners();
   }
 }
