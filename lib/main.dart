@@ -105,9 +105,6 @@ class MyApp extends StatelessWidget {
           Privacy.tag: (ctx) =>Privacy(),
           ContentDisplay.tag: (ctx) => ContentDisplay(),
           AboutUs.tag: (ctx) => AboutUs()
-
-
-
         },
       ),
     );

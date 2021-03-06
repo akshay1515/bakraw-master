@@ -1,9 +1,6 @@
-import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
-import 'package:bakraw/screen/categoryproduct.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +13,7 @@ class HorizontalScrollview extends StatefulWidget {
 class _HorizontalScrollviewState extends State<HorizontalScrollview> {
   var init = true;
 
-  List<String> categoryIcon =[
+  List<String> categoryIcon = [
     'images/newicons/allmeatcolor.png',
     'images/newicons/meatcolor.png',
     'images/newicons/meatwithbonewhite.png'
@@ -31,11 +28,12 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
   @override
   Widget build(BuildContext context) {
     Provider.of<CategoryProvider>(context, listen: false).getCategories();
-    final selectedcategory = Provider.of<CategoryProvider>(context).categoryid;
+    final selectedcategory = Provider
+        .of<CategoryProvider>(context)
+        .categoryid;
 
     final category = Provider.of<CategoryProvider>(context);
     final categorydata = category.items;
-
 
 
     return Container(
@@ -46,7 +44,9 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
         itemCount: categorydata.length,
         itemBuilder: (BuildContext ctx, int i) {
           return Category(
-            imageLocation: categorydata[i].categoryId == selectedcategory ?selectedIcon[i]:categoryIcon[i],
+            imageLocation: categorydata[i].categoryId == selectedcategory
+                ? selectedIcon[i]
+                : categoryIcon[i],
             imageCaption: categorydata[i].name,
             categoryId: categorydata[i].categoryId,
           );
@@ -54,14 +54,7 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
       ),
     );
   }
-
-  @override
-  void didChangeDependencies() {
-    if (init) {}
-    init = false;
-  }
 }
-
 class Category extends StatefulWidget {
 
   final String imageLocation;

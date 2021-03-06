@@ -3,14 +3,12 @@ import 'package:bakraw/inherited/cart/cart_container.dart';
 import 'package:bakraw/screen/cart/widgets/cart_products_list.dart';
 import 'package:bakraw/screen/cart/widgets/fitted_box_widget.dart';
 import 'package:bakraw/screen/cart/widgets/sub_total_widget.dart';
-import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/widget/horizontallist.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 import '../searchscreen.dart';
 
@@ -45,6 +43,7 @@ class _MycartState2 extends State<Mycart2> {
     var width = MediaQuery.of(context).size.width;
     return WillPopScope(
         child: Scaffold(
+          backgroundColor: Colors.green.shade50,
           body: CartContainer(
             child: SingleChildScrollView(
               child: Column(

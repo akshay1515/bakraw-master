@@ -37,45 +37,49 @@ class _BestSellingState extends State<BestSelling> {
     return FutureBuilder(
       future: myfuture,
       builder: (context, AsyncSnapshot<PreviousOrderProduct> snapshot) {
-        return snapshot.hasData
-            ? snapshot.data.data.length > 0
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 221,
-                        child: ListView.builder(
-                          itemCount: snapshot.data.data.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (ctx, index) {
-                            return BestSellingItem(
-                              id: snapshot.data.data[index].productId,
-                              image: snapshot.data.data[index].images[0],
-                              weight: snapshot.data.data[index].inStock,
-                              price: snapshot.data.data[index].price,
-                              name: snapshot.data.data[index].name,
-                              isSaleavaliable:
-                                  snapshot.data.data[index].isProductIsInSale,
-                              productsaledetails: snapshot
-                                      .data.data[index].isProductIsInSale
-                                  ? snapshot.data.data[index].productSaleDetails
-                                  : null,
-                              productRating:
-                                  snapshot.data.data[index].productRating,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-                : Center(child: Container())
-            : Container(
-                color: Colors.green.shade50,
-                height: 220,
-                child: Center(
-                  child: CircularProgressIndicator(),
+        if(snapshot.connectionState==ConnectionState.done && snapshot.hasData){
+          if(snapshot.data.data.length > 0){
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 221,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.data.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (ctx, index) {
+                      return BestSellingItem(
+                        id: snapshot.data.data[index].productId,
+                        image: snapshot.data.data[index].images[0],
+                        weight: snapshot.data.data[index].inStock,
+                        price: snapshot.data.data[index].price,
+                        name: snapshot.data.data[index].name,
+                        isSaleavaliable:
+                        snapshot.data.data[index].isProductIsInSale,
+                        productsaledetails: snapshot
+                            .data.data[index].isProductIsInSale
+                            ? snapshot.data.data[index].productSaleDetails
+                            : null,
+                        productRating:
+                        snapshot.data.data[index].productRating,
+                      );
+                    },
+                  ),
                 ),
-              );
+              ],
+            );
+          }else{
+            return Center(child: Container());
+          }
+        }else{
+          return Container(
+            color: Colors.green.shade50,
+            height: 220,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
       },
     );
   }

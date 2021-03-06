@@ -142,6 +142,7 @@ class _NewFavouriteState extends State<NewFavourite> {
                       }),
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 190),
@@ -180,7 +181,7 @@ class _NewFavouriteState extends State<NewFavourite> {
                         ),
                       ),
                     ),
-                    UserFavouriteList()
+                    Center(child: UserFavouriteList())
                   ],
                 ),
               ],
