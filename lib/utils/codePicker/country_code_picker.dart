@@ -1,8 +1,8 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
+import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/codePicker/selection_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 import 'country_code.dart';
 import 'country_codes.dart';
@@ -121,7 +121,7 @@ class _CountryCodePickerState extends State<CountryCodePicker> {
             Flexible(
               fit: widget.alignLeft ? FlexFit.tight : FlexFit.loose,
               child: text(selectedItem.toCountryCodeString(),
-                  textColor: textPrimaryColor, fontSize: 16.0),
+                  textColor: grocery_textColorPrimary, fontSize: 16.0),
             ),
           ],
         ),

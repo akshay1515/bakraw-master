@@ -1,7 +1,6 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 import '../utils/GroceryColors.dart';
 import '../utils/GroceryConstant.dart';
@@ -14,19 +13,26 @@ Widget button(
   double height = 40,
   double width = 150,
 }) {
-  return MaterialButton(
-    onPressed: () {
-      //
-    },
-    height: height,
-    minWidth: width,
-    padding: const EdgeInsets.all(0.0),
-    child:
-        Text(text, style: TextStyle(fontSize: 18), textAlign: TextAlign.center)
-            .cornerRadiusWithClipRRect(25),
-    textColor: textColor,
-    color: backgroundColor,
-  ).cornerRadiusWithClipRRect(10).paddingOnly(left: 8, right: 8);
+  return Padding(
+    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: MaterialButton(
+        onPressed: () {
+          //
+        },
+        height: height,
+        minWidth: width,
+        padding: const EdgeInsets.all(0.0),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: Text(text,
+                style: TextStyle(fontSize: 18), textAlign: TextAlign.center)),
+        textColor: textColor,
+        color: backgroundColor,
+      ),
+    ),
+  );
 }
 
 class groceryButton extends StatefulWidget {
@@ -51,6 +57,7 @@ class groceryButton extends StatefulWidget {
   @override
   groceryButtonState createState() => groceryButtonState();
 }
+
 class groceryButtonState extends State<groceryButton> {
   @override
   Widget build(BuildContext context) {
@@ -87,12 +94,12 @@ class productdecButton extends StatefulWidget {
 
   productdecButton(
       {@required this.textContent,
-        @required this.onPressed,
-        this.isStroked = false,
-        this.height = 50.0,
-        this.radius = 5.0,
-        this.color,
-        this.bgColors});
+      @required this.onPressed,
+      this.isStroked = false,
+      this.height = 50.0,
+      this.radius = 5.0,
+      this.color,
+      this.bgColors});
 
   @override
   productdecButtonState createState() => productdecButtonState();
@@ -108,14 +115,14 @@ class productdecButtonState extends State<productdecButton> {
         alignment: Alignment.center,
         child: text(widget.textContent,
             textColor:
-            widget.isStroked ? grocery_colorPrimary : grocery_color_white,
+                widget.isStroked ? grocery_colorPrimary : grocery_color_white,
             fontSize: textSizeMedium,
             isCentered: true,
             fontFamily: fontSemiBold,
             textAllCaps: true),
         decoration: widget.isStroked
             ? boxDecoration(
-            bgColor: Colors.transparent, color: grocery_colorPrimary)
+                bgColor: Colors.transparent, color: grocery_colorPrimary)
             : boxDecoration(bgColor: widget.bgColors, radius: widget.radius),
       ),
     );
@@ -264,23 +271,31 @@ Widget title(
     children: <Widget>[
       Container(color: headerColor),
       Center(
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_back, size: 30, color: textColor)
-                  .paddingOnly(top: spacing_standard_new),
-              onPressed: () {
-                finish(context);
-              },
-            ),
-            text(title,
+        child: Padding(
+          padding: const EdgeInsets.only(
+              left: spacing_standard, right: spacing_standard),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                icon: Padding(
+                  padding: const EdgeInsets.only(top: spacing_standard_new),
+                  child: Icon(Icons.arrow_back, size: 30, color: textColor),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: spacing_standard, top: 26),
+                child: text(title,
                     textColor: textColor,
                     fontSize: textSizeNormal,
                     fontFamily: fontBold,
-                    isCentered: true)
-                .paddingOnly(left: spacing_standard, top: 26)
-          ],
-        ).paddingOnly(left: spacing_standard, right: spacing_standard),
+                    isCentered: true),
+              )
+            ],
+          ),
+        ),
       )
     ],
   );
@@ -293,27 +308,33 @@ Widget title1(
     children: <Widget>[
       Container(color: color1),
       Center(
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.close, size: 30, color: textColor)
-                  .paddingOnly(top: spacing_standard_new),
-              onPressed: () {
-                finish(context);
-              },
-            ),
-            text(title,
-                    textColor: textColor,
-                    fontSize: textSizeNormal,
-                    fontFamily: fontBold,
-                    isCentered: true)
-                .paddingOnly(left: spacing_standard, top: 26)
-          ],
-        ).paddingOnly(
+          child: Padding(
+        padding: const EdgeInsets.only(
           left: spacing_standard,
           right: spacing_standard,
         ),
-      )
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              icon: Padding(
+                padding: const EdgeInsets.only(top: spacing_standard_new),
+                child: Icon(Icons.close, size: 30, color: textColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: spacing_standard, top: 26),
+              child: text(title,
+                  textColor: textColor,
+                  fontSize: textSizeNormal,
+                  fontFamily: fontBold,
+                  isCentered: true),
+            )
+          ],
+        ),
+      ))
     ],
   );
 }
@@ -415,49 +436,53 @@ class PinEntryTextFieldState extends State<PinEntryTextField> {
     return Container(
       width: widget.fieldWidth,
       margin: EdgeInsets.only(right: 20.0),
-      child: TextField(
-        controller: _textControllers[i],
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        style: TextStyle(
-            color: Colors.black,
-            fontFamily: fontMedium,
-            fontSize: widget.fontSize),
-        focusNode: _focusNodes[i],
-        obscureText: widget.isTextObscure,
-        decoration: InputDecoration(
-            counterText: "",
-            border: widget.showFieldAsBox
-                ? OutlineInputBorder(borderSide: BorderSide(width: 2.0))
-                : null),
-        onChanged: (String str) {
-          setState(() {
-            _pin[i] = str;
-          });
-          if (i + 1 != widget.fields) {
-            _focusNodes[i].unfocus();
-            if (lastDigit != null && _pin[i] == '') {
-              FocusScope.of(context).requestFocus(_focusNodes[i - 1]);
+      child: Padding(
+        padding: const EdgeInsets.only(
+            left: spacing_control, right: spacing_control),
+        child: TextField(
+          controller: _textControllers[i],
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          maxLength: 1,
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: fontMedium,
+              fontSize: widget.fontSize),
+          focusNode: _focusNodes[i],
+          obscureText: widget.isTextObscure,
+          decoration: InputDecoration(
+              counterText: "",
+              border: widget.showFieldAsBox
+                  ? OutlineInputBorder(borderSide: BorderSide(width: 2.0))
+                  : null),
+          onChanged: (String str) {
+            setState(() {
+              _pin[i] = str;
+            });
+            if (i + 1 != widget.fields) {
+              _focusNodes[i].unfocus();
+              if (lastDigit != null && _pin[i] == '') {
+                FocusScope.of(context).requestFocus(_focusNodes[i - 1]);
+              } else {
+                FocusScope.of(context).requestFocus(_focusNodes[i + 1]);
+              }
             } else {
-              FocusScope.of(context).requestFocus(_focusNodes[i + 1]);
+              _focusNodes[i].unfocus();
+              if (lastDigit != null && _pin[i] == '') {
+                FocusScope.of(context).requestFocus(_focusNodes[i - 1]);
+              }
             }
-          } else {
-            _focusNodes[i].unfocus();
-            if (lastDigit != null && _pin[i] == '') {
-              FocusScope.of(context).requestFocus(_focusNodes[i - 1]);
+            if (_pin.every((String digit) => digit != null && digit != '')) {
+              widget.onSubmit(_pin.join());
             }
-          }
-          if (_pin.every((String digit) => digit != null && digit != '')) {
-            widget.onSubmit(_pin.join());
-          }
-        },
-        onSubmitted: (String str) {
-          if (_pin.every((String digit) => digit != null && digit != '')) {
-            widget.onSubmit(_pin.join());
-          }
-        },
-      ).paddingOnly(left: spacing_control, right: spacing_control),
+          },
+          onSubmitted: (String str) {
+            if (_pin.every((String digit) => digit != null && digit != '')) {
+              widget.onSubmit(_pin.join());
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -499,7 +524,7 @@ class TopBarState extends State<TopBar> {
                   icon: Icon(widget.leftIcon),
                   color: grocery_color_white,
                   onPressed: () {
-                    finish(context);
+                    Navigator.of(context).pop();
                   },
                 ),
                 Padding(

@@ -21,6 +21,7 @@ class DatabaseHelper {
   static final _dbversion = 1;
 
   DatabaseHelper._privateConstructor();
+
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   static Database _database;
@@ -33,6 +34,8 @@ class DatabaseHelper {
   }
 
   _initDatabase() async {
+    Directory tempdire = await getTemporaryDirectory();
+    String temppath = tempdire.path;
     Directory _directory = await getApplicationDocumentsDirectory();
     String path = join(_directory.path, _dbname);
 

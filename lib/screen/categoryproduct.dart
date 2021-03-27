@@ -2,7 +2,7 @@ import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/categoryproductmodel.dart';
 import 'package:bakraw/provider/categoryproductprovider.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
-import 'package:bakraw/screen/productdetail.dart';
+import 'package:bakraw/screen/newui/newproductdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -64,7 +64,7 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.of(context).pushNamed(
-                                      GroceryProductDescription.tag,
+                                      NewProductDetails.tag,
                                       arguments: {
                                         'prodid':
                                             snapshot.data.data[index].productId,
@@ -126,7 +126,8 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
                                                       allowHalfRating: true,
                                                       isReadOnly: true,
                                                       starCount: 5,
-                                                      rating: double.parse('${snapshot.data.data[index].productRating.avgRating}'),
+                                                      rating: double.parse(
+                                                          '${snapshot.data.data[index].productRating.avgRating}'),
                                                       size: 17,
                                                     ),
                                                     Padding(
@@ -274,7 +275,12 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
                                                     allowHalfRating: true,
                                                     isReadOnly: true,
                                                     starCount: 5,
-                                                    rating: double.parse(snapshot.data.data[index].productRating.avgRating),
+                                                    rating: double.parse(
+                                                        snapshot
+                                                            .data
+                                                            .data[index]
+                                                            .productRating
+                                                            .avgRating),
                                                     size: 17,
                                                   ),
                                                   Padding(

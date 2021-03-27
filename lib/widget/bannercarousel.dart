@@ -1,7 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/slidermodel.dart';
 import 'package:bakraw/provider/sliderprovider.dart';
-import 'package:bakraw/screen/productdetail.dart';
+import 'package:bakraw/screen/newui/newproductdetail.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -17,18 +17,6 @@ class _BannerSliderState extends State<BannerSlider> {
 
   @override
   void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    int current = 0;
     Provider.of<SliderProvider>(context, listen: false)
         .getCategory()
         .then((value) {
@@ -38,18 +26,24 @@ class _BannerSliderState extends State<BannerSlider> {
         });
       }
     });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int current = 0;
+
     List<Data> sliderimg = [];
 
-    final slider = Provider.of<SliderProvider>(context, listen: false)
-        .items
-        .forEach((element) {
-      setState(() {
-        sliderimg.add(Data(
-            productId: element.productId,
-            name: element.name,
-            image: element.image));
-      });
-    });
+    sliderimg = Provider.of<SliderProvider>(context, listen: false)
+        .items;
+
 
     return !isLoading
         ? Column(
@@ -67,8 +61,7 @@ class _BannerSliderState extends State<BannerSlider> {
                     return Builder(builder: (BuildContext context) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamed(
-                              GroceryProductDescription.tag,
+                          Navigator.of(context).pushNamed(NewProductDetails.tag,
                               arguments: {
                                 'prodid': e.productId.toString(),
                                 'names': e.name

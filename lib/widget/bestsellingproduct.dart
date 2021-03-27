@@ -1,7 +1,7 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/PreviousOrderModel.dart';
 import 'package:bakraw/provider/bestsellerprovider.dart';
-import 'package:bakraw/screen/productdetail.dart';
+import 'package:bakraw/screen/newui/newproductdetail.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,14 +16,14 @@ class _BestSellingState extends State<BestSelling> {
   String userid = '', email = '', apikey = '';
   Future<PreviousOrderProduct> myfuture;
 
-  void getfuture() async {
+  void getfuture(BuildContext context) async {
     myfuture = Provider.of<BestSellerProvider>(context, listen: false)
         .getBestSellingProducts();
   }
 
   @override
   void initState() {
-    getfuture();
+    getfuture(context);
   }
 
   @override
@@ -34,11 +34,13 @@ class _BestSellingState extends State<BestSelling> {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder(
       future: myfuture,
       builder: (context, AsyncSnapshot<PreviousOrderProduct> snapshot) {
-        if(snapshot.connectionState==ConnectionState.done && snapshot.hasData){
-          if(snapshot.data.data.length > 0){
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          if (snapshot.data.data.length > 0) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -56,22 +58,21 @@ class _BestSellingState extends State<BestSelling> {
                         name: snapshot.data.data[index].name,
                         isSaleavaliable:
                         snapshot.data.data[index].isProductIsInSale,
-                        productsaledetails: snapshot
-                            .data.data[index].isProductIsInSale
+                        productsaledetails:
+                        snapshot.data.data[index].isProductIsInSale
                             ? snapshot.data.data[index].productSaleDetails
                             : null,
-                        productRating:
-                        snapshot.data.data[index].productRating,
+                        productRating: snapshot.data.data[index].productRating,
                       );
                     },
                   ),
                 ),
               ],
             );
-          }else{
+          } else {
             return Center(child: Container());
           }
-        }else{
+        } else {
           return Container(
             color: Colors.green.shade50,
             height: 220,
@@ -111,7 +112,7 @@ class BestSellingItem extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed(GroceryProductDescription.tag,
+          Navigator.of(context).pushNamed(NewProductDetails.tag,
               arguments: {'prodid': id, 'names': name});
         },
         child: isSaleavaliable

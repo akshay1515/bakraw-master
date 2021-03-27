@@ -7,10 +7,9 @@ import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/widget/orderdetailscard.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/scheduler.dart';
 
 class GroceryOrderHistoryScreen extends StatefulWidget {
   static String tag = '/GroceryOrderHistoryScreen';
@@ -54,7 +53,6 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     if (isLoading == true && isinit == true) {
       Provider.of<OrderHistoryProvider>(context, listen: false)
           .getPastOrder(email: email, apikey: apikey, userid: userid)
@@ -68,7 +66,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
               status: element.status));
         });
         setState(() {
-         /* onLoad = false;*/
+          /* onLoad = false;*/
           isinit = false;
           isLoading = false;
         });
@@ -79,97 +77,124 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
         itemCount: list.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return Container(
-            decoration: boxDecoration(
-                showShadow: true, radius: 10.0, bgColor: grocery_color_white),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      height: 50,
-                      width: 50,
-                      color: grocery_colorPrimary,
-                      child: Icon(
-                        Icons.shopping_cart,
-                        color: grocery_color_white,
+          return Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+            child: Container(
+                decoration: boxDecoration(
+                    showShadow: true,
+                    radius: 10.0,
+                    bgColor: grocery_color_white),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              height: 50,
+                              width: 50,
+                              color: grocery_colorPrimary,
+                              child: Icon(
+                                Icons.shopping_cart,
+                                color: grocery_color_white,
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 16),
+                                    child: text(
+                                      list[index].createdAt,
+                                      fontSize: textSizeNormal,
+                                      fontFamily: fontMedium,
+                                    ),
+                                  ),
+                                  text(
+                                    list[index].status,
+                                    fontSize: textSizeMedium,
+                                    fontFamily: fontMedium,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 16.0, right: 16),
+                                    child: text(
+                                        grocery_subtotal +
+                                            ': ₹' +
+                                            list[index].total,
+                                        fontSize: textSizeMedium,
+                                        fontFamily: fontMedium,
+                                        textColor: grocery_textColorSecondary),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ).cornerRadiusWithClipRRect(25),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          text(
-                            list[index].createdAt,
-                            fontSize: textSizeNormal,
-                            fontFamily: fontMedium,
-                          ).paddingOnly(bottom: 16),
-                          text(
-                            list[index].status,
-                            fontSize: textSizeMedium,
-                            fontFamily: fontMedium,
-                          ),
-                          text(grocery_subtotal + ': ₹' + list[index].total,
-                              fontSize: textSizeMedium,
-                              fontFamily: fontMedium,
-                              textColor: textSecondaryColor)
-                        ],
-                      ).paddingOnly(left: 16, right: 16),
-                    ),
-                  ],
-                ),
-                Divider().paddingOnly(top: 8),
-                Row(
-                  children: <Widget>[
-                    Expanded(child: SizedBox()),
-                    MaterialButton(
-                        height: 40,
-                        minWidth: 150,
-                        padding: const EdgeInsets.all(0.0),
-                        child: Text('Order Details',
-                                style: TextStyle(fontSize: 18),
-                                textAlign: TextAlign.center)
-                            .cornerRadiusWithClipRRect(25),
-                        textColor: grocery_color_white,
-                        color: grocery_colorPrimary,
-                        onPressed: () {
-                          OrderDetailsCard(
-                            orderid: list[index].orderId,
-                            apikey: apikey,
-                            email: email,
-                            userid: userid,
-                          ).launch(context);
-                        })
-                  ],
-                ).paddingOnly(top: 16)
-              ],
-            ).paddingOnly(left: 16, right: 16, top: 16, bottom: 16),
-          ).paddingOnly(left: 16, right: 16, top: 16).onTap(() {});
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Divider(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(child: SizedBox()),
+                            MaterialButton(
+                                height: 40,
+                                minWidth: 150,
+                                padding: const EdgeInsets.all(0.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: Text('Order Details',
+                                      style: TextStyle(fontSize: 18),
+                                      textAlign: TextAlign.center),
+                                ),
+                                textColor: grocery_color_white,
+                                color: grocery_colorPrimary,
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => OrderDetailsCard(
+                                            orderid: list[index].orderId,
+                                            apikey: apikey,
+                                            email: email,
+                                            userid: userid,
+                                          )));
+                                })
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )),
+          );
         });
 
-
-    if(onLoad){
-
-      if(userid.isEmptyOrNull && count<1){
+    if (onLoad) {
+      if (userid == null || userid.isEmpty && count < 1) {
         count++;
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushNamed(
-              NewHomepage.Tag, arguments: {'id': 4});
+          Navigator.of(context)
+              .pushNamed(NewHomepage.Tag, arguments: {'id': 4});
         });
         return Container(
           color: Colors.white,
         );
-      }else{
-        return  Scaffold(
+      } else {
+        return Scaffold(
           backgroundColor: grocery_app_background,
           body: SafeArea(
             child: Scaffold(
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(AppBar(
                   title: Text(
-                    'Order History',
+                    'My Past Orders',
                     style: TextStyle(color: grocery_color_white),
                   ),
                   leading: IconButton(
@@ -189,22 +214,30 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
                         SizedBox(
                           height: 16,
                         ),
-                        Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.clear,
-                              size: 30,
-                              color: grocery_color_white,
-                            ).paddingOnly(right: 24).onTap(() {
-                              finish(context);
-                            }),
-                            Expanded(
-                                child: text(grocery_orderHistory,
-                                    fontSize: textSizeNormal,
-                                    textColor: grocery_color_white,
-                                    fontFamily: fontBold)),
-                          ],
-                        ).paddingOnly(left: 12, right: 16),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 16),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 24.0),
+                                child: IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    icon: Icon(
+                                      Icons.clear,
+                                      size: 30,
+                                      color: grocery_color_white,
+                                    )),
+                              ),
+                              Expanded(
+                                  child: text('My Past Orders',
+                                      fontSize: textSizeNormal,
+                                      textColor: grocery_color_white,
+                                      fontFamily: fontBold)),
+                            ],
+                          ),
+                        ),
                         SizedBox(
                           height: 8,
                         ),
@@ -213,39 +246,36 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
               ),
               body: isLoading
                   ? Center(
-                child: CircularProgressIndicator(),
-              )
+                      child: CircularProgressIndicator(),
+                    )
                   : Container(
-                width: MediaQuery.of(context).size.width,
-                child: list.length > 0
-                    ? Container(child: compleated)
-                    : Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment:
-                      CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.inbox,
-                            color: grocery_colorPrimary,
-                            size: MediaQuery.of(context)
-                                .size
-                                .height /
-                                5,
-                          ),
-                        ),
-                        Text(
-                            '${'You Haven\'t Placed Any Order Yet '} '),
-                      ],
-                    )),
-              ),
+                      width: MediaQuery.of(context).size.width,
+                      child: list.length > 0
+                          ? Container(child: compleated)
+                          : Center(
+                              child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.inbox,
+                                    color: grocery_colorPrimary,
+                                    size:
+                                        MediaQuery.of(context).size.height / 5,
+                                  ),
+                                ),
+                                Text(
+                                    '${'You Haven\'t Placed Any Order Yet '} '),
+                              ],
+                            )),
+                    ),
             ),
           ),
         );
       }
-    }else{
+    } else {
       return Container(
         color: Colors.white,
       );

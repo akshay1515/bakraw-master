@@ -3,20 +3,23 @@ import 'package:bakraw/model/useraddressmodel.dart';
 import 'package:bakraw/model/usermodel.dart' as da;
 import 'package:bakraw/provider/pincodeprovider.dart';
 import 'package:bakraw/provider/useraddressprovider.dart';
+import 'package:bakraw/screen/newui/newgooglemap.dart';
 import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditUserAddress extends StatefulWidget {
   static const tag = '/EditUserAddress';
   Data model;
+  final bool isnav;
 
-  EditUserAddress({this.model});
+  EditUserAddress({this.model, this.isnav});
 
   @override
   _EditUserAddressState createState() => _EditUserAddressState();
@@ -128,14 +131,11 @@ class _EditUserAddressState extends State<EditUserAddress> {
     super.dispose();
   }
 
-  init() async {
+  void setuserAddress() {
     countryCont.text = 'India';
     stateCont.text = 'Uttrakhand';
     cityCont.text = 'Dehradun';
-    shipstateCont.text = stateCont.text;
-    shipcityCont.text = cityCont.text;
     if (widget.model != null) {
-      print(widget.model.address2);
       firstNameCont.text = widget.model.firstName;
       lastNameCont.text = widget.model.lastName;
       addressCont.text = widget.model.address1;
@@ -143,16 +143,12 @@ class _EditUserAddressState extends State<EditUserAddress> {
       cityCont.text = widget.model.city;
       pinCodeCont.text = widget.model.zip;
       phoneNumberCont.text = mobile;
-      shipfirstNameCont.text = widget.model.firstName;
-      shiplastNameCont.text = widget.model.lastName;
-      shipaddressCont.text = widget.model.address1;
-      shipshippingaddress1.text = widget.model.address2;
-      shipcityCont.text = widget.model.city;
-      shipstateCont.text = widget.model.state;
-      shippinCodeCont.text = widget.model.zip;
-      shipphoneNumberCont.text = mobile;
       Addressid = widget.model.id;
     }
+  }
+
+  init() async {
+    setuserAddress();
   }
 
   Future<String> getUserInfo() async {
@@ -171,6 +167,11 @@ class _EditUserAddressState extends State<EditUserAddress> {
     return apikey;
   }
 
+  Data checkData() {
+    var useraddress = Provider.of<UserAddressProvider>(context).options;
+    return useraddress;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isloading && loadlist) {
@@ -184,6 +185,22 @@ class _EditUserAddressState extends State<EditUserAddress> {
           isloading = false;
         });
       });
+    }
+
+    if (checkData() != null) {
+      countryCont.text = checkData().country;
+      stateCont.text = checkData().state;
+      cityCont.text = checkData().city;
+
+      firstNameCont.text =
+          checkData().firstName != null ? checkData().firstName : '';
+      lastNameCont.text =
+          checkData().lastName != null ? checkData().lastName : '';
+      addressCont.text = checkData().address1;
+      shippingaddress1.text = checkData().address2;
+      pinCodeCont.text = checkData().zip;
+      phoneNumberCont.text = mobile;
+      Addressid = checkData().id != null ? checkData().id : '';
     }
 
     void onSaveClicked() {
@@ -216,7 +233,8 @@ class _EditUserAddressState extends State<EditUserAddress> {
                 phoneNumber: mobile,
               ))
           .then((value) {
-        toast(value.message, length: Toast.LENGTH_SHORT);
+        Fluttertoast.showToast(
+            msg: value.message, toastLength: Toast.LENGTH_LONG);
 
         firstNameCont.clear();
         lastNameCont.clear();
@@ -227,6 +245,8 @@ class _EditUserAddressState extends State<EditUserAddress> {
         countryCont.clear();
         pinCodeCont.clear();
         phoneNumberCont.clear();
+        Provider.of<UserAddressProvider>(context, listen: false).options =
+            Data();
         Navigator.of(context).popAndPushNamed(UserAddressManager.tag);
         setState(() {
           isloading = false;
@@ -417,6 +437,8 @@ class _EditUserAddressState extends State<EditUserAddress> {
       onPressed: () {
         if (_billingform.currentState.validate()) {
           onSaveClicked();
+          Provider.of<UserAddressProvider>(context, listen: false).options =
+              Data();
         } else {
           Fluttertoast.showToast(
               msg: 'Please check the details you have filled',
@@ -468,280 +490,88 @@ class _EditUserAddressState extends State<EditUserAddress> {
             padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
             child: saveButton,
           ),
-        ]));
-
-    final shipfirstName = TextFormField(
-      focusNode: billfirstnamefocus,
-      controller: shipfirstNameCont,
-      keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.next,
-      textCapitalization: TextCapitalization.words,
-      style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
-      autofocus: false,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Billing first name is required';
-        } else {
-          return null;
-        }
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      onFieldSubmitted: (term) {
-        FocusScope.of(context).requestFocus(billlastnamefocus);
-      },
-      decoration: formFieldDecoration('First Name'),
-    );
-    final shiplastName = TextFormField(
-      focusNode: billlastnamefocus,
-      controller: shiplastNameCont,
-      keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.next,
-      textCapitalization: TextCapitalization.words,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Billing last name is required';
-        } else {
-          return null;
-        }
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
-      autofocus: false,
-      onFieldSubmitted: (term) {
-        FocusScope.of(context).requestFocus(billaddress1focus);
-      },
-      decoration: formFieldDecoration('Last Name'),
-    );
-    final shippinCode = TextFormField(
-      controller: shippinCodeCont,
-      focusNode: billpincodefocus,
-      keyboardType: TextInputType.number,
-      maxLength: 6,
-      autofocus: false,
-      onFieldSubmitted: (term) {},
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Billing pincode is required';
-        } else if (value.length != 6) {
-          return 'Enter valid pincode';
-        } else {
-          return null;
-        }
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      textInputAction: TextInputAction.done,
-      style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
-      decoration: formFieldDecoration('Pin Code'),
-    );
-    final shipcity = TextFormField(
-      controller: shipcityCont,
-      focusNode: billcityfocus,
-      keyboardType: TextInputType.text,
-      textCapitalization: TextCapitalization.words,
-      style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
-      onFieldSubmitted: (term) {
-        FocusScope.of(context).requestFocus(billpincodefocus);
-      },
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Billing city is required';
-        } else {
-          return null;
-        }
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      textInputAction: TextInputAction.next,
-      autofocus: false,
-      decoration: formFieldDecoration('City Name'),
-    );
-    final shipstate = TextFormField(
-      readOnly: true,
-      onFieldSubmitted: (term) {
-        FocusScope.of(context).nextFocus();
-      },
-      controller: shipstateCont,
-      keyboardType: TextInputType.text,
-      textCapitalization: TextCapitalization.words,
-      style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
-      autofocus: false,
-      textInputAction: TextInputAction.next,
-      decoration: formFieldDecoration('State'),
-    );
-    final shipaddress = TextFormField(
-      focusNode: billaddress1focus,
-      controller: shipaddressCont,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (term) {
-        FocusScope.of(context).requestFocus(billaddress2focus);
-      },
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Billing primary address is required';
-        } else {
-          return null;
-        }
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      autofocus: false,
-      style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
-      decoration: formFieldDecoration('Billing Address1'),
-    );
-    final shipaddress1 = TextFormField(
-      focusNode: billaddress2focus,
-      controller: shipshippingaddress1,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (term) {
-        FocusScope.of(context).requestFocus(billcityfocus);
-      },
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Billing secondary address is required';
-        } else {
-          return null;
-        }
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      autofocus: false,
-      style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
-      decoration: formFieldDecoration('Billing Address2'),
-    );
-
-    final shipbody = Form(
-        key: _shippingform,
-        child: Column(children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Expanded(child: shipfirstName),
-              SizedBox(
-                width: spacing_standard_new,
+          Container(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: grocery_colorPrimary,
               ),
-              Expanded(child: shiplastName),
-            ],
-          ),
-          shipaddress,
-          shipaddress1,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Expanded(child: shipcity),
-              SizedBox(
-                width: spacing_standard_new,
-              ),
-              Expanded(child: shipstate),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(child: shippinCode),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-            child: saveButton,
-          ),
-        ]));
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: grocery_color_white,
+              onPressed: () {
+                if (widget.model != null) {
+                  Provider.of<UserAddressProvider>(context, listen: false)
+                      .UpdateOptionValue(widget.model)
+                      .then((value) {
+                    Navigator.of(context).pushNamed(GoogleMapActivity.Tag);
+                  });
+                } else {
+                  Navigator.of(context).pushNamed(GoogleMapActivity.Tag);
+                }
+              },
+              child: Text('Open On Maps'),
             ),
-            onPressed: () {
-              Navigator.of(context).popAndPushNamed(UserAddressManager.tag);
-            }),
-        title: Text(
-          'Add/Edit Shipping Address',
-          style: TextStyle(color: grocery_color_white),
-        ),
-      ),
-      body: isloading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    color: grocery_lightGrey,
-                    child: Center(
-                        child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Shipping Address',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    )),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: body,
-                    ),
-                  )
-                  /* Container(
-                width: double.infinity,
-                color: grocery_lightGrey,
-                child: Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Billing Address',
-                    style: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                )),
-              ),*/
-                  /* Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        setState(() {
-                          copystatus = !copystatus;
-                        });
-                        if (copystatus == true) {
-                          shipfirstNameCont.text = firstNameCont.text;
-                          shiplastNameCont.text = lastNameCont.text;
-                          shipaddressCont.text = addressCont.text;
-                          shipshippingaddress1.text = shippingaddress1.text;
-                          shipcityCont.text = cityCont.text;
-                          shippinCodeCont.text = pinCodeCont.text;
-                        } else if (copystatus) {
-                          shipfirstNameCont.clear();
-                          shiplastNameCont.clear();
-                          shipaddressCont.clear();
-                          shipshippingaddress1.clear();
-                          shipcityCont.clear();
-                          shippinCodeCont.clear();
-                        }
-                      },
-                      icon: !copystatus
-                          ? Icon(Icons.check_box_outline_blank_outlined)
-                          : Icon(
-                              Icons.check_box_sharp,
-                              color: grocery_colorPrimary,
-                            )),
-                  Text('Same as shipping address'),
-                ],
+          )
+        ]));
+
+    return WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: grocery_color_white,
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: shipbody,
-              ),*/
-                ],
-              )),
+              onPressed: () {
+                Navigator.of(context).popAndPushNamed(UserAddressManager.tag,
+                    arguments: {'isnav': widget.isnav});
+              }),
+          title: Text(
+            'Add/Edit Shipping Address',
+            style: TextStyle(color: grocery_color_white),
+          ),
+        ),
+        body: isloading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: grocery_lightGrey,
+                      child: Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Shipping Address',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      )),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: body,
+                      ),
+                    )
+                  ],
+                )),
+      ),
+      onWillPop: () {
+        if (widget.isnav) {
+          Navigator.of(context).popAndPushNamed(UserAddressManager.tag,
+              arguments: {'isnav': widget.isnav});
+          return;
+        } else {
+          Navigator.of(context).popAndPushNamed(UserAddressManager.tag,
+              arguments: {'isnav': widget.isnav});
+          return;
+        }
+      },
     );
   }
 }

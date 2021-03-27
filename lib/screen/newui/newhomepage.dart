@@ -20,21 +20,20 @@ class NewHomepage extends StatefulWidget {
     'Free Delivery'
   ];
   List<String> imageList = [
-    'images/newicons/hygeniccolor.png',
+    'images/newicons/hygenicwhite.png',
     'images/newicons/freshwhite.png',
     'images/newicons/traceablewhite.png',
     'images/newicons/farmforkwhite.png',
     'images/newicons/freedeliverywhite.png'
   ];
 
-
-
   @override
   _NewHomepageState createState() => _NewHomepageState();
 }
-
+TextEditingController searchController = TextEditingController();
 class _NewHomepageState extends State<NewHomepage> {
-  TextEditingController searchController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -135,13 +134,16 @@ class _NewHomepageState extends State<NewHomepage> {
                                     color: Colors.white,
                                   ),
                                   onPressed: () {
-                                    if(searchController.text.trim() != null || searchController.text.trim().isNotEmpty) {
-                                      String text = searchController.text.trim();
+                                    if (searchController.text.trim() != null ||
+                                        searchController.text
+                                            .trim()
+                                            .isNotEmpty) {
+                                      String text =
+                                          searchController.text.trim();
                                       searchController.clear();
                                       Navigator.of(context).pushNamed(
-                                          SearchScreen.Tag,arguments: {
-                                            'word': text
-                                          });
+                                          SearchScreen.Tag,
+                                          arguments: {'word': text});
                                     }
                                   }),
                             )),
@@ -149,6 +151,7 @@ class _NewHomepageState extends State<NewHomepage> {
                     ),
                   ),
                   Container(
+                    alignment: Alignment.center,
                     child: GridView.builder(
                         shrinkWrap: true,
                         itemCount: widget.title.length,
@@ -157,74 +160,39 @@ class _NewHomepageState extends State<NewHomepage> {
                             new SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: widget.title.length),
                         itemBuilder: (context, index) {
-                          return index < 1
-                              ? Container(
-                                  margin: EdgeInsets.only(top: 5),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        decoration: BoxDecoration(
-                                            color: grocery_colorPrimary_light,
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
-                                        child: Center(
-                                          child: Container(
-                                              child: Image.asset(
-                                            widget.imageList[index],
-                                                width: 30,
-                                                height: 30,
-                                                fit: BoxFit.contain,
-                                          )),
-                                        ),
+                          return Container(
+                              margin: EdgeInsets.only(top: 5),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: 50,
+                                    child: DottedBorder(
+                                      borderType: BorderType.Circle,
+                                      color: Colors.white,
+                                      strokeWidth: 1,
+                                      padding: EdgeInsets.all(3),
+                                      child: Center(
+                                        child: Container(
+                                            child: Image.asset(
+                                          widget.imageList[index],
+                                          height: 30,
+                                          width: 30,
+                                          fit: BoxFit.contain,
+                                        )),
                                       ),
-                                      Text(
-                                        widget.title[index],
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 12),
-                                      )
-                                    ],
-                                  ))
-                              : Container(
-                                  margin: EdgeInsets.only(top: 5),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height:50,
-                                        width:50,
-
-                                        child: DottedBorder(
-                                          borderType: BorderType.Circle,
-                                          color: Colors.white,
-                                          strokeWidth: 1,
-                                          padding: EdgeInsets.all(3),
-                                          child: Center(
-                                            child: Container(
-                                                child:Image.asset(
-                                                  widget.imageList[index],
-                                                  height: 30,
-                                                  width:30,
-                                                  fit: BoxFit.contain,
-                                                )),
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        widget.title[index],
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 12),
-                                      )
-                                    ],
-                                  ));
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.title[index],
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  )
+                                ],
+                              ));
                         }),
                   ),
                   Container(

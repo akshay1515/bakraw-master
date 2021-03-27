@@ -1,12 +1,11 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/favouritemodel.dart';
 import 'package:bakraw/provider/favouriteproductprovider.dart';
-import 'package:bakraw/screen/productdetail.dart';
+import 'package:bakraw/screen/newui/newproductdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -26,9 +25,11 @@ class _UserFavouriteListState extends State<UserFavouriteList> {
     super.initState();
     setUser().then((value) {
       Provider.of<UserFavouriteProvider>(context, listen: false)
-          .getUserFavProduct(userid, apikey).then((value) {
+          .getUserFavProduct(userid, apikey)
+          .then((value) {
         if (favinit) {
-          mFavouriteList = Provider.of<UserFavouriteProvider>(context,listen: false).items;
+          mFavouriteList =
+              Provider.of<UserFavouriteProvider>(context, listen: false).items;
           print(mFavouriteList.length);
         }
       });
@@ -47,43 +48,39 @@ class _UserFavouriteListState extends State<UserFavouriteList> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
-
     return Container(
       margin: EdgeInsets.only(
           top: spacing_middle, right: spacing_standard_new, bottom: 80),
       child: mFavouriteList.length > 0
           ? GridView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, childAspectRatio: 0.85),
-        itemCount: mFavouriteList.length,
-        itemBuilder: (context, index) {
-          return StoreDeal(mFavouriteList[index], index);
-        },
-      )
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, childAspectRatio: 0.85),
+              itemCount: mFavouriteList.length,
+              itemBuilder: (context, index) {
+                return StoreDeal(mFavouriteList[index], index);
+              },
+            )
           : Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.inbox,
-                  color: grocery_colorPrimary,
-                  size: MediaQuery.of(context).size.height / 5,
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.inbox,
+                    color: grocery_colorPrimary,
+                    size: MediaQuery.of(context).size.height / 5,
+                  ),
                 ),
-              ),
-              Text('No Don\'t Have Favourite Item\'s List yet'),
-            ],
-          )),
+                Text('No Don\'t Have Favourite Item\'s List yet'),
+              ],
+            )),
     );
 
     /*return FutureBuilder(
@@ -95,10 +92,10 @@ class _UserFavouriteListState extends State<UserFavouriteList> {
           }
       return snapshot.hasData
           ?
-          *//*  :userid == null || userid.isEmpty
+          */ /*  :userid == null || userid.isEmpty
             ? DefaultUserProfile(
                 istab: true,
-              )*//*
+              )*/ /*
           : Center(
               child: CircularProgressIndicator(),
             );
@@ -115,17 +112,13 @@ class StoreDeal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    var width = MediaQuery.of(context).size.width;
     return GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed(GroceryProductDescription.tag,
+          Navigator.of(context).pushNamed(NewProductDetails.tag,
               arguments: {'prodid': model.productId, 'names': model.name});
         },
-        child:
-        Banner(
+        child: Banner(
           location: BannerLocation.topEnd,
           message: 'Sale',
           color: Colors.red.shade900,
@@ -136,19 +129,15 @@ class StoreDeal extends StatelessWidget {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black45,
-                      blurRadius: 5,
-                      spreadRadius: 2),
+                      color: Colors.black45, blurRadius: 5, spreadRadius: 2),
                 ],
-                borderRadius:
-                BorderRadius.vertical(top: Radius.circular(5))),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(5))),
             margin: EdgeInsets.only(left: 16, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ClipRRect(
-                  borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(5)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(5)),
                   child: CachedNetworkImage(
                     placeholder: placeholderWidgetFn(),
                     imageUrl: model.images[0],
@@ -228,7 +217,7 @@ class StoreDeal extends StatelessWidget {
             ),
           ),
         )
-      /* : Container(
+        /* : Container(
               width: 175,
               height: 270,
               decoration: BoxDecoration(
@@ -324,7 +313,6 @@ class StoreDeal extends StatelessWidget {
             ),*/ /*
         );
   }*/
-    );
+        );
   }
 }
-

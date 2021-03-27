@@ -29,16 +29,16 @@ class _MycartState2 extends State<Mycart2> {
     'Free Delivery'
   ];
   List<String> imageList = [
-    'images/newicons/hygeniccolor.png',
+    'images/newicons/hygenicwhite.png',
     'images/newicons/freshwhite.png',
     'images/newicons/traceablewhite.png',
     'images/newicons/farmforkwhite.png',
     'images/newicons/freedeliverywhite.png'
   ];
-
+  TextEditingController searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController searchController = TextEditingController();
+
     changeStatusColor(grocery_colorPrimary);
     var width = MediaQuery.of(context).size.width;
     return WillPopScope(
@@ -88,40 +88,7 @@ class _MycartState2 extends State<Mycart2> {
                           new SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: title.length),
                           itemBuilder: (context, index) {
-                            return index < 1
-                                ? Container(
-                                margin: EdgeInsets.only(top: 5),
-                                child: Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 50,
-                                      width: 50,
-                                      decoration: BoxDecoration(
-                                          color: grocery_colorPrimary_light,
-                                          borderRadius:
-                                          BorderRadius.circular(50)),
-                                      child: Center(
-                                        child: Container(
-                                            child: Image.asset(
-                                              imageList[index],
-                                              width: 30,
-                                              height: 30,
-                                              fit: BoxFit.contain,
-                                            )),
-                                      ),
-                                    ),
-                                    Text(
-                                      title[index],
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 12),
-                                    )
-                                  ],
-                                ))
-                                : Container(
+                            return Container(
                                 margin: EdgeInsets.only(top: 5),
                                 child: Column(
                                   mainAxisAlignment:

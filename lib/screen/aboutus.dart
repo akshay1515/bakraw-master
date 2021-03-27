@@ -26,9 +26,12 @@ class _AboutUsState extends State<AboutUs> {
           style: TextStyle(color: grocery_color_white),
         ),
       ),
-      body: WebView(
-        initialUrl:
-            'https://shop.himalayangoatmeat.com/apis/get-page-content.php?page=about-us',
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: WebView(
+          initialUrl:
+              'https://shop.himalayangoatmeat.com/apis/get-page-content.php?page=about-us',
+        ),
       ),
     );
   }

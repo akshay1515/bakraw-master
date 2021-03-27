@@ -15,6 +15,7 @@ import '../../databasehelper.dart';
 import '../useraddresslist.dart';
 
 class NewProductDetails extends StatefulWidget {
+  static String tag = '/ProductDescription';
   @override
   _NewProductDetailsState createState() => _NewProductDetailsState();
 }
@@ -394,7 +395,7 @@ class _NewProductDetailsState extends State<NewProductDetails> {
                                       imageUrl: e.path,
                                       width: double.infinity,
                                       height: 250,
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.cover,
                                       placeholder: placeholderWidgetFn(),
                                     ),
                                   ),

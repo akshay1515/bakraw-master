@@ -21,7 +21,7 @@ class _NewFavouriteState extends State<NewFavourite> {
     'Free Delivery'
   ];
   List<String> imageList = [
-    'images/newicons/hygeniccolor.png',
+    'images/newicons/hygenicwhite.png',
     'images/newicons/freshwhite.png',
     'images/newicons/traceablewhite.png',
     'images/newicons/farmforkwhite.png',
@@ -71,40 +71,7 @@ class _NewFavouriteState extends State<NewFavourite> {
                       new SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: title.length),
                       itemBuilder: (context, index) {
-                        return index < 1
-                            ? Container(
-                            margin: EdgeInsets.only(top: 5),
-                            child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                      color: grocery_colorPrimary_light,
-                                      borderRadius:
-                                      BorderRadius.circular(50)),
-                                  child: Center(
-                                    child: Container(
-                                        child: Image.asset(
-                                          imageList[index],
-                                          width: 30,
-                                          height: 30,
-                                          fit: BoxFit.contain,
-                                        )),
-                                  ),
-                                ),
-                                Text(
-                                  title[index],
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                )
-                              ],
-                            ))
-                            : Container(
+                        return Container(
                             margin: EdgeInsets.only(top: 5),
                             child: Column(
                               mainAxisAlignment:

@@ -2,7 +2,6 @@ import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 BoxDecoration boxDecoration(
     {double radius = 2,
@@ -12,7 +11,7 @@ BoxDecoration boxDecoration(
   return BoxDecoration(
     color: bgColor,
     boxShadow: showShadow
-        ? defaultBoxShadow(shadowColor: shadowColorGlobal)
+        ? BoxShadow(color: Colors.black54)
         : [BoxShadow(color: Colors.transparent)],
     border: Border.all(color: color),
     borderRadius: BorderRadius.all(Radius.circular(radius)),
@@ -39,7 +38,7 @@ Widget text(
     style: TextStyle(
       fontFamily: fontFamily ?? null,
       fontSize: fontSize,
-      color: textColor==null?grocery_Color_black:textColor,
+      color: textColor == null ? grocery_Color_black : textColor,
       height: 1.5,
       letterSpacing: latterSpacing,
       decoration:

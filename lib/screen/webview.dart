@@ -22,13 +22,16 @@ class _ContentDisplayState extends State<ContentDisplay> {
               Navigator.of(context).pop();
             }),
         title: Text(
-          'GoatMeat',
+          'Contact Us',
           style: TextStyle(color: grocery_color_white),
         ),
       ),
-      body: WebView(
-        initialUrl:
-            'https://shop.himalayangoatmeat.com/apis/get-page-content.php?page=contact-us',
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: WebView(
+          initialUrl:
+              'https://shop.himalayangoatmeat.com/apis/get-page-content.php?page=contact-us',
+        ),
       ),
     );
   }

@@ -22,13 +22,16 @@ class _TermsState extends State<Terms> {
               Navigator.of(context).pop();
             }),
         title: Text(
-          'GoatMeat',
+          'Terms and Conditions',
           style: TextStyle(color: grocery_color_white),
         ),
       ),
-      body: WebView(
-        initialUrl:
-            'https://shop.himalayangoatmeat.com/apis/get-page-content.php?page=terms-and-conditions',
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: WebView(
+          initialUrl:
+              'https://shop.himalayangoatmeat.com/apis/get-page-content.php?page=terms-and-conditions',
+        ),
       ),
     );
   }

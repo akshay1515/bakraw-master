@@ -20,7 +20,6 @@ import 'package:bakraw/utils/GroceryWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -129,8 +128,11 @@ class _ShippingMethodState extends State<ShippingMethod> {
 
   double Calculatetax() {
     double temp = 0.0;
-    temp = ((Subtotal() / 100) *
-        double.parse(taxmodel.data[defaultvalue].taxRates[defaultvalue].rate));
+    temp = (taxmodel.data[defaultvalue].taxRates.length > 0
+        ? (Subtotal() / 100) *
+            double.parse(
+                taxmodel.data[defaultvalue].taxRates[defaultvalue].rate)
+        : (Subtotal() / 100) * 0);
     return double.parse(temp.toStringAsFixed(2));
   }
 
@@ -230,8 +232,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
           visiblity = true;
           textcolor = grocery_colorPrimary;
           coupontext =
-          "You have saved ₹ ${double.parse(value.data.discountAmount)
-              .toStringAsFixed(2)}";
+              "You have saved ₹ ${double.parse(value.data.discountAmount).toStringAsFixed(2)}";
           icons = Icons.check_circle;
         });
       } else {
@@ -253,10 +254,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
   @override
   Widget build(BuildContext context) {
     changeStatusColor(grocery_colorPrimary);
-    var width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    var width = MediaQuery.of(context).size.width;
 
     Future<List<dw.Data>> getDeliveryMethod() async {
       Provider.of<ShipmethodProvider>(context)
@@ -281,16 +279,22 @@ class _ShippingMethodState extends State<ShippingMethod> {
       Provider.of<TaxProvider>(context)
           .getTaxlist(apikey, userid, email)
           .then((value) {
-        tempTax =
-            double.parse(value.data[defaultvalue].taxRates[defaultvalue].rate);
         taxmodel = TaxModel(
             status: value.status, message: value.message, data: value.data);
+
+        value.data[0].taxRates.isNotEmpty
+            ? tempTax = double.parse(value.data[0].taxRates[0].rate)
+            : '0.0';
+
         return taxmodel;
       });
     }
 
     return FutureBuilder(
-        future: Future.wait([getTaxdetails(), getDeliveryMethod(),]),
+        future: Future.wait([
+          getTaxdetails(),
+          getDeliveryMethod(),
+        ]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
             return Scaffold(
@@ -340,7 +344,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                             children: <Widget>[
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   text(
                                       '${grocery_lbl_subtotal}${' '}${'(${count} items)'}'),
@@ -351,7 +355,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                               SizedBox(height: spacing_control),
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   text('Tax (${tempTax.toStringAsFixed(2)}%)',
                                       textColor: grocery_textColorSecondary),
@@ -365,17 +369,15 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                     SizedBox(height: spacing_control),
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         text('Discount ',
                                             textColor: grocery_color_red),
                                         text(
                                             couponclass != null
                                                 ? couponclass.status == 200
-                                                ? "- ₹ ${double.parse(
-                                                couponclass.data.discountAmount)
-                                                .toStringAsFixed(2)}"
-                                                : ""
+                                                    ? "- ₹ ${double.parse(couponclass.data.discountAmount).toStringAsFixed(2)}"
+                                                    : ""
                                                 : "",
                                             textColor: grocery_color_red),
                                       ],
@@ -384,8 +386,8 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 ),
                                 visible: couponclass != null
                                     ? couponclass.status == 200
-                                    ? true
-                                    : false
+                                        ? true
+                                        : false
                                     : false,
                               ),
                               SizedBox(height: spacing_standard_new),
@@ -399,29 +401,29 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                             vertical: 3,
                                           ),
                                           decoration: BoxDecoration(
-                                              border: Border.all(color: grey)),
-                                          width: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width *
+                                              border: Border.all(
+                                                  color: Colors.grey)),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
                                               0.63,
                                           child: TextFormField(
                                             textCapitalization:
-                                            TextCapitalization.characters,
+                                                TextCapitalization.characters,
                                             controller: coupon,
                                             keyboardType: TextInputType.text,
                                             decoration: InputDecoration(
                                               border: InputBorder.none,
                                               contentPadding:
-                                              EdgeInsets.only(left: 7),
+                                                  EdgeInsets.only(left: 7),
                                               hintText:
-                                              'Enter Coupon Code Here',
+                                                  'Enter Coupon Code Here',
                                             ),
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                          const EdgeInsets.only(left: 8.0),
+                                              const EdgeInsets.only(left: 8.0),
                                           child: groceryButton(
                                             bgColors: grocery_colorPrimary,
                                             onPressed: () {
@@ -442,12 +444,12 @@ class _ShippingMethodState extends State<ShippingMethod> {
                         ),
                         SizedBox(height: 8),
                         Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: spacing_standard_new, horizontal: 2),
+                          margin:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                           padding: EdgeInsets.symmetric(vertical: 2),
                           width: width,
                           decoration: BoxDecoration(
-                            border: Border.all(color: grey),
+                            border: Border.all(color: Colors.grey),
                             boxShadow: [
                               BoxShadow(
                                   color: grocery_ShadowColor,
@@ -474,7 +476,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding:
-                                  EdgeInsets.only(left: 3, right: 7),
+                                      EdgeInsets.only(left: 3, right: 7),
                                   hintText: 'Delivery Instructions',
                                 ),
                               ),
@@ -483,147 +485,141 @@ class _ShippingMethodState extends State<ShippingMethod> {
                         ),
                         Container(
                             padding: EdgeInsets.only(left: 10),
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
+                            width: MediaQuery.of(context).size.width,
                             alignment: Alignment.centerLeft,
                             child: text('Select Delivery Method',
                                 fontFamily: fontMedium)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                if (!isdelivery && !ispickup) {
-                                  setState(() {
-                                    isdelivery = !isdelivery;
-                                    ispickup = ispickup;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isdelivery = !isdelivery;
-                                    ispickup = !ispickup;
-                                  });
-                                }
-                              },
-                              child: Container(
-                                height: 150,
-                                child: Card(
-                                  color: isdelivery
-                                      ? grocery_colorPrimary
-                                      : grocery_color_white,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.delivery_dining,
-                                          size: 50,
-                                          color: isdelivery
-                                              ? grocery_color_white
-                                              : grocery_colorPrimary,
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          Shippinglist[0].freeShippingName,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: !isdelivery
-                                                ? grocery_Color_black
-                                                : grocery_color_white,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {
+                                  if (!isdelivery && !ispickup) {
+                                    setState(() {
+                                      isdelivery = !isdelivery;
+                                      ispickup = ispickup;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      isdelivery = !isdelivery;
+                                      ispickup = !ispickup;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 150,
+                                  child: Card(
+                                    color: isdelivery
+                                        ? grocery_colorPrimary
+                                        : grocery_color_white,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.delivery_dining,
+                                            size: 50,
+                                            color: isdelivery
+                                                ? grocery_color_white
+                                                : grocery_colorPrimary,
                                           ),
-                                        ),
-                                        Text(
-                                          '₹ ${Shippinglist[0]
-                                              .freeShippingMinAmount}',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: !isdelivery
-                                                ? grocery_Color_black
-                                                : grocery_color_white,
+                                          SizedBox(height: 5),
+                                          Text(
+                                            Shippinglist[0].freeShippingName,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: !isdelivery
+                                                  ? grocery_Color_black
+                                                  : grocery_color_white,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          Text(
+                                            '₹ ${Shippinglist[0].freeShippingMinAmount}',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: !isdelivery
+                                                  ? grocery_Color_black
+                                                  : grocery_color_white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                if (!isdelivery && !ispickup) {
-                                  setState(() {
-                                    isdelivery = isdelivery;
-                                    ispickup = !ispickup;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isdelivery = !isdelivery;
-                                    ispickup = !ispickup;
-                                  });
-                                }
-                              },
-                              child: Container(
-                                height: 150,
-                                child: Card(
-                                  color: ispickup
-                                      ? grocery_colorPrimary
-                                      : grocery_color_white,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.storefront,
-                                          color: ispickup
-                                              ? grocery_color_white
-                                              : grocery_colorPrimary,
-                                          size: 50,
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          Shippinglist[1].localPickupName,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: !ispickup
-                                                ? grocery_Color_black
-                                                : grocery_color_white,
+                              GestureDetector(
+                                onTap: () {
+                                  if (!isdelivery && !ispickup) {
+                                    setState(() {
+                                      isdelivery = isdelivery;
+                                      ispickup = !ispickup;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      isdelivery = !isdelivery;
+                                      ispickup = !ispickup;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 150,
+                                  child: Card(
+                                    color: ispickup
+                                        ? grocery_colorPrimary
+                                        : grocery_color_white,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.storefront,
+                                            color: ispickup
+                                                ? grocery_color_white
+                                                : grocery_colorPrimary,
+                                            size: 50,
                                           ),
-                                        ),
-                                        Text(
-                                            '₹ ${Shippinglist[1]
-                                                .localPickupCost}',
+                                          SizedBox(height: 5),
+                                          Text(
+                                            Shippinglist[1].localPickupName,
                                             style: TextStyle(
                                               fontSize: 20,
                                               color: !ispickup
                                                   ? grocery_Color_black
                                                   : grocery_color_white,
-                                            )),
-                                      ],
+                                            ),
+                                          ),
+                                          Text(
+                                              '₹ ${Shippinglist[1].localPickupCost}',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: !ispickup
+                                                    ? grocery_Color_black
+                                                    : grocery_color_white,
+                                              )),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Container(
                             margin: EdgeInsets.only(top: spacing_standard_new),
                             padding: EdgeInsets.only(left: 10),
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
+                            width: MediaQuery.of(context).size.width,
                             alignment: Alignment.centerLeft,
                             child: text('Select Payment Method',
                                 fontFamily: fontMedium)),
                         Container(
                           margin: EdgeInsets.only(
-                              left: spacing_standard,
-                              right: spacing_standard,
-                              top: spacing_standard),
+                              left: 10, right: 10, top: spacing_standard),
                           color: grocery_color_white,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -646,10 +642,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                               color: grocery_lightGrey))),
                                   padding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 5),
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width,
+                                  width: MediaQuery.of(context).size.width,
                                   child: Stack(
                                     children: [
                                       Align(
@@ -693,10 +686,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                                 color: grocery_color_white))),
                                     padding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 5),
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width,
+                                    width: MediaQuery.of(context).size.width,
                                     child: Stack(
                                       children: [
                                         Align(
@@ -732,7 +722,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
               bottomNavigationBar: Container(
                 color: grocery_color_white,
                 height: AppBar().preferredSize.height * 1.2,
-                padding: EdgeInsets.symmetric(horizontal: 5),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 margin: EdgeInsets.only(bottom: 1),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -743,40 +733,44 @@ class _ShippingMethodState extends State<ShippingMethod> {
                         textContent: grocery_lbl_checkout,
                         onPressed: (() {
                           String deliveryinstructions = "";
-                          if (!deliveryinstruction.text.isEmptyOrNull) {
+                          if (deliveryinstruction.text != null ||
+                              deliveryinstruction.text.isNotEmpty) {
                             deliveryinstructions =
                                 deliveryinstruction.text.toString();
                           }
-                          if (shippingcost.isEmptyOrNull &&
-                              Shippinglable.isEmptyOrNull) {
+                          if (shippingcost == null ||
+                              shippingcost.isEmpty && Shippinglable == null ||
+                              Shippinglable.isEmpty) {
                             Fluttertoast.showToast(
                                 msg: 'Please Select Shipping Method',
                                 toastLength: Toast.LENGTH_SHORT);
                           } else {
-                            Fluttertoast.showToast(
+                            /* Fluttertoast.showToast(
                                 msg: paymentMode.toString(),
-                                toastLength: Toast.LENGTH_SHORT);
-                            !userid.isEmptyOrNull
+                                toastLength: Toast.LENGTH_SHORT);*/
+                            userid != null || !userid.isEmpty
                                 ? subtotal <= 0
-                                ? Fluttertoast.showToast(
-                                msg: 'Your cart is Empty',
-                                toastLength: Toast.LENGTH_SHORT)
-                                : PaymentsPage(
-                                widget.model,
-                                widget.deliveryslot,
-                                finalTotal(),
-                                deliveryinstructions,
-                                Shippinglable,
-                                shippingcost,
-                                taxmodel
-                                    .data[0].taxRates[0].taxRateId,
-                                Calculatetax().toStringAsFixed(2),
-                                paymentMode,
-                                couponclass)
-                                .launch(context)
+                                    ? Fluttertoast.showToast(
+                                        msg: 'Your cart is Empty',
+                                        toastLength: Toast.LENGTH_SHORT)
+                                    : Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => PaymentsPage(
+                                                widget.model,
+                                                widget.deliveryslot,
+                                                finalTotal(),
+                                                deliveryinstructions,
+                                                Shippinglable,
+                                                shippingcost,
+                                                taxmodel.data[0].taxRates[0]
+                                                    .taxRateId,
+                                                Calculatetax()
+                                                    .toStringAsFixed(2),
+                                                paymentMode,
+                                                couponclass)))
                                 : Fluttertoast.showToast(
-                                msg: 'Please Login',
-                                toastLength: Toast.LENGTH_SHORT);
+                                    msg: 'Please Login',
+                                    toastLength: Toast.LENGTH_SHORT);
                           }
                         }),
                       ),

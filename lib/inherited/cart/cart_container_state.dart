@@ -6,8 +6,8 @@ import 'package:bakraw/model/internalcart.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
 import 'package:bakraw/provider/productdetailprovider.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartContainerState extends State<CartContainer> {
   Map<String, CartProductModel> cartProductModel = {};

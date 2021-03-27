@@ -1,10 +1,10 @@
 import 'dart:ui';
+
+import 'package:bakraw/screen/newui/newhomepage.dart';
+import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:bakraw/screen/newui/newhomepage.dart';
-import 'package:bakraw/screen/useraddresslist.dart';
 
 class NewUserProfile extends StatefulWidget {
   @override
@@ -78,33 +78,40 @@ class _NewUserProfileState extends State<NewUserProfile> {
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
                       child: Container(
-                        height: 50,
-                        width: 50,
-                        padding: EdgeInsets.all(10),
-                        decoration:
-                        BoxDecoration(borderRadius:BorderRadius.circular(20), color: grocery_colorPrimary),
-                        child: Image.asset('images/newicons/logout.png',
-                            height: 10, width: 10, color: Colors.white,)
-                      ),
+                          height: 50,
+                          width: 50,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: grocery_colorPrimary),
+                          child: Image.asset(
+                            'images/newicons/logout.png',
+                            height: 10,
+                            width: 10,
+                            color: Colors.white,
+                          )),
                     ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(top: 10,left: 8,right: 8,bottom: 3),
-                            child: Text('Logout',style:TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                            padding: const EdgeInsets.only(
+                                top: 10, left: 8, right: 8, bottom: 3),
+                            child: Text('Logout',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left:8.0),
-                            child: Text('Are you sure you want to logout ?',style: TextStyle(
-                              color: Colors.grey.shade400,
-                              fontSize: 16
-                            ),),
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              'Are you sure you want to logout ?',
+                              style: TextStyle(
+                                  color: Colors.grey.shade400, fontSize: 16),
+                            ),
                           )
                         ],
                       ),
@@ -117,38 +124,40 @@ class _NewUserProfileState extends State<NewUserProfile> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.of(context).pop();
                     },
                     child: Container(
-                      width: w * 0.15,
-                      child: Text("No",style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600
-                      ),)
-                    ),
+                        width: w * 0.15,
+                        child: Text(
+                          "No",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600),
+                        )),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right:8.0),
+                    padding: const EdgeInsets.only(right: 8.0),
                     child: FittedBox(
                       child: TextButton(
                         child: Container(
                           height: 40,
                           width: 125,
                           decoration: BoxDecoration(
-                            color: Colors.red.shade500,
-                            borderRadius: BorderRadius.circular(10)
-                          ),
+                              color: Colors.red.shade500,
+                              borderRadius: BorderRadius.circular(10)),
                           alignment: Alignment.center,
-                          child: Text('Logout',style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600
-                          ),),
+                          child: Text(
+                            'Logout',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
                         onPressed: (() {
-                         UserLogout().then((value) {
+                          UserLogout().then((value) {
                             Navigator.of(context)
                                 .pushReplacementNamed(NewHomepage.Tag);
                           });
@@ -176,14 +185,15 @@ class _NewUserProfileState extends State<NewUserProfile> {
                 child: Container(
                   transform: Matrix4.translationValues(0.0, -50, 0.0),
                   height: 350,
-                  child: Image.asset('images/bgimage.png', fit: BoxFit.fitHeight),
+                  child:
+                      Image.asset('images/bgimage.png', fit: BoxFit.fitHeight),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 150, left: 30, right: 10),
+                margin: EdgeInsets.only(top: 225, left: 30, right: 10),
                 child: Row(
                   children: [
-                    ClipRRect(
+                    /*ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Container(
                         child: Image.network(
@@ -193,7 +203,7 @@ class _NewUserProfileState extends State<NewUserProfile> {
                           fit: BoxFit.fill,
                         ),
                       ),
-                    ),
+                    ),*/
                     Container(
                       padding: EdgeInsets.only(left: 10),
                       child: Column(
@@ -209,17 +219,17 @@ class _NewUserProfileState extends State<NewUserProfile> {
                                   fontWeight: FontWeight.w700),
                             ),
                           ),
-                          Container(
+                          /* Container(
                             padding: EdgeInsets.only(bottom: 5),
                             child: Text(email,
                                 style:
                                 TextStyle(color: Colors.white, fontSize: 17)),
-                          ),
+                          ),*/
                           Container(
                             padding: EdgeInsets.only(bottom: 5),
                             child: Text('+91 ${mobile}',
-                                style:
-                                TextStyle(color: Colors.white, fontSize: 17)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 17)),
                           ),
                         ],
                       ),
@@ -232,19 +242,21 @@ class _NewUserProfileState extends State<NewUserProfile> {
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(top: 300),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(50)),
+                  borderRadius:
+                      BorderRadius.only(topRight: Radius.circular(50)),
                   color: Colors.green.shade50,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     InkWell(
-                      onTap: (){
-                        Navigator.of(context).pushNamed(UserAddressManager.tag,arguments:  {'isnav': false});
+                      onTap: () {
+                        Navigator.of(context).pushNamed(UserAddressManager.tag,
+                            arguments: {'isnav': false});
                       },
                       child: Card(
-                        margin:
-                        EdgeInsets.only(left: 15, right: 15, top: 50, bottom: 10),
+                        margin: EdgeInsets.only(
+                            left: 15, right: 15, top: 50, bottom: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -262,28 +274,35 @@ class _NewUserProfileState extends State<NewUserProfile> {
                                 decoration: BoxDecoration(
                                     color: Colors.green.shade900,
                                     borderRadius: BorderRadius.circular(50)),
-                                child: Image.asset('images/newicons/addressicons.png',),
+                                child: Image.asset(
+                                  'images/newicons/addressicons.png',
+                                ),
                               ),
                               Container(
                                 child: Text(
                                   'Delivery Address',
                                   style: TextStyle(
-                                      color: grocery_colorPrimary, fontSize: 21),
+                                      color: grocery_colorPrimary,
+                                      fontSize: 21),
                                 ),
                               ),
-                              Icon(Icons.arrow_forward_ios_rounded,color: grocery_colorPrimary,size: 20,)
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: grocery_colorPrimary,
+                                size: 20,
+                              )
                             ],
                           ),
                         ),
                       ),
                     ),
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         showLogoutBottomSheetDialog(context);
                       },
                       child: Card(
-                        margin:
-                        EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
+                        margin: EdgeInsets.only(
+                            left: 15, right: 15, top: 10, bottom: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -301,17 +320,24 @@ class _NewUserProfileState extends State<NewUserProfile> {
                                 decoration: BoxDecoration(
                                     color: Colors.green.shade900,
                                     borderRadius: BorderRadius.circular(50)),
-                                child: Image.asset('images/newicons/logout.png',),
+                                child: Image.asset(
+                                  'images/newicons/logout.png',
+                                ),
                               ),
                               Container(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   'Logout',
                                   style: TextStyle(
-                                      color: grocery_colorPrimary, fontSize: 21),
+                                      color: grocery_colorPrimary,
+                                      fontSize: 21),
                                 ),
                               ),
-                              Icon(Icons.arrow_forward_ios_rounded,color: grocery_colorPrimary,size: 20,)
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: grocery_colorPrimary,
+                                size: 20,
+                              )
                             ],
                           ),
                         ),
@@ -325,20 +351,21 @@ class _NewUserProfileState extends State<NewUserProfile> {
                   top: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
+                    /*IconButton(
                       onPressed: () {},
                       icon: ImageIcon(
                         AssetImage('images/newicons/editicon.png'),
                         color: Colors.white,
                         size: 40,
                       ),
-                    ),
+                    ),*/
                   ))
             ],
           ),
         ),
-        onWillPop: (){
-          Navigator.of(context).pushReplacementNamed(NewHomepage.Tag,arguments: {'id':0});
+        onWillPop: () {
+          Navigator.of(context)
+              .pushReplacementNamed(NewHomepage.Tag, arguments: {'id': 0});
         });
   }
 

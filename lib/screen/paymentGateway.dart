@@ -12,13 +12,11 @@ import 'package:bakraw/model/taxmodel.dart';
 import 'package:bakraw/model/useraddressmodel.dart' as net;
 import 'package:bakraw/provider/carttoserverprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
-import 'package:bakraw/screen/dashboard.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/widget/success_dialogue.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -92,7 +90,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
   bool isdelivery = false;
   String data = '';
   orderplacedmessage orderplaced;
-  CircularProgressIndicator indicator = CircularProgressIndicator();
 
   @override
   void initState() {
@@ -173,13 +170,17 @@ class _PaymentsPageState extends State<PaymentsPage> {
     }
   }
 
-  void _showdialog({String message, String orderid}) {
+  void _showdialog(
+      {String message,
+      String orderid,
+      Color statuscolor,
+      IconData statusIcon}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return DialogResponses(
-            color: Colors.green[300],
-            icon: Icons.check_circle,
+            color: statuscolor,
+            icon: statusIcon,
             message: message,
             id: orderid,
           );
@@ -189,7 +190,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
   Future fetchcartItems() async {
     subtotal = 0.0;
     if (rowlist == null) {
-      rowlist = List<CartsModel>();
+      rowlist = <CartsModel>[];
       count = 0;
     }
     count = await DatabaseHelper.instance.getCount();
@@ -229,9 +230,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
   }
 
   void handlerpaymentSuccess(PaymentSuccessResponse response) {
-    setState(() {
+    /* setState(() {
       indicator.visible(true);
-    });
+    });*/
     transactionDetails = new TransactionDetails(
       transactionId: response.paymentId,
       paymentMethod: "razorpay",
@@ -255,9 +256,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
       var i = DatabaseHelper.instance.TrunccateTable();
       print('database deleted $i');
       setState(() {
-        indicator.visible(false);
+        /* indicator.visible(false);*/
         ispickup = false;
         _showdialog(
+            statuscolor: grocery_colorPrimary,
+            statusIcon: Icons.check_circle,
             message: orderplaced.message,
             orderid: orderplaced.data.orderId.toString());
       });
@@ -265,7 +268,13 @@ class _PaymentsPageState extends State<PaymentsPage> {
   }
 
   void handlerpaymentError(PaymentFailureResponse response) {
-    _showdialog(message: response.message, orderid: response.code.toString());
+    Map<String, dynamic> failresponse = jsonDecode(response.message);
+    print(failresponse['error']['code']);
+    _showdialog(
+        statuscolor: Colors.red.shade500,
+        statusIcon: Icons.error,
+        message: failresponse['error']['description'],
+        orderid: null);
   }
 
   void handlerpaymentwallet() {
@@ -380,7 +389,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
       } else {
         setState(() {
           ispickup = true;
-          indicator.visible(true);
+          /* indicator.visible(true);*/
         });
         if (ispickup) {
           CODTransaction();
@@ -405,8 +414,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
             appBar: AppBar(),
             body: WillPopScope(
               onWillPop: () {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(NewHomepage.Tag, (route) => false,arguments: {'id' : 0});
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    NewHomepage.Tag, (route) => false,
+                    arguments: {'id': 0});
               },
               child: Container(
                 child: Center(

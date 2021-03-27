@@ -139,7 +139,6 @@ class _NewDashboardState extends State<NewDashboard> {
     final Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -175,7 +174,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                       color: grocery_colorPrimary,
                                       child: Padding(
                                         padding: EdgeInsets.only(
-                                            left: 20, right: 10, top: 10),
+                                            left: 10, right: 10, top: 10),
                                         child: IconButton(
                                             icon: Icon(Icons.clear,
                                                 color:
@@ -185,6 +184,8 @@ class _NewDashboardState extends State<NewDashboard> {
                                             }),
                                       )),
                                   Container(
+                                    transform:
+                                        Matrix4.translationValues(0, -10, 0),
                                     padding:
                                         EdgeInsets.only(left: 8, bottom: 20),
                                     width: MediaQuery.of(context).size.width,
@@ -196,6 +197,8 @@ class _NewDashboardState extends State<NewDashboard> {
                                           bottomLeft: Radius.circular(20)),
                                     ),
                                     child: ListView.builder(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 5),
                                       itemCount: imageList.length,
                                       shrinkWrap: true,
                                       itemBuilder: (context, index) {
@@ -203,13 +206,13 @@ class _NewDashboardState extends State<NewDashboard> {
                                           height: 50,
                                           child: GestureDetector(
                                               onTap: () {
-                                                if(isSelected != index) {
+                                                if (isSelected != index) {
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context)
-                                                      .pushNamed(
-                                                      onclick[index],
-                                                      arguments:
-                                                      argumentsparam[index]);
+                                                      .pushNamed(onclick[index],
+                                                          arguments:
+                                                              argumentsparam[
+                                                                  index]);
                                                 }
                                               },
                                               child: Row(
@@ -289,8 +292,8 @@ class _NewDashboardState extends State<NewDashboard> {
               child: Center(
                   child: Image.asset(
                 'images/Bakraw.png',
-                height: 40,
-                width: 40,
+                height: 50,
+                width: 50,
                 fit: BoxFit.contain,
               )),
             ),
@@ -300,6 +303,7 @@ class _NewDashboardState extends State<NewDashboard> {
                 icon: Icon(
                   Icons.notifications,
                   color: grocery_colorPrimary,
+                  size: 35,
                 ),
                 onPressed: () {}),
             Container(
@@ -314,7 +318,7 @@ class _NewDashboardState extends State<NewDashboard> {
                     color: isSelected != 4
                         ? grocery_color_white
                         : grocery_colorPrimary_light,
-                    size: 15,
+                    size: 25,
                   ),
                   onPressed: () {
                     if (isSelected != 4) {

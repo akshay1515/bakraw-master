@@ -3,6 +3,7 @@ import 'package:bakraw/databasehelper.dart';
 import 'package:bakraw/inherited/cart/cart_container.dart';
 import 'package:bakraw/inherited/cart/cart_container_state.dart';
 import 'package:bakraw/model/productmodel.dart' as Data;
+import 'package:bakraw/screen/newui/newproductdetail.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
@@ -10,9 +11,7 @@ import 'package:bakraw/utils/GroceryWidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-import 'package:bakraw/screen/productdetail.dart';
 
 class CartItem extends StatefulWidget {
   int id;
@@ -44,7 +43,7 @@ class CartItem extends StatefulWidget {
 
 class _CartItemState extends State<CartItem> {
   CartContainerState state;
-  var price ;
+  var price;
 
   void updateItemCount(BuildContext context) {
     CartContainer.of(context)
@@ -149,19 +148,19 @@ class _CartItemState extends State<CartItem> {
     });
   }
 
-  getPrice(){
-   price = widget.mld.productOptions[0].options.where((element){
-     return element.optionValueId.contains(widget.optionvalueid);
-   }).toList();
-   return price;
+  getPrice() {
+    price = widget.mld.productOptions[0].options.where((element) {
+      return element.optionValueId.contains(widget.optionvalueid);
+    }).toList();
+    return price;
   }
 
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     return InkWell(
-      onTap: (){
-        Navigator.of(context).pushNamed(GroceryProductDescription.tag,
+      onTap: () {
+        Navigator.of(context).pushNamed(NewProductDetails.tag,
             arguments: {'prodid': widget.productid, 'names': widget.mld.name});
       },
       child: ClipRRect(
@@ -248,7 +247,8 @@ class _CartItemState extends State<CartItem> {
                               allowHalfRating: true,
                               isReadOnly: true,
                               starCount: 5,
-                              rating: double.parse(widget.mld.productRating.avgRating),
+                              rating: double.parse(
+                                  widget.mld.productRating.avgRating),
                               size: 17,
                             ),
                             Padding(
@@ -267,24 +267,24 @@ class _CartItemState extends State<CartItem> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Container(
-                              height:10,
-                              width:7,
+                              height: 10,
+                              width: 7,
                               padding: EdgeInsets.only(
-                                  left: spacing_standard, right: spacing_standard),
+                                  left: spacing_standard,
+                                  right: spacing_standard),
                               decoration: BoxDecoration(
-                                color: Colors.green.shade700,
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(50),bottomRight: Radius.circular(50))
-                              ),
+                                  color: Colors.green.shade700,
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(50),
+                                      bottomRight: Radius.circular(50))),
                               margin: EdgeInsets.only(right: spacing_middle),
-
                             ),
                             Text(
-                              '₹ ${(widget.mld.isProductIsInSale ? double.parse(widget.mld.productSaleDetails.price + double.parse(getPrice()[0].price)) : (double.parse(getPrice()[0].price)+double.parse(widget.mld.price)))}',
+                              '₹ ${(widget.mld.isProductIsInSale ? double.parse(widget.mld.productSaleDetails.price + double.parse(getPrice()[0].price)) : (double.parse(getPrice()[0].price) + double.parse(widget.mld.price)))}',
                               style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.green.shade700
-                              ),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green.shade700),
                             ),
                           ],
                         ),
@@ -303,14 +303,18 @@ class _CartItemState extends State<CartItem> {
                                   int i;
                                   if (temp > 1) {
                                     temp--;
-                                    i = await DatabaseHelper.instance.updateCartitem({
-                                      DatabaseHelper.productid: widget.productid,
+                                    i = await DatabaseHelper.instance
+                                        .updateCartitem({
+                                      DatabaseHelper.productid:
+                                          widget.productid,
                                       DatabaseHelper.optionvalueid:
                                           widget.optionvalueid,
-                                      DatabaseHelper.optionlable: widget.optionlable,
+                                      DatabaseHelper.optionlable:
+                                          widget.optionlable,
                                       DatabaseHelper.price: widget.price,
                                       DatabaseHelper.optionid: widget.optionid,
-                                      DatabaseHelper.optionname: widget.optionname,
+                                      DatabaseHelper.optionname:
+                                          widget.optionname,
                                       DatabaseHelper.productpriceincreased:
                                           widget.productpriceincreased,
                                       DatabaseHelper.quantity: temp.toString()
@@ -336,20 +340,25 @@ class _CartItemState extends State<CartItem> {
                                 ),
                               ),
                               text(widget.quantity,
-                                  fontFamily: fontMedium, fontSize: textSizeNormal),
+                                  fontFamily: fontMedium,
+                                  fontSize: textSizeNormal),
                               GestureDetector(
                                 onTap: () async {
                                   int temp = int.parse(widget.quantity);
                                   int i;
                                   if (temp >= 1) {
                                     temp++;
-                                    i = await DatabaseHelper.instance.updateCartitem({
-                                      DatabaseHelper.productid: widget.productid,
+                                    i = await DatabaseHelper.instance
+                                        .updateCartitem({
+                                      DatabaseHelper.productid:
+                                          widget.productid,
                                       DatabaseHelper.optionvalueid:
                                           widget.optionvalueid,
-                                      DatabaseHelper.optionlable: widget.optionlable,
+                                      DatabaseHelper.optionlable:
+                                          widget.optionlable,
                                       DatabaseHelper.optionid: widget.optionid,
-                                      DatabaseHelper.optionname: widget.optionname,
+                                      DatabaseHelper.optionname:
+                                          widget.optionname,
                                       DatabaseHelper.productpriceincreased:
                                           widget.productpriceincreased,
                                       DatabaseHelper.price: widget.price,

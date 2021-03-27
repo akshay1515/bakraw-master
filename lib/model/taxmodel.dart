@@ -31,7 +31,7 @@ class taxData {
   String taxClassId;
   String basedOn;
   String label;
-  List<TaxRates> taxRates;
+  var taxRates;
 
   taxData({this.taxClassId, this.basedOn, this.label, this.taxRates});
 
@@ -39,7 +39,7 @@ class taxData {
     taxClassId = json['tax_class_id'];
     basedOn = json['based_on'];
     label = json['label'];
-    if (json['tax_rates'] != null) {
+    if (json['tax_rates'].length > 0) {
       taxRates = new List<TaxRates>();
       json['tax_rates'].forEach((v) {
         taxRates.add(new TaxRates.fromJson(v));

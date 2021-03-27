@@ -5,7 +5,6 @@ import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class FittedBoxWidget extends StatefulWidget {
   FittedBoxWidgetState createState() => FittedBoxWidgetState();
@@ -31,25 +30,25 @@ class FittedBoxWidgetState extends State<FittedBoxWidget> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(50),
         child: RaisedButton(
-          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           color: grocery_colorPrimary,
           child: Text(
             'Checkout',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
-              
             ),
           ),
           onPressed: (() {
-            !email.isEmptyOrNull
+            email != null || email.isNotEmpty
                 ? subTotal < 1
                     ? Fluttertoast.showToast(
                         msg: 'Your cart is Empty',
                         toastLength: Toast.LENGTH_SHORT)
                     : Navigator.of(context).pushNamed(UserAddressManager.tag,
                         arguments: {'isnav': true})
-                : Navigator.of(context).pushNamed(NewHomepage.Tag,arguments: {'id':4});
+                : Navigator.of(context)
+                    .pushNamed(NewHomepage.Tag, arguments: {'id': 4});
           }),
         ),
       ),

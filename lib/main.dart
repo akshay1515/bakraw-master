@@ -23,26 +23,26 @@ import 'package:bakraw/provider/sliderprovider.dart';
 import 'package:bakraw/provider/taxProvider.dart';
 import 'package:bakraw/provider/useraddressprovider.dart';
 import 'package:bakraw/provider/userprovider.dart';
+import 'package:bakraw/screen/aboutus.dart';
 import 'package:bakraw/screen/cart/mycart2.dart';
 import 'package:bakraw/screen/editadduseraddress.dart';
 import 'package:bakraw/screen/newui/newcategory.dart';
 import 'package:bakraw/screen/newui/newdashboard.dart';
-import 'package:bakraw/screen/newui/newproductdetail.dart';
+import 'package:bakraw/screen/newui/newgooglemap.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
-import 'package:bakraw/screen/productdetail.dart';
+import 'package:bakraw/screen/newui/newproductdetail.dart';
+import 'package:bakraw/screen/orderhistory.dart';
+import 'package:bakraw/screen/privacypolicy.dart';
 import 'package:bakraw/screen/searchscreen.dart';
 import 'package:bakraw/screen/splashscreen.dart';
+import 'package:bakraw/screen/termsandcondition.dart';
 import 'package:bakraw/screen/useraddresslist.dart';
+import 'package:bakraw/screen/webview.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:bakraw/screen/orderhistory.dart';
-import 'package:bakraw/screen/termsandcondition.dart';
-import 'package:bakraw/screen/privacypolicy.dart';
-import 'package:bakraw/screen/webview.dart';
-import 'package:bakraw/screen/aboutus.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -93,16 +93,17 @@ class MyApp extends StatelessWidget {
           primaryColor: grocery_colorPrimary,
         ),
         routes: {
-          NewCategory.TAG:(ctx)=> NewCategory(),
-          NewHomepage.Tag:(ctx)=> NewDashboard(),
-          SearchScreen.Tag:(ctx)=>SearchScreen(),
-          GroceryProductDescription.tag: (ctx) => NewProductDetails(),
+          NewCategory.TAG: (ctx) => NewCategory(),
+          NewHomepage.Tag: (ctx) => NewDashboard(),
+          SearchScreen.Tag: (ctx) => SearchScreen(),
+          NewProductDetails.tag: (ctx) => NewProductDetails(),
           UserAddressManager.tag: (ctx) => UserAddressManager(),
           Mycart2.tag: (ctx) => Mycart2(),
+          GoogleMapActivity.Tag:(ctx)=> GoogleMapActivity(),
           EditUserAddress.tag: (ctx) => EditUserAddress(),
-          GroceryOrderHistoryScreen.tag: (ctx)=> GroceryOrderHistoryScreen(),
+          GroceryOrderHistoryScreen.tag: (ctx) => GroceryOrderHistoryScreen(),
           Terms.tag: (ctx) => Terms(),
-          Privacy.tag: (ctx) =>Privacy(),
+          Privacy.tag: (ctx) => Privacy(),
           ContentDisplay.tag: (ctx) => ContentDisplay(),
           AboutUs.tag: (ctx) => AboutUs()
         },

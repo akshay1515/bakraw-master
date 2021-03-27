@@ -1,8 +1,8 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
+import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 import 'country_code.dart';
 
@@ -44,7 +44,7 @@ class _SelectionDialogState extends State<SelectionDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             text("Select Country Code",
-                textColor: textPrimaryColor,
+                textColor: grocery_textColorPrimary,
                 fontSize: 16.0,
                 fontFamily: fontMedium),
             TextField(
@@ -118,10 +118,11 @@ class _SelectionDialogState extends State<SelectionDialog> {
               children: <Widget>[
                 Expanded(
                     child: text(e.toLongString(),
-                        fontSize: textSizeMedium, textColor: textPrimaryColor)),
+                        fontSize: textSizeMedium,
+                        textColor: grocery_textColorPrimary)),
                 text(e.dialCode,
                     fontSize: textSizeMedium,
-                    textColor: textPrimaryColor,
+                    textColor: grocery_textColorPrimary,
                     fontFamily: fontMedium),
               ],
             ),

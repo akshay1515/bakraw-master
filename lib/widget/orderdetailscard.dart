@@ -7,7 +7,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
 class OrderDetailsCard extends StatefulWidget {
@@ -39,7 +38,6 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
   @override
   Widget build(BuildContext context) {
     if (isinit == true) {
-
       Provider.of<OrderDetailsProvider>(context)
           .getOrderDetail(
               widget.apikey, widget.userid, widget.email, widget.orderid)
@@ -118,9 +116,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                 child: Container(
                                   alignment: Alignment.center,
                                   child: Text(model.status,
-                                      style: boldTextStyle(
-                                        size: 23,
-                                      )),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 23)),
                                 ),
                               ),
                               SizedBox(height: 10),
@@ -137,50 +135,61 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text('Order Id',
-                                            style: secondaryTextStyle(
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
                                               fontFamily: fontSemiBold,
-                                              size: 16,
+                                              fontSize: 16,
                                             )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text('Order Total',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text('Tax Amount',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text('Amount Paid',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text('Payment Method',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text('Order Date',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                     ],
                                   ),
@@ -193,49 +202,61 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text(':',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text(':',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text(':',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text(':',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text(':',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text(':',
-                                            style: secondaryTextStyle(
-                                                size: 16,
-                                                fontFamily: fontBold)),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: fontSemiBold,
+                                              fontSize: 16,
+                                            )),
                                       ),
                                     ],
                                   ),
@@ -248,8 +269,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text(model.orderId,
-                                            style: secondaryTextStyle(
-                                              size: 16,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
                                             )),
                                       ),
                                       Padding(
@@ -257,8 +279,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                             left: 16, right: 16),
                                         child: Text(
                                             '₹ ${double.parse(model.subTotal).toStringAsFixed(2)}',
-                                            style: secondaryTextStyle(
-                                              size: 16,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
                                             )),
                                       ),
                                       Padding(
@@ -266,8 +289,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                             left: 16, right: 16),
                                         child: Text(
                                             '₹ ${double.parse(model.taxDetails[0].amount).toStringAsFixed(2)}',
-                                            style: secondaryTextStyle(
-                                              size: 16,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
                                             )),
                                       ),
                                       Padding(
@@ -275,16 +299,18 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                             left: 16, right: 16),
                                         child: Text(
                                             '₹ ${double.parse(model.total).toStringAsFixed(2)}',
-                                            style: secondaryTextStyle(
-                                              size: 16,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
                                             )),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: 16, right: 16),
                                         child: Text('${model.paymentMethod}',
-                                            style: secondaryTextStyle(
-                                              size: 16,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
                                             )),
                                       ),
                                       Padding(
@@ -292,8 +318,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                             left: 16, right: 16),
                                         child: Text(
                                             '${DateFormate(model.createdAt)}',
-                                            style: secondaryTextStyle(
-                                              size: 16,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
                                             )),
                                       ),
                                     ],
@@ -304,8 +331,11 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                               Padding(
                                 padding: EdgeInsets.only(left: 16, right: 16),
                                 child: Text('Note :',
-                                    style: secondaryTextStyle(
-                                        size: 20, fontFamily: fontBold)),
+                                    style: TextStyle(
+                                      fontFamily: fontBold,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20,
+                                    )),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 16, right: 16),
@@ -318,8 +348,11 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                               Padding(
                                 padding: EdgeInsets.only(left: 16, right: 16),
                                 child: Text('Deliverey Address :',
-                                    style: secondaryTextStyle(
-                                        size: 20, fontFamily: fontBold)),
+                                    style: TextStyle(
+                                      fontFamily: fontBold,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20,
+                                    )),
                               ),
                               Column(
                                 mainAxisAlignment:
@@ -350,7 +383,7 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 16, right: 16,bottom: 8),
+                                        left: 16, right: 16, bottom: 8),
                                     child: Text(
                                         '${model.address.shippingState + ' \,'}${model.address.shippingCountry + ' - ' + model.address.shippingZip}'),
                                   ),
@@ -364,8 +397,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                       Padding(
                         padding: EdgeInsets.only(left: 8, right: 8),
                         child: Text('Products Ordered',
-                            style: secondaryTextStyle(
-                              size: 20,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
                             )),
                       ),
                       ListView.builder(
@@ -389,8 +423,8 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                               color: Colors.black,
                                               width: 1,
                                               style: BorderStyle.solid),
-                                          borderRadius: BorderRadius.circular(10)
-                                      ),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
                                       height: 100,
                                       width: 100,
                                       child: ClipRRect(
@@ -414,8 +448,10 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                       Flexible(
                                         child: Container(
                                           padding: const EdgeInsets.only(
-                                            top: 8,
-                                              left: 10, bottom: 5, right: 10),
+                                              top: 8,
+                                              left: 10,
+                                              bottom: 5,
+                                              right: 10),
                                           child: Text(
                                             productslist[index].name,
                                             style: TextStyle(
