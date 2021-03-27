@@ -1,7 +1,6 @@
 import 'package:bakraw/model/useraddressmodel.dart';
 import 'package:bakraw/provider/useraddressprovider.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -183,7 +182,7 @@ class _GoogleMapActivityState extends State<GoogleMapActivity> {
                                 child: Center(
                                   child: Icon(
                                     Icons.my_location,
-                                    color: CupertinoColors.white,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
