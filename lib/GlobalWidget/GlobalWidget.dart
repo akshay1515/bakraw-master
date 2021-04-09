@@ -11,7 +11,7 @@ BoxDecoration boxDecoration(
   return BoxDecoration(
     color: bgColor,
     boxShadow: showShadow
-        ? BoxShadow(color: Colors.black54)
+        ? [BoxShadow(color: Colors.black54)]
         : [BoxShadow(color: Colors.transparent)],
     border: Border.all(color: color),
     borderRadius: BorderRadius.all(Radius.circular(radius)),

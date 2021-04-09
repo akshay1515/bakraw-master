@@ -1,11 +1,6 @@
 import 'package:bakraw/provider/categoryprovider.dart';
 import 'package:bakraw/screen/aboutus.dart';
-import 'package:bakraw/screen/cart/mycart2.dart';
-import 'package:bakraw/screen/newui/newcategory.dart';
-import 'package:bakraw/screen/newui/newfavourite.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
-import 'package:bakraw/screen/newui/newsignup.dart';
-import 'package:bakraw/screen/newui/newuserprofile.dart';
 import 'package:bakraw/screen/orderhistory.dart';
 import 'package:bakraw/screen/privacypolicy.dart';
 import 'package:bakraw/screen/termsandcondition.dart';
@@ -14,7 +9,6 @@ import 'package:bakraw/screen/webview.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NewDashboard extends StatefulWidget {
   @override
@@ -26,51 +20,10 @@ class _NewDashboardState extends State<NewDashboard> {
   bool isLoading = true;
   var navigtab = null;
 
-  String userid = '',
-      email = '',
-      apikey = '',
-      fname = '',
-      lname = '',
-      mobile = '';
-
   @override
   void initState() {}
 
-  Future<String> getUserInfo() async {
-    SharedPreferences prefs;
-    prefs = await SharedPreferences.getInstance();
-    if (prefs != null) {
-      setState(() {
-        email = prefs.getString('email');
-        apikey = prefs.getString('apikey');
-        userid = prefs.getString('id');
-        fname = prefs.getString('fname');
-        lname = prefs.getString('lname');
-        mobile = prefs.getString('mobile');
-      });
-    }
-    return userid;
-  }
-
-  Widget selectedPage() {
-    if (isSelected < 1) {
-      return NewHomepage();
-    } else if (isSelected == 1) {
-      return Mycart2();
-    } else if (isSelected == 2) {
-      return NewFavourite();
-    } else if (isSelected == 3) {
-      return NewCategory();
-    } else if (isSelected == 4) {
-      if (userid == null || userid.isEmpty) {
-        return NewLogin();
-      } else {
-        return NewUserProfile();
-      }
-    } else {
-      return NewHomepage();
-    }
-  }
+  Widget selectedPage() {}
 
   List<String> imageList = [
     'images/customicons/Icon-Home.png',
@@ -117,218 +70,11 @@ class _NewDashboardState extends State<NewDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    getUserInfo();
-    navigtab = ModalRoute.of(context).settings.arguments as Map;
-    if (isLoading) {
-      int Categoryid = Provider.of<CategoryProvider>(context).selectedid;
-      String selected = Provider.of<CategoryProvider>(context).categoryid;
-      if (selected.isNotEmpty || selected != null) {
-        setState(() {
-          isSelected = Categoryid;
-        });
-      }
-      isLoading = false;
-    }
-
-    if (navigtab != null) {
-      setState(() {
-        isSelected = navigtab['id'];
-      });
-    }
-
     final Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(
-              onPressed: () {
-                return showGeneralDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    transitionDuration: Duration(milliseconds: 300),
-                    barrierLabel: MaterialLocalizations.of(context).dialogLabel,
-                    barrierColor: Colors.black.withOpacity(0.5),
-                    pageBuilder: (context, _, __) {
-                      return Wrap(
-                        children: [
-                          Material(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(20),
-                              bottomLeft: Radius.circular(20),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(20),
-                                bottomLeft: Radius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  SizedBox(height: 24),
-                                  Container(
-                                      alignment: Alignment.centerLeft,
-                                      color: grocery_colorPrimary,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 10, right: 10, top: 10),
-                                        child: IconButton(
-                                            icon: Icon(Icons.clear,
-                                                color:
-                                                    grocery_light_gray_color),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            }),
-                                      )),
-                                  Container(
-                                    transform:
-                                        Matrix4.translationValues(0, -10, 0),
-                                    padding:
-                                        EdgeInsets.only(left: 8, bottom: 20),
-                                    width: MediaQuery.of(context).size.width,
-                                    margin: EdgeInsets.only(bottom: 20),
-                                    decoration: BoxDecoration(
-                                      color: grocery_colorPrimary,
-                                      borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(20),
-                                          bottomLeft: Radius.circular(20)),
-                                    ),
-                                    child: ListView.builder(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 5),
-                                      itemCount: imageList.length,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          height: 50,
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                if (isSelected != index) {
-                                                  Navigator.of(context).pop();
-                                                  Navigator.of(context)
-                                                      .pushNamed(onclick[index],
-                                                          arguments:
-                                                              argumentsparam[
-                                                                  index]);
-                                                }
-                                              },
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 8, bottom: 4),
-                                                      child: Container(
-                                                        height: 40,
-                                                        width: 40,
-                                                        padding:
-                                                            EdgeInsets.all(3),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25),
-                                                            color:
-                                                                grocery_colorPrimary_light),
-                                                        child: Image.asset(
-                                                          imageList[index],
-                                                          height: 25,
-                                                          width: 25,
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                      )),
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 8),
-                                                    child: Text(
-                                                      menuString[index],
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: Colors.white),
-                                                    ),
-                                                  )
-                                                ],
-                                              )),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      );
-                    },
-                    transitionBuilder: (context, animation, secondary, child) {
-                      return SlideTransition(
-                        position: CurvedAnimation(
-                                parent: animation, curve: Curves.easeOut)
-                            .drive(Tween<Offset>(
-                                begin: Offset(0, -1), end: Offset.zero)),
-                        child: child,
-                      );
-                    });
-              },
-              icon: ImageIcon(
-                AssetImage('images/newicons/notification.png'),
-                color: grocery_colorPrimary,
-                size: 20,
-              )),
-          title: Container(
-            margin: EdgeInsets.only(left: 15),
-            child: InkWell(
-              onTap: () {
-                if (isSelected != 0) {
-                  Navigator.of(context)
-                      .pushNamed(NewHomepage.Tag, arguments: {'id': 0});
-                }
-              },
-              child: Center(
-                  child: Image.asset(
-                'images/Bakraw.png',
-                height: 50,
-                width: 50,
-                fit: BoxFit.contain,
-              )),
-            ),
-          ),
-          actions: [
-            IconButton(
-                icon: Icon(
-                  Icons.notifications,
-                  color: grocery_colorPrimary,
-                  size: 35,
-                ),
-                onPressed: () {}),
-            Container(
-              height: 30,
-              width: 30,
-              margin: EdgeInsets.only(right: 10),
-              decoration: BoxDecoration(
-                  color: grocery_colorPrimary, shape: BoxShape.circle),
-              child: IconButton(
-                  icon: ImageIcon(
-                    AssetImage('images/newicons/userprofile.png'),
-                    color: isSelected != 4
-                        ? grocery_color_white
-                        : grocery_colorPrimary_light,
-                    size: 25,
-                  ),
-                  onPressed: () {
-                    if (isSelected != 4) {
-                      Navigator.of(context)
-                          .pushNamed(NewHomepage.Tag, arguments: {'id': 4});
-                    }
-                  }),
-            ),
-          ],
-        ),
+        appBar: AppBar(),
         body: Container(
           height: MediaQuery.of(context).size.height,
           child: Stack(

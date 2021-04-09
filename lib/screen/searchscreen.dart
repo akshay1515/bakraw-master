@@ -271,9 +271,10 @@ import 'package:bakraw/model/searchmodel.dart';
 import 'package:bakraw/provider/searchprovider.dart';
 import 'package:bakraw/screen/newui/newproductdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
+import 'package:bakraw/widget/bakrawproperties.dart';
+import 'package:bakraw/widget/customappbar.dart';
 import 'package:bakraw/widget/horizontallist.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -293,44 +294,40 @@ class _SearchScreenState extends State<SearchScreen> {
   bool isLoading = false;
   var navigtab = null;
   bool isready = false;
+  String temp;
   TextEditingController searchController = TextEditingController();
-  List<String> title = [
-    'Hygenic',
-    'Fresh',
-    'Traceable',
-    'Farm to Fork',
-    'Free Delivery'
-  ];
-  List<String> imageList = [
-    'images/newicons/hygenicwhite.png',
-    'images/newicons/freshwhite.png',
-    'images/newicons/traceablewhite.png',
-    'images/newicons/farmforkwhite.png',
-    'images/newicons/freedeliverywhite.png'
-  ];
 
   void performSearch(String text) {
     Provider.of<SearchProvider>(context, listen: false)
         .searchProducts(text)
         .then((value) {
-      if (value.data != null) {
-        value.data.forEach((element) {
-          searchList.add(Data(
-            name: element.name,
-            price: element.price,
-            shortDescription: element.shortDescription,
-            productId: element.productId,
-            images: element.images,
-            specialPrice: element.specialPrice,
-            isProductIsInSale: element.isProductIsInSale,
-            productSaleDetails: element.productSaleDetails,
-            productRating: element.productRating,
-          ));
-        });
+      if (value.status == 200) {
+        if (value.data != null) {
+          value.data.forEach((element) {
+            searchList.add(Data(
+              name: element.name,
+              price: element.price,
+              shortDescription: element.shortDescription,
+              productId: element.productId,
+              images: element.images,
+              specialPrice: element.specialPrice,
+              isProductIsInSale: element.isProductIsInSale,
+              productSaleDetails: element.productSaleDetails,
+              productRating: element.productRating,
+            ));
+          });
+          setState(() {
+            isLoading = false;
+          });
+        } else {
+          searchList.add(Data());
+        }
+      } else {
         setState(() {
           isLoading = false;
         });
-      } else {}
+        temp = value.status.toString();
+      }
     });
   }
 
@@ -351,11 +348,10 @@ class _SearchScreenState extends State<SearchScreen> {
         isready = true;
       }
     }
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          title: Text('Search results'),
         ),
         body: SingleChildScrollView(
           child: Stack(
@@ -363,7 +359,7 @@ class _SearchScreenState extends State<SearchScreen> {
               Column(
                 children: [
                   Container(
-                      height: 220,
+                      height: 190,
                       width: double.infinity,
                       color: Color.fromRGBO(51, 105, 30, 1)),
                 ],
@@ -373,7 +369,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   Container(
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                    margin: EdgeInsets.only(top: 50),
+                    margin: EdgeInsets.only(top: 20),
                     height: 55,
                   ),
                   Container(
@@ -388,76 +384,17 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: HorizontalScrollview())
                 ],
               ),
-              Container(
-                child: GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: title.length,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: title.length),
-                    itemBuilder: (context, index) {
-                      return Container(
-                          margin: EdgeInsets.only(top: 5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 50,
-                                child: DottedBorder(
-                                  borderType: BorderType.Circle,
-                                  color: Colors.white,
-                                  strokeWidth: 1,
-                                  padding: EdgeInsets.all(3),
-                                  child: Center(
-                                    child: Container(
-                                        child: Image.asset(
-                                      imageList[index],
-                                      height: 30,
-                                      width: 30,
-                                      fit: BoxFit.contain,
-                                    )),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                title[index],
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              )
-                            ],
-                          ));
-                    }),
-              ),
-              Column(
+              Container(child: BakrawUniqueness()),
+              /*Column(
                 children: [
-                  Container(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                    margin: EdgeInsets.only(top: 50),
-                    height: 55,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 130),
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                      child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: searchList.length,
-                          itemBuilder: (_, index) {
-                            return SearchItem(
-                              index: index,
-                              searchList: searchList[index],
-                            );
-                          }))
+
                 ],
-              ),
+              ),*/
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 190),
+                    margin: EdgeInsets.only(top: 160),
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
@@ -503,6 +440,67 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                   ),
+                  /* Container(
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(50)),
+                    margin: EdgeInsets.only(top: 50),
+                    height: 55,
+                  ),*/
+                  !isLoading
+                      ? searchList.length > 0
+                          ? Container(
+                              /* margin: EdgeInsets.only(top: 130),*/
+                              padding:
+                                  EdgeInsets.only(top: 5, left: 10, right: 10),
+                              child: ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: searchList.length,
+                                  itemBuilder: (_, index) {
+                                    return SearchItem(
+                                      index: index,
+                                      searchList: searchList[index],
+                                    );
+                                  }))
+                          : temp == null
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 130),
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.inbox_rounded,
+                                          color: Colors.green.shade900
+                                              .withGreen(85),
+                                          size: 100,
+                                        ),
+                                        Text(
+                                            'No Product to display for ${searchController.text}')
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  margin: EdgeInsets.only(top: 130),
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.search_rounded,
+                                          color: Colors.green.shade900
+                                              .withGreen(85),
+                                          size: 100,
+                                        ),
+                                        Text('Enter Text To Search')
+                                      ],
+                                    ),
+                                  ),
+                                )
+                      : Container(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
                 ],
               )
             ],

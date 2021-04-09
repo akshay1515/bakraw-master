@@ -1,7 +1,9 @@
 import 'package:bakraw/model/useraddressmodel.dart' as da;
 import 'package:bakraw/provider/useraddressprovider.dart';
 import 'package:bakraw/screen/editadduseraddress.dart';
+import 'package:bakraw/screen/newui/newgooglemap.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
+import 'package:bakraw/screen/newui/newsignup.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:bakraw/widget/addresswidget.dart';
@@ -28,6 +30,8 @@ class _UserAddressManagerState extends State<UserAddressManager> {
   List<da.Data> list = [];
   bool isloading = true;
   bool isinit = false;
+  bool isfav = false;
+  bool markFav = false;
   int count = 0;
 
   var selectedValue;
@@ -59,18 +63,6 @@ class _UserAddressManagerState extends State<UserAddressManager> {
     return userid;
   }
 
-  editAddress(da.Data model, bool isnav) async {
-    var bool = await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => EditUserAddress(
-                      model: model,
-                      isnav: isnav,
-                    ))) ??
-        false;
-    if (bool) {}
-  }
-
   @override
   void dispose() {
     // TODO: implement dispose
@@ -81,7 +73,7 @@ class _UserAddressManagerState extends State<UserAddressManager> {
   Widget build(BuildContext context) {
     var argument = ModalRoute.of(context).settings.arguments as Map;
 
-    if (isloading) {
+    if (isloading && isinit && userid != null) {
       Provider.of<UserAddressProvider>(context, listen: false)
           .getuserAddressList(userid, apikey)
           .then((value) {
@@ -110,8 +102,7 @@ class _UserAddressManagerState extends State<UserAddressManager> {
         if (count < 1) {
           count++;
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context)
-                .pushNamed(NewHomepage.Tag, arguments: {'id': 4});
+            Navigator.of(context).popAndPushNamed(NewLogin.Tag);
           });
           return Container(
             color: Colors.white,
@@ -137,7 +128,7 @@ class _UserAddressManagerState extends State<UserAddressManager> {
                     }
                   }),
               title: Text(
-                'My Address',
+                'My Addresses',
                 style: TextStyle(color: grocery_color_white),
               ),
               actions: <Widget>[
@@ -147,7 +138,13 @@ class _UserAddressManagerState extends State<UserAddressManager> {
                       color: grocery_color_white,
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushNamed(EditUserAddress.tag);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  EditUserAddress(
+                                    isnav: argument['isnav'],
+                                  )));
                     })
               ],
             ),
@@ -159,34 +156,37 @@ class _UserAddressManagerState extends State<UserAddressManager> {
                     ),
                   )
                 : list.isNotEmpty
-                    ? Column(
-                        children: [
-                          argument['isnav']
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Please Select Address To Deliver This Order',
-                                    style: TextStyle(
-                                        color: Colors.grey.shade800,
-                                        fontFamily: fontBold,
-                                        fontSize: textSizeMedium),
-                                  ),
-                                )
-                              : Container(),
-                          ListView.builder(
-                              padding: EdgeInsets.only(top: spacing_middle),
-                              scrollDirection: Axis.vertical,
-                              itemCount: list.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return AddressListWidget(
-                                  list: list[index],
-                                  isnav: argument['isnav'],
-                                  mobile: mobile,
-                                  index: index,
-                                );
-                              }),
-                        ],
+                    ? SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            argument['isnav']
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Please Select Address To Deliver This Order',
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontFamily: fontBold,
+                                          fontSize: textSizeMedium),
+                                    ),
+                                  )
+                                : Container(),
+                            ListView.builder(
+                                padding: EdgeInsets.only(top: spacing_middle),
+                                scrollDirection: Axis.vertical,
+                                itemCount: list.length,
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return AddressListWidget(
+                                    list: list[index],
+                                    isnav: argument['isnav'],
+                                    mobile: mobile,
+                                    index: index,
+                                  );
+                                }),
+                          ],
+                        ),
                       )
                     : Center(
                         child: Column(

@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 class CartToserverProvider with ChangeNotifier {
   Future<orderplacedmessage> PlaceOrderInCart(
       String model, String apikey) async {
-    print(apikey);
     const url = '${Utility.BaseURL}${'add-order-details-in-server-db.php'}';
     orderplacedmessage modelm;
     try {
@@ -19,9 +18,7 @@ class CartToserverProvider with ChangeNotifier {
       log(response.body);
       var decodeddata = jsonDecode(response.body);
       modelm = orderplacedmessage.fromJson(decodeddata);
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
     notifyListeners();
     return modelm;
     /* Fluttertoast.showToast(

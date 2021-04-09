@@ -13,7 +13,7 @@ class CategoryProvider with ChangeNotifier {
     return [..._items];
   }
 
-  String categoryid ='';
+  String categoryid = '';
 
   int selectedid = 0;
 
@@ -44,7 +44,7 @@ class CategoryProvider with ChangeNotifier {
     return category;
   }
 
-  void ChangeCategory(String SelectedCategory,int selected){
+  void ChangeCategory(String SelectedCategory, int selected) {
     categoryid = SelectedCategory;
     selectedid = selected;
     notifyListeners();

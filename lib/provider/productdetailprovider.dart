@@ -31,7 +31,6 @@ class ProductProvider with ChangeNotifier {
         sold: 4,
         saleName: 'demo');*/
 
-
     if (decodeddata['status'] == 200) {
       productModel = ProductModel.fromJson(decodeddata);
     } else {
@@ -48,7 +47,10 @@ class ProductProvider with ChangeNotifier {
     const url = '${Utility.BaseURL}${'user-favorite-products.php'}';
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
-        body: jsonEncode({'user_id': userid, 'product_id': productid}));
+        body: jsonEncode({
+          'user_id': num.tryParse(userid),
+          'product_id': num.tryParse(productid)
+        }));
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       model = FavouriteModel.fromJson(data);

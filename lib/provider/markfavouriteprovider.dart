@@ -13,7 +13,10 @@ class MarkFavourite with ChangeNotifier {
     FavouriteModel model;
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
-        body: jsonEncode({'user_id': userid, 'product_id': productId}));
+        body: jsonEncode({
+          'user_id': num.tryParse(userid),
+          'product_id': num.tryParse(productId)
+        }));
     var sample = jsonDecode(response.body);
     model =
         FavouriteModel(status: sample['status'], message: sample['message']);

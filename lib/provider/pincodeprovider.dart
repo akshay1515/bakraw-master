@@ -20,6 +20,9 @@ class PincodeProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       model = PincodeModel.fromJson(data);
+    } else {
+      model = PincodeModel(
+          status: data['status'], message: data['message'], data: data['data']);
     }
 
     return model;

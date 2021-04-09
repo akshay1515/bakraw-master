@@ -1,6 +1,7 @@
 import 'package:bakraw/inherited/cart/cart_container.dart';
 import 'package:bakraw/inherited/cart/cart_container_state.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
+import 'package:bakraw/screen/newui/newsignup.dart';
 import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:flutter/material.dart';
@@ -40,15 +41,14 @@ class FittedBoxWidgetState extends State<FittedBoxWidget> {
             ),
           ),
           onPressed: (() {
-            email != null || email.isNotEmpty
+            email != null
                 ? subTotal < 1
                     ? Fluttertoast.showToast(
                         msg: 'Your cart is Empty',
                         toastLength: Toast.LENGTH_SHORT)
                     : Navigator.of(context).pushNamed(UserAddressManager.tag,
                         arguments: {'isnav': true})
-                : Navigator.of(context)
-                    .pushNamed(NewHomepage.Tag, arguments: {'id': 4});
+                : Navigator.of(context).pushNamed(NewLogin.Tag);
           }),
         ),
       ),

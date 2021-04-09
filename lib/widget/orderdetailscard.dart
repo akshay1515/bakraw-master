@@ -1,8 +1,8 @@
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/orderdetailsmodel.dart';
 import 'package:bakraw/provider/orderdetailsprovider.dart';
-import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
+import 'package:bakraw/widget/customappbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,8 +90,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
             ),
           )
         : Scaffold(
+            backgroundColor: Colors.grey.shade200,
             appBar: AppBar(
-              backgroundColor: grocery_colorPrimary,
+              title: Text('Order Details'),
             ),
             body: SingleChildScrollView(
               child: Container(
@@ -395,7 +396,7 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                       ),
                       SizedBox(height: 20),
                       Padding(
-                        padding: EdgeInsets.only(left: 8, right: 8),
+                        padding: EdgeInsets.only(left: 8, right: 8, bottom: 10),
                         child: Text('Products Ordered',
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
@@ -407,108 +408,103 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (_, index) {
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 3),
-                              width: MediaQuery.of(context).size.width,
-                              height: 120,
-                              child: Row(
-                                children: <Widget>[
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.black,
-                                              width: 1,
-                                              style: BorderStyle.solid),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      height: 100,
-                                      width: 100,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                              productslist[index].images[range],
-                                          fit: BoxFit.contain,
-                                          placeholder: placeholderWidgetFn(),
-                                          errorWidget: (context, url, error) =>
-                                              new Icon(Icons.error),
-                                        ),
+                            return Card(
+                              clipBehavior: Clip.antiAlias,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              margin:
+                                  EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 120,
+                                child: Row(
+                                  children: <Widget>[
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)),
+                                      child: CachedNetworkImage(
+                                        height: 120,
+                                        width: 120,
+                                        imageUrl:
+                                            productslist[index].images[range],
+                                        fit: BoxFit.contain,
+                                        placeholder: placeholderWidgetFn(),
+                                        errorWidget: (context, url, error) =>
+                                            new Icon(Icons.error),
                                       ),
                                     ),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Flexible(
-                                        child: Container(
-                                          padding: const EdgeInsets.only(
-                                              top: 8,
-                                              left: 10,
-                                              bottom: 5,
-                                              right: 10),
-                                          child: Text(
-                                            productslist[index].name,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Container(
+                                            padding: const EdgeInsets.only(
+                                                top: 8,
+                                                left: 10,
+                                                bottom: 5,
+                                                right: 10),
+                                            child: Text(
+                                              productslist[index].name,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          '${optionlist[index].value}',
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            '${optionlist[index].value}',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            textAlign: TextAlign.start,
                                           ),
-                                          textAlign: TextAlign.start,
                                         ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          'Price : ₹ ${double.parse(productslist[index].unitPrice).toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            'Price : ₹ ${double.parse(productslist[index].unitPrice).toStringAsFixed(2)}',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            textAlign: TextAlign.start,
                                           ),
-                                          textAlign: TextAlign.start,
                                         ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          'Quantity :${int.parse(productslist[index].qty)}',
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            'Quantity :${int.parse(productslist[index].qty)}',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            textAlign: TextAlign.start,
                                           ),
-                                          textAlign: TextAlign.start,
                                         ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          'Total : ₹ ${double.parse(productslist[index].lineTotal).toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            'Total : ₹ ${double.parse(productslist[index].lineTotal).toStringAsFixed(2)}',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            textAlign: TextAlign.start,
                                           ),
-                                          textAlign: TextAlign.start,
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             );
                           })

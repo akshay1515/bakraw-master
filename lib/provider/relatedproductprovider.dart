@@ -21,18 +21,15 @@ class RelatedProductProvier with ChangeNotifier {
     List<RelatedProductModel> list = [];
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print('relatedproduct : ${response.body}');
-      if(decodeddata['data'] != null){
+      if (decodeddata['data'] != null) {
         model = RelatedProductModel.fromJson(decodeddata);
         list.add(model);
         _items = list;
-      }
-      else{
+      } else {
         model = RelatedProductModel(
-          status: decodeddata['code'],
-          data: decodeddata['data'],
-          message: decodeddata['message']
-        );
+            status: decodeddata['code'],
+            data: decodeddata['data'],
+            message: decodeddata['message']);
       }
     }
 

@@ -1,10 +1,13 @@
+import 'dart:ui';
+
 import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/orderhistorymodel.dart';
 import 'package:bakraw/provider/orderhistoryprovider.dart';
-import 'package:bakraw/screen/newui/newhomepage.dart';
+import 'package:bakraw/screen/newui/newsignup.dart';
 import 'package:bakraw/utils/GeoceryStrings.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
+import 'package:bakraw/widget/customappbar.dart';
 import 'package:bakraw/widget/orderdetailscard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -31,7 +34,11 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
 
   @override
   void initState() {
-    getUserInfo();
+    getUserInfo().then((value) {
+      setState(() {
+        onLoad = true;
+      });
+    });
     super.initState();
   }
 
@@ -45,15 +52,12 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
         userid = prefs.getString('id');
       });
     }
-    setState(() {
-      onLoad = true;
-    });
     return userid;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading == true && isinit == true) {
+    if (onLoad && userid != null) {
       Provider.of<OrderHistoryProvider>(context, listen: false)
           .getPastOrder(email: email, apikey: apikey, userid: userid)
           .then((value) {
@@ -66,7 +70,7 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
               status: element.status));
         });
         setState(() {
-          /* onLoad = false;*/
+          onLoad = false;
           isinit = false;
           isLoading = false;
         });
@@ -76,86 +80,92 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
     final compleated = ListView.builder(
         itemCount: list.length,
         shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
             child: Container(
-                decoration: boxDecoration(
-                    showShadow: true,
-                    radius: 10.0,
-                    bgColor: grocery_color_white),
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black26,
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                          offset: Offset(1, 1))
+                    ],
+                    color: grocery_color_white,
+                    borderRadius: BorderRadius.circular(15)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              height: 50,
-                              width: 50,
-                              color: grocery_colorPrimary,
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: grocery_color_white,
-                              ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                color: grocery_colorPrimary,
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(25),
+                                    topRight: Radius.circular(25))),
+                            child: Icon(
+                              Icons.shopping_cart,
+                              color: grocery_color_white,
                             ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 16),
-                                    child: text(
-                                      list[index].createdAt,
-                                      fontSize: textSizeNormal,
-                                      fontFamily: fontMedium,
-                                    ),
-                                  ),
-                                  text(
-                                    list[index].status,
-                                    fontSize: textSizeMedium,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 08),
+                                  child: text(
+                                    list[index].createdAt,
+                                    fontSize: textSizeNormal,
                                     fontFamily: fontMedium,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 16.0, right: 16),
-                                    child: text(
-                                        grocery_subtotal +
-                                            ': ₹' +
-                                            list[index].total,
-                                        fontSize: textSizeMedium,
-                                        fontFamily: fontMedium,
-                                        textColor: grocery_textColorSecondary),
-                                  )
-                                ],
-                              ),
+                                ),
+                                text(
+                                  list[index].status,
+                                  fontSize: textSizeMedium,
+                                  fontFamily: fontMedium,
+                                ),
+                                text(
+                                    grocery_subtotal +
+                                        ': ₹' +
+                                        '${double.tryParse(
+                                          list[index].total,
+                                        ).toStringAsFixed(2)}',
+                                    fontSize: textSizeMedium,
+                                    fontFamily: fontMedium,
+                                    textColor: grocery_textColorSecondary)
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Divider(),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
+                        padding: const EdgeInsets.only(top: 4.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            Expanded(child: SizedBox()),
                             MaterialButton(
                                 height: 40,
                                 minWidth: 150,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
                                 padding: const EdgeInsets.all(0.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: Text('Order Details',
-                                      style: TextStyle(fontSize: 18),
-                                      textAlign: TextAlign.center),
-                                ),
+                                child: Text('Order Details',
+                                    style: TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.center),
                                 textColor: grocery_color_white,
                                 color: grocery_colorPrimary,
                                 onPressed: () {
@@ -180,104 +190,123 @@ class _GroceryOrderHistoryScreenState extends State<GroceryOrderHistoryScreen> {
       if (userid == null || userid.isEmpty && count < 1) {
         count++;
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context)
-              .pushNamed(NewHomepage.Tag, arguments: {'id': 4});
+          Navigator.of(context).popAndPushNamed(NewLogin.Tag);
         });
         return Container(
           color: Colors.white,
         );
       } else {
-        return Scaffold(
-          backgroundColor: grocery_app_background,
-          body: SafeArea(
-            child: Scaffold(
-              appBar: PreferredSize(
-                preferredSize: Size.fromHeight(AppBar(
-                  title: Text(
-                    'My Past Orders',
-                    style: TextStyle(color: grocery_color_white),
-                  ),
-                  leading: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: grocery_color_white,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                ).preferredSize.height),
-                child: Container(
-                    color: grocery_colorPrimary,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12, right: 16),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 24.0),
-                                child: IconButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    icon: Icon(
-                                      Icons.clear,
-                                      size: 30,
-                                      color: grocery_color_white,
-                                    )),
-                              ),
-                              Expanded(
-                                  child: text('My Past Orders',
-                                      fontSize: textSizeNormal,
-                                      textColor: grocery_color_white,
-                                      fontFamily: fontBold)),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                      ],
-                    )),
-              ),
-              body: isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: list.length > 0
-                          ? Container(child: compleated)
-                          : Center(
-                              child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.grey.shade50,
+            appBar: AppBar(
+              title: Text('Order History'),
+            ),
+            body: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: list.length > 0
+                        ? SingleChildScrollView(
+                            child: Column(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    Icons.inbox,
-                                    color: grocery_colorPrimary,
-                                    size:
-                                        MediaQuery.of(context).size.height / 5,
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, top: 8.0),
+                                  child: Text(
+                                    'My Past Orders',
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 20,
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dotted,
+                                        fontStyle: FontStyle.normal,
+                                        fontFamily: fontMedium,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ),
-                                Text(
-                                    '${'You Haven\'t Placed Any Order Yet '} '),
+                                compleated
                               ],
-                            )),
-                    ),
-            ),
+                            ),
+                          )
+                        : Center(
+                            child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.inbox,
+                                  color: grocery_colorPrimary,
+                                  size: MediaQuery.of(context).size.height / 5,
+                                ),
+                              ),
+                              Text('${'You Haven\'t Placed Any Order Yet '} '),
+                            ],
+                          )),
+                  ),
           ),
         );
       }
     } else {
-      return Container(
-        color: Colors.white,
+      return SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.grey.shade50,
+          appBar: AppBar(
+            title: Text('Order History'),
+          ),
+          body: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: list.length > 0
+                      ? SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, top: 8.0),
+                                child: Text(
+                                  'My Past Orders',
+                                  style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.underline,
+                                      decorationStyle:
+                                          TextDecorationStyle.dotted,
+                                      fontStyle: FontStyle.normal,
+                                      fontFamily: fontMedium,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                              compleated
+                            ],
+                          ),
+                        )
+                      : Center(
+                          child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.inbox,
+                                color: grocery_colorPrimary,
+                                size: MediaQuery.of(context).size.height / 5,
+                              ),
+                            ),
+                            Text('${'You Haven\'t Placed Any Order Yet '} '),
+                          ],
+                        )),
+                ),
+        ),
       );
     }
   }

@@ -168,8 +168,8 @@ class _CartItemState extends State<CartItem> {
         child: Container(
           padding: EdgeInsets.zero,
           height: 152,
-          decoration: boxDecoration(
-              showShadow: true, bgColor: grocery_color_white.withOpacity(0.9)),
+          decoration:
+              boxDecoration(showShadow: true, bgColor: grocery_color_white),
           /* padding: EdgeInsets.fromLTRB(
               spacing_middle, 0, spacing_middle, spacing_middle),*/
           margin: EdgeInsets.only(
@@ -183,7 +183,9 @@ class _CartItemState extends State<CartItem> {
               Column(
                 children: <Widget>[
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(7),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(7),
+                        bottomRight: Radius.circular(7)),
                     child: CachedNetworkImage(
                       placeholder: placeholderWidgetFn(),
                       imageUrl: widget.mld.images[0].path,
@@ -200,7 +202,9 @@ class _CartItemState extends State<CartItem> {
                 ],
               ),
               ClipRRect(
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(7),
+                    bottomRight: Radius.circular(7)),
                 child: Container(
                   transform: Matrix4.translationValues(0.0, -10.0, 0.0),
                   alignment: Alignment.topCenter,

@@ -27,10 +27,12 @@ import 'package:bakraw/screen/aboutus.dart';
 import 'package:bakraw/screen/cart/mycart2.dart';
 import 'package:bakraw/screen/editadduseraddress.dart';
 import 'package:bakraw/screen/newui/newcategory.dart';
-import 'package:bakraw/screen/newui/newdashboard.dart';
+import 'package:bakraw/screen/newui/newfavourite.dart';
 import 'package:bakraw/screen/newui/newgooglemap.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
 import 'package:bakraw/screen/newui/newproductdetail.dart';
+import 'package:bakraw/screen/newui/newsignup.dart';
+import 'package:bakraw/screen/newui/newuserprofile.dart';
 import 'package:bakraw/screen/orderhistory.dart';
 import 'package:bakraw/screen/privacypolicy.dart';
 import 'package:bakraw/screen/searchscreen.dart';
@@ -94,12 +96,16 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           NewCategory.TAG: (ctx) => NewCategory(),
-          NewHomepage.Tag: (ctx) => NewDashboard(),
+          /* NewHomepage.Tag: (ctx) => NewDashboard(),*/
+          NewHomepage.Tag: (ctx) => NewHomepage(),
+          NewLogin.Tag: (ctx) => NewLogin(),
+          NewFavourite.Tag: (ctx) => NewFavourite(),
           SearchScreen.Tag: (ctx) => SearchScreen(),
+          NewUserProfile.Tag: (ctx) => NewUserProfile(),
           NewProductDetails.tag: (ctx) => NewProductDetails(),
           UserAddressManager.tag: (ctx) => UserAddressManager(),
           Mycart2.tag: (ctx) => Mycart2(),
-          GoogleMapActivity.Tag:(ctx)=> GoogleMapActivity(),
+          GoogleMapActivity.Tag: (ctx) => GoogleMapActivity(),
           EditUserAddress.tag: (ctx) => EditUserAddress(),
           GroceryOrderHistoryScreen.tag: (ctx) => GroceryOrderHistoryScreen(),
           Terms.tag: (ctx) => Terms(),

@@ -25,48 +25,7 @@ class EditUserAddress extends StatefulWidget {
   _EditUserAddressState createState() => _EditUserAddressState();
 }
 
-TextEditingController firstNameCont = TextEditingController();
-TextEditingController lastNameCont = TextEditingController();
-TextEditingController pinCodeCont = TextEditingController();
-TextEditingController cityCont = TextEditingController();
-TextEditingController stateCont = TextEditingController();
-TextEditingController addressCont = TextEditingController();
-TextEditingController phoneNumberCont = TextEditingController();
-TextEditingController countryCont = TextEditingController();
-TextEditingController shippingaddress1 = TextEditingController();
-TextEditingController shipfirstNameCont = TextEditingController();
-TextEditingController shiplastNameCont = TextEditingController();
-TextEditingController shippinCodeCont = TextEditingController();
-TextEditingController shipcityCont = TextEditingController();
-TextEditingController shipstateCont = TextEditingController();
-TextEditingController shipaddressCont = TextEditingController();
-TextEditingController shipphoneNumberCont = TextEditingController();
-TextEditingController shipcountryCont = TextEditingController();
-TextEditingController shipshippingaddress1 = TextEditingController();
-
-GlobalKey<FormState> _shippingform = new GlobalKey<FormState>();
-GlobalKey<FormState> _billingform = new GlobalKey<FormState>();
-
-FocusNode firstnamefocus;
-FocusNode lastnamefocus;
-FocusNode pincodefocus;
-
-FocusNode address1focus;
-FocusNode address2focus;
-FocusNode cityfocus;
-FocusNode statefocus;
-FocusNode countryfocus;
-FocusNode billfirstnamefocus;
-FocusNode billlastnamefocus;
-FocusNode billpincodefocus;
-
-FocusNode billaddress1focus;
-FocusNode billaddress2focus;
-FocusNode billcityfocus;
-FocusNode billstatefocus;
-FocusNode billcountryfocus;
-
-List<String> checkpin = List();
+List<String> checkpin = [];
 bool loadlist = true;
 bool status = false;
 bool copystatus = false;
@@ -82,7 +41,28 @@ class _EditUserAddressState extends State<EditUserAddress> {
   String mobile = '';
   List<Data> list = [];
 
+  TextEditingController firstNameCont = TextEditingController();
+  TextEditingController lastNameCont = TextEditingController();
+  TextEditingController pinCodeCont = TextEditingController();
+  TextEditingController cityCont = TextEditingController();
+  TextEditingController stateCont = TextEditingController();
+  TextEditingController addressCont = TextEditingController();
+  TextEditingController phoneNumberCont = TextEditingController();
+  TextEditingController countryCont = TextEditingController();
+  TextEditingController shippingaddress1 = TextEditingController();
+
+  FocusNode firstnamefocus;
+  FocusNode lastnamefocus;
+  FocusNode pincodefocus;
+
+  FocusNode address1focus;
+  FocusNode address2focus;
+  FocusNode cityfocus;
+  FocusNode statefocus;
+  FocusNode countryfocus;
+
   bool isloading = false;
+  GlobalKey<FormState> _billingform = new GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -94,14 +74,6 @@ class _EditUserAddressState extends State<EditUserAddress> {
     cityfocus = FocusNode();
     statefocus = FocusNode();
     countryfocus = FocusNode();
-    billfirstnamefocus = FocusNode();
-    billlastnamefocus = FocusNode();
-    billpincodefocus = FocusNode();
-    billaddress1focus = FocusNode();
-    billaddress2focus = FocusNode();
-    billcityfocus = FocusNode();
-    billstatefocus = FocusNode();
-    billcountryfocus = FocusNode();
     super.initState();
     getUserInfo();
     init();
@@ -120,14 +92,6 @@ class _EditUserAddressState extends State<EditUserAddress> {
     cityfocus.dispose();
     statefocus.dispose();
     countryfocus.dispose();
-    billfirstnamefocus.dispose();
-    billlastnamefocus.dispose();
-    billpincodefocus.dispose();
-    billaddress1focus.dispose();
-    billaddress2focus.dispose();
-    billcityfocus.dispose();
-    billstatefocus.dispose();
-    billcountryfocus.dispose();
     super.dispose();
   }
 
@@ -167,10 +131,10 @@ class _EditUserAddressState extends State<EditUserAddress> {
     return apikey;
   }
 
-  Data checkData() {
+  /*Data checkData() {
     var useraddress = Provider.of<UserAddressProvider>(context).options;
     return useraddress;
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +151,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       });
     }
 
-    if (checkData() != null) {
+    /*if (checkData() != null) {
       countryCont.text = checkData().country;
       stateCont.text = checkData().state;
       cityCont.text = checkData().city;
@@ -201,7 +165,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       pinCodeCont.text = checkData().zip;
       phoneNumberCont.text = mobile;
       Addressid = checkData().id != null ? checkData().id : '';
-    }
+    }*/
 
     void onSaveClicked() {
       setState(() {
@@ -236,21 +200,28 @@ class _EditUserAddressState extends State<EditUserAddress> {
         Fluttertoast.showToast(
             msg: value.message, toastLength: Toast.LENGTH_LONG);
 
-        firstNameCont.clear();
-        lastNameCont.clear();
-        addressCont.clear();
-        shippingaddress1.clear();
-        cityCont.clear();
-        stateCont.clear();
-        countryCont.clear();
-        pinCodeCont.clear();
-        phoneNumberCont.clear();
-        Provider.of<UserAddressProvider>(context, listen: false).options =
-            Data();
-        Navigator.of(context).popAndPushNamed(UserAddressManager.tag);
-        setState(() {
-          isloading = false;
-        });
+        if (value.status == 200) {
+          firstNameCont.clear();
+          lastNameCont.clear();
+          addressCont.clear();
+          shippingaddress1.clear();
+          cityCont.clear();
+          stateCont.clear();
+          countryCont.clear();
+          pinCodeCont.clear();
+          phoneNumberCont.clear();
+          /*  Provider.of<UserAddressProvider>(context, listen: false).options =
+              Data();*/
+          /* setState(() {
+            isloading = false;
+          });*/
+          Navigator.of(context).popAndPushNamed(UserAddressManager.tag,
+              arguments: {'isnav': widget.isnav});
+        } else {
+          setState(() {
+            isloading = false;
+          });
+        }
       });
     }
 
@@ -317,9 +288,6 @@ class _EditUserAddressState extends State<EditUserAddress> {
         }
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      onFieldSubmitted: (term) {
-        FocusScope.of(context).requestFocus(billfirstnamefocus);
-      },
       textInputAction: TextInputAction.next,
       style: TextStyle(fontFamily: fontRegular, fontSize: textSizeMedium),
       decoration: formFieldDecoration('Pin Code'),
@@ -437,8 +405,6 @@ class _EditUserAddressState extends State<EditUserAddress> {
       onPressed: () {
         if (_billingform.currentState.validate()) {
           onSaveClicked();
-          Provider.of<UserAddressProvider>(context, listen: false).options =
-              Data();
         } else {
           Fluttertoast.showToast(
               msg: 'Please check the details you have filled',
@@ -496,15 +462,8 @@ class _EditUserAddressState extends State<EditUserAddress> {
                 primary: grocery_colorPrimary,
               ),
               onPressed: () {
-                if (widget.model != null) {
-                  Provider.of<UserAddressProvider>(context, listen: false)
-                      .UpdateOptionValue(widget.model)
-                      .then((value) {
-                    Navigator.of(context).pushNamed(GoogleMapActivity.Tag);
-                  });
-                } else {
-                  Navigator.of(context).pushNamed(GoogleMapActivity.Tag);
-                }
+                Navigator.of(context).popAndPushNamed(GoogleMapActivity.Tag,
+                    arguments: {'data': widget.model, 'isnav': widget.isnav});
               },
               child: Text('Open On Maps'),
             ),
@@ -562,15 +521,10 @@ class _EditUserAddressState extends State<EditUserAddress> {
                 )),
       ),
       onWillPop: () {
-        if (widget.isnav) {
-          Navigator.of(context).popAndPushNamed(UserAddressManager.tag,
-              arguments: {'isnav': widget.isnav});
-          return;
-        } else {
-          Navigator.of(context).popAndPushNamed(UserAddressManager.tag,
-              arguments: {'isnav': widget.isnav});
-          return;
-        }
+        Navigator.of(context).popAndPushNamed(UserAddressManager.tag,
+            arguments: {'isnav': widget.isnav});
+        dispose();
+        return;
       },
     );
   }

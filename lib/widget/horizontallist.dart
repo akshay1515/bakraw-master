@@ -1,5 +1,6 @@
+import 'package:bakraw/model/categorymodel.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
-import 'package:bakraw/screen/newui/newhomepage.dart';
+import 'package:bakraw/screen/newui/newcategory.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,13 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HorizontalScrollview extends StatefulWidget {
+  bool istrue = true;
+  var selected;
+
+  HorizontalScrollview({Key key, this.selected}) : super(key: key);
+
   @override
   _HorizontalScrollviewState createState() => _HorizontalScrollviewState();
 }
 
 class _HorizontalScrollviewState extends State<HorizontalScrollview> {
   var init = true;
-
+  var count = 0;
+  Future<CategoryModel> myfuture;
   List<String> categoryIcon = [
     'images/newicons/allmeatcolor.png',
     'images/newicons/meatcolor.png',
@@ -27,17 +34,26 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
   ];
 
   @override
+  void initState() {
+    myfuture =
+        Provider.of<CategoryProvider>(context, listen: false).getCategories();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Provider.of<CategoryProvider>(context, listen: false).getCategories();
     final selectedcategory = Provider.of<CategoryProvider>(context).categoryid;
 
     final category = Provider.of<CategoryProvider>(context, listen: false);
     final categorydata = category.items;
 
-    return Container(
-      height: 40,
-      margin: EdgeInsets.only(top: 7),
-      child:/* ListView.builder(
+    return FutureBuilder(
+        future: myfuture,
+        builder: (context, AsyncSnapshot<CategoryModel> snapshot) {
+          return Container(
+              height: 40,
+              margin: EdgeInsets.only(top: 7),
+              child:
+                  /* ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: categorydata.length,
         itemBuilder: (BuildContext ctx, int i) {
@@ -50,22 +66,24 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
           );
         },
       ),*/
-      GridView.builder(
-          shrinkWrap: true,
-          itemCount: categorydata.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-            childAspectRatio: 3.25/1
-      ), itemBuilder: (_,i){
-        return  Category(
-          imageLocation: categorydata[i].categoryId == selectedcategory
-              ? selectedIcon[i]
-              : categoryIcon[i],
-          imageCaption: categorydata[i].name,
-          categoryId: categorydata[i].categoryId,
-        );
-      })
-    );
+                  GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: categorydata.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, childAspectRatio: 3.25 / 1),
+                      itemBuilder: (context, i) {
+                        return Category(
+                          imageLocation:
+                              widget.selected != null && widget.selected == i
+                                  ? selectedIcon[widget.selected]
+                                  : categoryIcon[i],
+                          imageCaption: categorydata[i].name,
+                          categoryId: categorydata[i].categoryId,
+                          selected: widget.selected,
+                          index: i,
+                        );
+                      }));
+        });
   }
 }
 
@@ -73,11 +91,15 @@ class Category extends StatelessWidget {
   final String imageLocation;
   final String imageCaption;
   final String categoryId;
+  final int selected;
+  final int index;
 
   Category({
     this.imageLocation,
     this.imageCaption,
     this.categoryId,
+    this.selected,
+    this.index,
   });
 
   String defaultimage =
@@ -85,22 +107,23 @@ class Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedcategory = Provider.of<CategoryProvider>(context).categoryid;
+    /*  final selectedcategory = Provider.of<CategoryProvider>(context).categoryid;*/
 
     return Padding(
       padding: const EdgeInsets.all(2),
       child: InkWell(
         onTap: () {
           Provider.of<CategoryProvider>(context, listen: false)
-              .ChangeCategory(categoryId, 3);
-          Navigator.of(context).pushNamed(NewHomepage.Tag);
+              .ChangeCategory(categoryId, selected);
+          Navigator.of(context).popAndPushNamed(NewCategory.TAG,
+              arguments: {'selected': index, 'name': imageCaption});
         },
         child: Container(
-          height: selectedcategory == categoryId ? 25 : 25,
+          height: selected == index ? 25 : 25,
           margin: EdgeInsets.symmetric(horizontal: 5),
           child: DottedBorder(
             padding: EdgeInsets.zero,
-            dashPattern: [7,5],
+            dashPattern: [7, 5],
             color: Colors.white,
             strokeWidth: 0.5,
             borderType: BorderType.RRect,
@@ -110,11 +133,9 @@ class Category extends StatelessWidget {
               borderRadius: BorderRadius.circular(40),
               child: Container(
                 decoration: BoxDecoration(
-                  color: selectedcategory == categoryId
-                      ? Colors.white
-                      : Colors.transparent,),
+                  color: selected == index ? Colors.white : Colors.transparent,
+                ),
                 padding: EdgeInsets.zero,
-
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -122,10 +143,11 @@ class Category extends StatelessWidget {
                     Container(
                         width: 40,
                         height: 50,
-                        padding: EdgeInsets.only(right: 7,top: 7,bottom: 7,left: 0),
+                        padding: EdgeInsets.only(
+                            right: 7, top: 7, bottom: 7, left: 0),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(40),
-                            color: selectedcategory == categoryId
+                            color: selected == index
                                 ? Colors.green.shade900
                                 : grocery_colorPrimary_light,
                             border: Border.all(
@@ -145,9 +167,8 @@ class Category extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
-                          color: selectedcategory == categoryId
-                              ? Colors.black
-                              : Colors.white,
+                          color:
+                              selected == index ? Colors.black : Colors.white,
                         ),
                       ),
                     ),

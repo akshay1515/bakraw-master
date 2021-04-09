@@ -108,7 +108,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
         });
       });
     }
-    print('taxdetails ${taxdetails.length}');
     taxdetails.add(TaxDetails(
         taxRateId: int.parse(widget.Taxid), amount: widget.taxamount));
   }
@@ -165,9 +164,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
     };
     try {
       _razorpay.open(options);
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
   }
 
   void _showdialog(
@@ -254,7 +251,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
       orderplaced = orderplacedmessage(
           message: value.message, status: value.status, data: value.data);
       var i = DatabaseHelper.instance.TrunccateTable();
-      print('database deleted $i');
       setState(() {
         /* indicator.visible(false);*/
         ispickup = false;
@@ -269,7 +265,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
   void handlerpaymentError(PaymentFailureResponse response) {
     Map<String, dynamic> failresponse = jsonDecode(response.message);
-    print(failresponse['error']['code']);
     _showdialog(
         statuscolor: Colors.red.shade500,
         statusIcon: Icons.error,

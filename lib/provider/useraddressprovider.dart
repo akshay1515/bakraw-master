@@ -19,7 +19,6 @@ class UserAddressProvider with ChangeNotifier {
       Data userAddress, user.Data mod) async {
     const url = '${Utility.BaseURL}${'add-update-address.php'}';
     UserAddressModel model;
-    //print('address ${userAddress.billingAddress2} \n ${userAddress.userId} \n apikey');
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'apikey': mod.token},
         body: jsonEncode({
@@ -49,10 +48,8 @@ class UserAddressProvider with ChangeNotifier {
           'is_active': 1
         }));
     Map<String, dynamic> data = jsonDecode(response.body);
-    print(data.toString());
 
     model = UserAddressModel(status: data['status'], message: data['message']);
-    //toast(userAddress.userEmail, length: Toast.LENGTH_SHORT);
     return model;
   }
 
@@ -66,7 +63,6 @@ class UserAddressProvider with ChangeNotifier {
         body: jsonEncode({'user_id': userid}));
 
     Map<String, dynamic> data = jsonDecode(response.body);
-    print(response.body.toString());
     if (response.statusCode == 200) {
       if (data['status'] == 200) {
         model = UserAddressModel.fromJson(data);

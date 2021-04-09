@@ -41,7 +41,6 @@ class UserProvider with ChangeNotifier {
       var data = jsonDecode(response.body);
       if (data['status'] == 200) {
         model = UserModel.fromJson(data);
-        //print(model.message);
       } else {
         model = UserModel(status: data['status'], message: data['message']);
       }

@@ -16,6 +16,7 @@ class UserFavouriteProvider with ChangeNotifier {
   Future<FavouriteModel> getUserFavProduct(String userid, String apikey) async {
     const url = '${Utility.BaseURL}${'user-favorite-products.php'}';
     FavouriteModel model;
+
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({'user_id': userid, 'product_id': '5'}));
