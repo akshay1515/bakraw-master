@@ -11,7 +11,7 @@ class MarkFavourite with ChangeNotifier {
       String userid, String productId, String apikey) async {
     const url = '${Utility.BaseURL}${'mark-unmark-product-as-favorite.php'}';
     FavouriteModel model;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({
           'user_id': num.tryParse(userid),

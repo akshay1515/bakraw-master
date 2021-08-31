@@ -16,7 +16,7 @@ class FlashSaleProvider with ChangeNotifier {
     FlashsaleModel model;
 
     const url = '${Utility.BaseURL}${'flash-sales.php'}';
-    final response = await http.get(url);
+    final response = await http.get(Uri.parse(url));
     List<FlashsaleModel> list = [];
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
     if (response.statusCode == 200) {

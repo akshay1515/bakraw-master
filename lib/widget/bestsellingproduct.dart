@@ -23,6 +23,7 @@ class _BestSellingState extends State<BestSelling> {
 
   @override
   void initState() {
+    super.initState();
     getfuture(context);
   }
 
@@ -34,7 +35,6 @@ class _BestSellingState extends State<BestSelling> {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder(
       future: myfuture,
       builder: (context, AsyncSnapshot<PreviousOrderProduct> snapshot) {
@@ -57,11 +57,11 @@ class _BestSellingState extends State<BestSelling> {
                         price: snapshot.data.data[index].price,
                         name: snapshot.data.data[index].name,
                         isSaleavaliable:
-                        snapshot.data.data[index].isProductIsInSale,
+                            snapshot.data.data[index].isProductIsInSale,
                         productsaledetails:
-                        snapshot.data.data[index].isProductIsInSale
-                            ? snapshot.data.data[index].productSaleDetails
-                            : null,
+                            snapshot.data.data[index].isProductIsInSale
+                                ? snapshot.data.data[index].productSaleDetails
+                                : null,
                         productRating: snapshot.data.data[index].productRating,
                       );
                     },
@@ -176,7 +176,11 @@ class BestSellingItem extends StatelessWidget {
                       SizedBox(height: 4),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(name),
+                        child: Text(
+                          name,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                       SizedBox(height: 4),
                       Padding(
@@ -286,7 +290,11 @@ class BestSellingItem extends StatelessWidget {
                     SizedBox(height: 4),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(name),
+                      child: Text(
+                        name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
                     SizedBox(height: 4),
                     Padding(

@@ -9,6 +9,7 @@ class CategoryProductProvider with ChangeNotifier {
   List<Data> _items = [];
 
   List<Data> get items {
+    _items.sort((a, b) => a.name.compareTo(b.name));
     return [..._items];
   }
 
@@ -21,7 +22,7 @@ class CategoryProductProvider with ChangeNotifier {
   Future<CategoryProduct> getProductBycategory(String CategoryI) async {
     const url = '${Utility.BaseURL}${'category-products.php?category_id='}';
     CategoryProduct catprod;
-    final response = await http.get('${url}$CategoryI');
+    final response = await http.get(Uri.parse('${url}$CategoryI'));
     var decodeddata = jsonDecode(response.body);
     List<Data> productlist = [];
     if (decodeddata['status'] == 200) {
@@ -46,7 +47,7 @@ class CategoryProductProvider with ChangeNotifier {
     return catprod;
   }
 
- /* Future<Datum> UpdateOptionValue(String Selected) async {
+  /* Future<Datum> UpdateOptionValue(String Selected) async {
     Datum options;
     options = Datum(productId: Selected);
     _list = options;

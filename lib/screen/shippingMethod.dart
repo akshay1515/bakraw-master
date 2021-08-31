@@ -60,13 +60,19 @@ class _ShippingMethodState extends State<ShippingMethod> {
   bool isinit = true;
   bool isLoading = true;
 
+  Future taxfuture;
+  Future deliveryfuture;
+
   bool visiblity = false;
   Color textcolor = grocery_color_white;
   String coupontext = '';
   IconData icons;
 
+  var DeliveryText = '';
+
   TaxModel taxmodel = TaxModel();
   CouponModel couponclass = CouponModel();
+  Future deliverytext;
 
   List<taxData> taxdetails = [];
   List<Data.Data> target = [];
@@ -81,10 +87,17 @@ class _ShippingMethodState extends State<ShippingMethod> {
   @override
   void initState() {
     super.initState();
-    getUserInfo();
+    getUserInfo().then((value) {
+      taxfuture = Provider.of<TaxProvider>(context, listen: false)
+          .getTaxlist(apikey, userid, email);
+      deliveryfuture = Provider.of<ShipmethodProvider>(context, listen: false)
+          .getShippingmethod(userid, email, apikey);
+    });
     if (isLoading) {
       if (isinit == true) {
         fetchcartItems();
+        deliverytext = Provider.of<ShipmethodProvider>(context, listen: false)
+            .getDeliveryText();
       }
     }
   }
@@ -92,7 +105,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
   Future fetchcartItems() async {
     subtotal = 0.0;
     if (rowlist == null) {
-      rowlist = List<CartsModel>();
+      rowlist = [];
       count = 0;
     }
     count = await DatabaseHelper.instance.getCount();
@@ -127,16 +140,17 @@ class _ShippingMethodState extends State<ShippingMethod> {
   }
 
   double Calculatetax() {
+    final taxing = Provider.of<TaxProvider>(context).items;
     double temp = 0.0;
-    temp = (taxmodel.data[defaultvalue].taxRates.length > 0
+    temp = (taxing.data[defaultvalue].taxRates.length > 0
         ? (Subtotal() / 100) *
-            double.parse(
-                taxmodel.data[defaultvalue].taxRates[defaultvalue].rate)
+            double.parse(taxing.data[defaultvalue].taxRates[defaultvalue].rate)
         : (Subtotal() / 100) * 0);
     return double.parse(temp.toStringAsFixed(2));
   }
 
   double finalTotal() {
+    final delivery = Provider.of<ShipmethodProvider>(context).items;
     double discount = 0;
     if (couponclass != null) {
       if (couponclass.status == 200) {
@@ -149,16 +163,16 @@ class _ShippingMethodState extends State<ShippingMethod> {
     if (isdelivery) {
       total = (Subtotal() +
           Calculatetax() +
-          double.parse(Shippinglist[defaultvalue].freeShippingMinAmount));
-      Shippinglable = Shippinglist[defaultvalue].freeShippingLabel;
+          double.parse(delivery.data[defaultvalue].freeShippingMinAmount));
+      Shippinglable = delivery.data[defaultvalue].freeShippingLabel;
       shippingcost =
-          double.parse(Shippinglist[defaultvalue].freeShippingMinAmount)
+          double.parse(delivery.data[defaultvalue].freeShippingMinAmount)
               .toStringAsFixed(2);
     } else if (ispickup) {
       total = (Subtotal() + Calculatetax());
-      Shippinglable = Shippinglist[1].localPickupLabel;
+      Shippinglable = delivery.data[1].localPickupLabel;
       shippingcost =
-          double.parse(Shippinglist[1].localPickupCost).toStringAsFixed(2);
+          double.parse(delivery.data[1].localPickupCost).toStringAsFixed(2);
     }
     return double.parse(total.toStringAsFixed(2));
   }
@@ -222,6 +236,14 @@ class _ShippingMethodState extends State<ShippingMethod> {
     return fdate.toString();
   }
 
+  getTaxdetails() async {
+    taxfuture.then((value) {
+      value.data[0].taxRates.isNotEmpty
+          ? tempTax = double.parse(value.data[0].taxRates[0].rate)
+          : '0.0';
+    });
+  }
+
   void applyCoupon() {
     CouponData();
     Provider.of<CouponProvider>(context, listen: false)
@@ -253,48 +275,12 @@ class _ShippingMethodState extends State<ShippingMethod> {
 
   @override
   Widget build(BuildContext context) {
-    changeStatusColor(grocery_colorPrimary);
     var width = MediaQuery.of(context).size.width;
-
-    Future<List<dw.Data>> getDeliveryMethod() async {
-      Provider.of<ShipmethodProvider>(context)
-          .getShippingmethod(userid, email, apikey)
-          .then((value) {
-        value.data.forEach((element) {
-          Shippinglist.add(dw.Data(
-              freeShippingName: element.freeShippingName,
-              freeShippingLabel: element.freeShippingLabel,
-              freeShippingEnabled: element.freeShippingEnabled,
-              freeShippingMinAmount: element.freeShippingMinAmount,
-              localPickupCost: element.localPickupCost,
-              localPickupEnabled: element.localPickupEnabled,
-              localPickupLabel: element.localPickupLabel,
-              localPickupName: element.localPickupName));
-        });
-        return Shippinglist;
-      });
-    }
-
-    Future<TaxModel> getTaxdetails() async {
-      Provider.of<TaxProvider>(context)
-          .getTaxlist(apikey, userid, email)
-          .then((value) {
-        taxmodel = TaxModel(
-            status: value.status, message: value.message, data: value.data);
-
-        value.data[0].taxRates.isNotEmpty
-            ? tempTax = double.parse(value.data[0].taxRates[0].rate)
-            : '0.0';
-
-        return taxmodel;
-      });
-    }
+    final delivery = Provider.of<ShipmethodProvider>(context).items;
+    final taxproddata = Provider.of<TaxProvider>(context).items;
 
     return FutureBuilder(
-        future: Future.wait([
-          getTaxdetails(),
-          getDeliveryMethod(),
-        ]),
+        future: Future.wait([taxfuture, deliveryfuture]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
             return Scaffold(
@@ -321,6 +307,28 @@ class _ShippingMethodState extends State<ShippingMethod> {
               ),
               body: Column(
                 children: [
+                  FutureBuilder(
+                      future: deliverytext,
+                      builder: (_, AsyncSnapshot snapshot) {
+                        return snapshot.hasData
+                            ? snapshot.data.data.plainDeliveryText.isNotEmpty
+                                ? Container(
+                                    height: 90,
+                                    color: Colors.white,
+                                    margin: EdgeInsets.only(top: 8, bottom: 16),
+                                    padding: EdgeInsets.only(
+                                        top: 4, bottom: 4, left: 8, right: 8),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Text(
+                                      snapshot.data.data.plainDeliveryText,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red,
+                                          fontSize: 16),
+                                    ))
+                                : Container()
+                            : Container();
+                      }),
                   Expanded(
                     child: ListView(
                       shrinkWrap: true,
@@ -336,8 +344,8 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                   spreadRadius: 3)
                             ],
                             borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(spacing_middle),
-                                bottomLeft: Radius.circular(spacing_middle)),
+                                bottomRight: Radius.circular(spacing_large),
+                                bottomLeft: Radius.circular(spacing_large)),
                             color: grocery_color_white,
                           ),
                           child: Column(
@@ -401,6 +409,9 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                             vertical: 3,
                                           ),
                                           decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      spacing_standard),
                                               border: Border.all(
                                                   color: Colors.grey)),
                                           width: MediaQuery.of(context)
@@ -513,6 +524,9 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 child: Container(
                                   height: 150,
                                   child: Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            spacing_large)),
                                     color: isdelivery
                                         ? grocery_colorPrimary
                                         : grocery_color_white,
@@ -529,7 +543,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                           ),
                                           SizedBox(height: 5),
                                           Text(
-                                            Shippinglist[0].freeShippingName,
+                                            delivery.data[0].freeShippingName,
                                             style: TextStyle(
                                               fontSize: 20,
                                               color: !isdelivery
@@ -538,7 +552,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                             ),
                                           ),
                                           Text(
-                                            '₹ ${Shippinglist[0].freeShippingMinAmount}',
+                                            '₹ ${delivery.data[0].freeShippingMinAmount}',
                                             style: TextStyle(
                                               fontSize: 20,
                                               color: !isdelivery
@@ -569,6 +583,9 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 child: Container(
                                   height: 150,
                                   child: Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            spacing_large)),
                                     color: ispickup
                                         ? grocery_colorPrimary
                                         : grocery_color_white,
@@ -585,7 +602,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                           ),
                                           SizedBox(height: 5),
                                           Text(
-                                            Shippinglist[1].localPickupName,
+                                            delivery.data[1].localPickupName,
                                             style: TextStyle(
                                               fontSize: 20,
                                               color: !ispickup
@@ -594,7 +611,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                             ),
                                           ),
                                           Text(
-                                              '₹ ${Shippinglist[1].localPickupCost}',
+                                              '₹ ${delivery.data[1].localPickupCost}',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 color: !ispickup
@@ -619,99 +636,128 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                 fontFamily: fontMedium)),
                         Container(
                           margin: EdgeInsets.only(
-                              left: 10, right: 10, top: spacing_standard),
-                          color: grocery_color_white,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  if (!ispaynow) {
-                                    setState(() {
-                                      ispaynow = true;
-                                      isCOD = false;
-                                      paymentMode = ispaynow;
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: grocery_color_white,
-                                      border: Border(
-                                          bottom: BorderSide(
-                                              color: grocery_lightGrey))),
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 5),
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Stack(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          'Pay Now',
-                                          style: TextStyle(
-                                              color: grocery_Color_black,
-                                              fontSize: textSizeLargeMedium),
+                              left: 10,
+                              right: 10,
+                              top: spacing_standard,
+                              bottom: 16),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(spacing_standard)),
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(spacing_standard),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    if (!ispaynow) {
+                                      setState(() {
+                                        ispaynow = true;
+                                        isCOD = false;
+                                        paymentMode = ispaynow;
+                                      });
+                                    }
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.circular(spacing_standard),
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 3),
+                                      decoration: BoxDecoration(
+                                        color: grocery_color_white,
+                                        /*  border: Border(
+                                              bottom: BorderSide(
+                                                  color: grocery_lightGrey))*/
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 5),
+                                      width: MediaQuery.of(context).size.width,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                            spacing_standard),
+                                        child: Stack(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Pay Now',
+                                                style: TextStyle(
+                                                    color: grocery_Color_black,
+                                                    fontSize:
+                                                        textSizeLargeMedium),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              heightFactor: 0.5,
+                                              child: Visibility(
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: grocery_colorPrimary,
+                                                ),
+                                                visible: ispaynow,
+                                              ),
+                                            )
+                                          ],
                                         ),
                                       ),
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Visibility(
-                                          child: Icon(
-                                            Icons.check,
-                                            color: grocery_colorPrimary,
-                                          ),
-                                          visible: ispaynow,
-                                        ),
-                                      )
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  if (!isCOD) {
-                                    setState(() {
-                                      ispaynow = false;
-                                      isCOD = true;
-                                      paymentMode = ispaynow;
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: grocery_color_white,
-                                        border: Border(
-                                            bottom: BorderSide(
-                                                color: grocery_color_white))),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 5),
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Stack(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Cash On Delivery',
-                                            style: TextStyle(
-                                                color: grocery_Color_black,
-                                                fontSize: textSizeLargeMedium),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Visibility(
-                                            child: Icon(
-                                              Icons.check,
-                                              color: grocery_colorPrimary,
+                                GestureDetector(
+                                  onTap: () {
+                                    if (!isCOD) {
+                                      setState(() {
+                                        ispaynow = false;
+                                        isCOD = true;
+                                        paymentMode = ispaynow;
+                                      });
+                                    }
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.circular(spacing_standard),
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            color: grocery_color_white,
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color:
+                                                        grocery_color_white))),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 5),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Stack(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Cash On Delivery',
+                                                style: TextStyle(
+                                                    color: grocery_Color_black,
+                                                    fontSize:
+                                                        textSizeLargeMedium),
+                                              ),
                                             ),
-                                            visible: !ispaynow,
-                                          ),
-                                        )
-                                      ],
-                                    )),
-                              ),
-                            ],
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              heightFactor: 0.5,
+                                              child: Visibility(
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: grocery_colorPrimary,
+                                                ),
+                                                visible: !ispaynow,
+                                              ),
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -762,7 +808,7 @@ class _ShippingMethodState extends State<ShippingMethod> {
                                                 deliveryinstructions,
                                                 Shippinglable,
                                                 shippingcost,
-                                                taxmodel.data[0].taxRates[0]
+                                                taxproddata.data[0].taxRates[0]
                                                     .taxRateId,
                                                 Calculatetax()
                                                     .toStringAsFixed(2),

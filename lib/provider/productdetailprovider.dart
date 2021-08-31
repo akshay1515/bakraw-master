@@ -18,18 +18,8 @@ class ProductProvider with ChangeNotifier {
   Future<ProductModel> getProductDetails(String id) async {
     const url = '${Utility.BaseURL}${'product-details.php?product_id='}';
     ProductModel productModel;
-    final response = await http.get('${url}${id}');
+    final response = await http.get(Uri.parse('${url}${id}'));
     var decodeddata = json.decode(response.body);
-
-    /*  ProductSaleDetails pd = ProductSaleDetails(
-        saleId: '21',
-        saleProductId: '21',
-        price: '21',
-        qty: '21',
-        isProductOutOfStock: true,
-        endDate: DateTime.now(),
-        sold: 4,
-        saleName: 'demo');*/
 
     if (decodeddata['status'] == 200) {
       productModel = ProductModel.fromJson(decodeddata);
@@ -45,7 +35,7 @@ class ProductProvider with ChangeNotifier {
       String userid, String apikey, String productid) async {
     FavouriteModel model;
     const url = '${Utility.BaseURL}${'user-favorite-products.php'}';
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({
           'user_id': num.tryParse(userid),

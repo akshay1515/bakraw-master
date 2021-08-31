@@ -19,7 +19,7 @@ class UserAddressProvider with ChangeNotifier {
       Data userAddress, user.Data mod) async {
     const url = '${Utility.BaseURL}${'add-update-address.php'}';
     UserAddressModel model;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': mod.token},
         body: jsonEncode({
           'address_title': 'Home Addresss',
@@ -58,7 +58,7 @@ class UserAddressProvider with ChangeNotifier {
     UserAddressModel model;
     const url = '${Utility.BaseURL}${'user-addresses.php'}';
 
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({'user_id': userid}));
 

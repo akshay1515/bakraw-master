@@ -17,7 +17,7 @@ class OrderHistoryProvider with ChangeNotifier {
     var uid = num.tryParse(userid);
     const url = '${Utility.BaseURL}${'past-orders.php'}';
     OrderHistoryModel model;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({'user_id': uid, 'user_email': email}));
     if (response.statusCode == 200) {

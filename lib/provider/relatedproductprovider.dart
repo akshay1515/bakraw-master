@@ -17,7 +17,7 @@ class RelatedProductProvier with ChangeNotifier {
 
     const url =
         '${Utility.BaseURL}${'product-related-products.php?product_id='}';
-    final response = await http.get('${url}$productid');
+    final response = await http.get(Uri.parse('${url}$productid'));
     List<RelatedProductModel> list = [];
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
     if (response.statusCode == 200) {

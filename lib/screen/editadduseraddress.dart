@@ -151,22 +151,6 @@ class _EditUserAddressState extends State<EditUserAddress> {
       });
     }
 
-    /*if (checkData() != null) {
-      countryCont.text = checkData().country;
-      stateCont.text = checkData().state;
-      cityCont.text = checkData().city;
-
-      firstNameCont.text =
-          checkData().firstName != null ? checkData().firstName : '';
-      lastNameCont.text =
-          checkData().lastName != null ? checkData().lastName : '';
-      addressCont.text = checkData().address1;
-      shippingaddress1.text = checkData().address2;
-      pinCodeCont.text = checkData().zip;
-      phoneNumberCont.text = mobile;
-      Addressid = checkData().id != null ? checkData().id : '';
-    }*/
-
     void onSaveClicked() {
       setState(() {
         isloading = true;
@@ -226,6 +210,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
     }
 
     final firstName = TextFormField(
+      enableInteractiveSelection: false,
       focusNode: firstnamefocus,
       controller: firstNameCont,
       keyboardType: TextInputType.text,
@@ -247,6 +232,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       decoration: formFieldDecoration('First Name'),
     );
     final lastName = TextFormField(
+      enableInteractiveSelection: false,
       focusNode: lastnamefocus,
       controller: lastNameCont,
       keyboardType: TextInputType.text,
@@ -267,6 +253,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       decoration: formFieldDecoration('Last Name'),
     );
     final pinCode = TextFormField(
+      enableInteractiveSelection: false,
       focusNode: pincodefocus,
       controller: pinCodeCont,
       keyboardType: TextInputType.number,
@@ -293,6 +280,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       decoration: formFieldDecoration('Pin Code'),
     );
     final city = TextFormField(
+      enableInteractiveSelection: false,
       controller: cityCont,
       focusNode: cityfocus,
       keyboardType: TextInputType.text,
@@ -314,6 +302,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       decoration: formFieldDecoration('City Name'),
     );
     final state = TextFormField(
+      enableInteractiveSelection: false,
       focusNode: statefocus,
       readOnly: true,
       onFieldSubmitted: (term) {
@@ -336,6 +325,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       decoration: formFieldDecoration('State'),
     );
     final country = TextFormField(
+      enableInteractiveSelection: false,
       focusNode: countryfocus,
       onFieldSubmitted: (term) {
         FocusScope.of(context).nextFocus();
@@ -358,6 +348,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       decoration: formFieldDecoration("Country"),
     );
     final address = TextFormField(
+      enableInteractiveSelection: false,
       controller: addressCont,
       focusNode: address1focus,
       keyboardType: TextInputType.multiline,
@@ -378,6 +369,7 @@ class _EditUserAddressState extends State<EditUserAddress> {
       decoration: formFieldDecoration('Shipping Address1'),
     );
     final address1 = TextFormField(
+      enableInteractiveSelection: false,
       controller: shippingaddress1,
       focusNode: address2focus,
       keyboardType: TextInputType.multiline,
@@ -456,16 +448,31 @@ class _EditUserAddressState extends State<EditUserAddress> {
             padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
             child: saveButton,
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+            child: Text(
+              '----- Or ------',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            ),
+          ),
           Container(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: grocery_colorPrimary,
-              ),
+                  primary: grocery_colorPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: Size(100, 50),
+                  padding: EdgeInsets.only(left: 40, right: 40)),
               onPressed: () {
                 Navigator.of(context).popAndPushNamed(GoogleMapActivity.Tag,
                     arguments: {'data': widget.model, 'isnav': widget.isnav});
               },
-              child: Text('Open On Maps'),
+              child: Text(
+                'Open On Maps',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
             ),
           )
         ]));

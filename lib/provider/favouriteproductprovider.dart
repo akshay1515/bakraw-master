@@ -17,7 +17,7 @@ class UserFavouriteProvider with ChangeNotifier {
     const url = '${Utility.BaseURL}${'user-favorite-products.php'}';
     FavouriteModel model;
 
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({'user_id': userid, 'product_id': '5'}));
     Map<String, dynamic> decodeddata = jsonDecode(response.body);

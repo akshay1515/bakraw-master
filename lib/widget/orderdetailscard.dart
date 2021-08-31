@@ -2,7 +2,6 @@ import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/orderdetailsmodel.dart';
 import 'package:bakraw/provider/orderdetailsprovider.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
-import 'package:bakraw/widget/customappbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -329,26 +328,32 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                 ],
                               ),
                               SizedBox(height: 20),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
-                                child: Text('Note :',
-                                    style: TextStyle(
-                                      fontFamily: fontBold,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 20,
-                                    )),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
-                                child: Text('${model.note}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    )),
-                              ),
+                              !model.note.contains('-1')
+                                  ? Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 16, right: 16),
+                                      child: Text('Note :',
+                                          style: TextStyle(
+                                            fontFamily: fontBold,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 20,
+                                          )),
+                                    )
+                                  : Container(),
+                              !model.note.contains('-1')
+                                  ? Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 16, right: 16),
+                                      child: Text('${model.note}',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          )),
+                                    )
+                                  : Container(),
                               SizedBox(height: 10),
                               Padding(
                                 padding: EdgeInsets.only(left: 16, right: 16),
-                                child: Text('Deliverey Address :',
+                                child: Text('Delivery Address :',
                                     style: TextStyle(
                                       fontFamily: fontBold,
                                       fontWeight: FontWeight.w700,

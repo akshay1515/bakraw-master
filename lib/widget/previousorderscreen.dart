@@ -46,7 +46,7 @@ class _PreviousOrderState extends State<PreviousOrder> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 80),
+      margin: EdgeInsets.only(bottom: 10),
       child: FutureBuilder(
           future: myfuture,
           builder: (context, AsyncSnapshot<PreviousOrderProduct> snapshot) {
@@ -90,6 +90,7 @@ class _PreviousOrderState extends State<PreviousOrder> {
 
   @override
   void initState() {
+    super.initState();
     getUserInfo().then((value) {
       getfuture();
     });
@@ -97,6 +98,7 @@ class _PreviousOrderState extends State<PreviousOrder> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (isLoading) {
       setState(() {
         isLoading = false;
@@ -148,7 +150,8 @@ class FlashsaleItem extends StatelessWidget {
                     ],
                     borderRadius:
                         BorderRadius.vertical(top: Radius.circular(5))),
-                margin: EdgeInsets.only(left: 16, bottom: 16),
+                margin:
+                    EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -180,7 +183,7 @@ class FlashsaleItem extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 1),
                             child: Text(
-                              '(${6})',
+                              '(${productRating.totalReviewsCount})',
                               style: TextStyle(fontSize: 10),
                             ),
                           )
@@ -189,8 +192,12 @@ class FlashsaleItem extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(name),
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      child: Text(
+                        name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     SizedBox(height: 4),
                     Padding(
@@ -243,7 +250,7 @@ class FlashsaleItem extends StatelessWidget {
                     BoxShadow(color: Colors.black45, blurRadius: 5),
                   ],
                   borderRadius: BorderRadius.vertical(top: Radius.circular(5))),
-              margin: EdgeInsets.only(left: 16, bottom: 16),
+              margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -275,7 +282,7 @@ class FlashsaleItem extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 1),
                           child: Text(
-                            '(${6})',
+                            '(${productRating.totalReviewsCount})',
                             style: TextStyle(fontSize: 10),
                           ),
                         )
@@ -285,7 +292,11 @@ class FlashsaleItem extends StatelessWidget {
                   SizedBox(height: 4),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(name),
+                    child: Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   SizedBox(height: 4),
                   Padding(

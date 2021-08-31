@@ -11,7 +11,7 @@ class OTPProvider with ChangeNotifier {
   Future<OTPverifyModel> sendOTP(String mobilenumber) async {
     const url = '${Utility.BaseURL}${'send-otp.php'}';
     OTPverifyModel userModel;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'mobile': num.parse(mobilenumber)}));
 
@@ -34,7 +34,7 @@ class OTPProvider with ChangeNotifier {
   Future<OTPverifyModel> VerifyOTP(String mobilenumber, String otp) async {
     const url = '${Utility.BaseURL}${'verify-otp.php'}';
     OTPverifyModel model;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(
             {'mobile': num.parse(mobilenumber), 'otp': num.parse(otp)}));

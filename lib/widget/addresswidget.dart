@@ -1,4 +1,3 @@
-import 'package:bakraw/GlobalWidget/GlobalWidget.dart';
 import 'package:bakraw/model/useraddressmodel.dart' as da;
 import 'package:bakraw/screen/checkpincode.dart';
 import 'package:bakraw/screen/editadduseraddress.dart';
@@ -143,9 +142,7 @@ class AddressListWidget extends StatelessWidget {
                                       width: MediaQuery.of(context).size.width -
                                           100,
                                       child: Text(
-                                        mobile != null
-                                            ? 'Mob: ${mobile}'
-                                            : 'NA',
+                                        mobile != null ? 'Mob: $mobile' : 'NA',
                                         softWrap: true,
                                         style: TextStyle(
                                           color: grocery_textColorPrimary,

@@ -17,14 +17,14 @@ class PreviousOrderProvider with ChangeNotifier {
     PreviousOrderProduct model;
 
     const url = '${Utility.BaseURL}${'previous-orders-products.php'}';
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({'user_id': Userid, 'user_email': email}));
     List<PreviousOrderProduct> list = [];
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
     if (response.statusCode == 200) {
-        model = PreviousOrderProduct.fromJson(decodeddata);
-        list.add(model);
+      model = PreviousOrderProduct.fromJson(decodeddata);
+      list.add(model);
     }
     _items = list;
     notifyListeners();

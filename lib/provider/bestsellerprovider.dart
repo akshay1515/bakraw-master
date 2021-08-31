@@ -16,16 +16,14 @@ class BestSellerProvider with ChangeNotifier {
     PreviousOrderProduct model;
 
     const url = '${Utility.BaseURL}${'best-selling-products.php'}';
-    final response = await http.get(url);
+    final response = await http.get(Uri.parse(url));
     List<PreviousOrderProduct> list = [];
     Map<String, dynamic> decodeddata = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      if(decodeddata['status'] == 200){
+      if (decodeddata['status'] == 200) {
         model = PreviousOrderProduct.fromJson(decodeddata);
         list.add(model);
-      }else{
-
-      }
+      } else {}
     }
     _items = list;
     notifyListeners();

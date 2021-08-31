@@ -15,7 +15,7 @@ class PincodeProvider with ChangeNotifier {
   Future<PincodeModel> checkpincodestatus(String pincode) async {
     const url = '${Utility.BaseURL}${'/pin-codes.php?pincode='}';
     PincodeModel model;
-    final response = await http.get('$url${pincode}');
+    final response = await http.get(Uri.parse('$url${pincode}'));
     Map<String, dynamic> data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bakraw/provider/OTPProvider.dart';
 import 'package:bakraw/provider/bestsellerprovider.dart';
 import 'package:bakraw/provider/carttoserverprovider.dart';
@@ -5,14 +7,12 @@ import 'package:bakraw/provider/categoryproductprovider.dart';
 import 'package:bakraw/provider/categoryprovider.dart';
 import 'package:bakraw/provider/changepasswordprovider.dart';
 import 'package:bakraw/provider/couponprovider.dart';
-import 'package:bakraw/provider/couponsliderProvider.dart';
 import 'package:bakraw/provider/deliveryslotprovider.dart';
 import 'package:bakraw/provider/favouriteproductprovider.dart';
 import 'package:bakraw/provider/flashsaleprovider.dart';
 import 'package:bakraw/provider/markfavouriteprovider.dart';
 import 'package:bakraw/provider/orderdetailsprovider.dart';
 import 'package:bakraw/provider/orderhistoryprovider.dart';
-import 'package:bakraw/provider/passwordprovider.dart';
 import 'package:bakraw/provider/pincodeprovider.dart';
 import 'package:bakraw/provider/previousorderprovider.dart';
 import 'package:bakraw/provider/productdetailprovider.dart';
@@ -47,11 +47,21 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  HttpOverrides.global = MyHttpOverides();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(MyApp());
   });
+}
+
+class MyHttpOverides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -65,7 +75,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: CategoryProductProvider()),
         ChangeNotifierProvider.value(value: ProductProvider()),
         ChangeNotifierProvider.value(value: UserProvider()),
-        ChangeNotifierProvider.value(value: ForgotProvider()),
         ChangeNotifierProvider.value(value: UserFavouriteProvider()),
         ChangeNotifierProvider.value(value: MarkFavourite()),
         ChangeNotifierProvider.value(value: OrderHistoryProvider()),
@@ -83,7 +92,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: PreviousOrderProvider()),
         ChangeNotifierProvider.value(value: OTPProvider()),
         ChangeNotifierProvider.value(value: CouponProvider()),
-        ChangeNotifierProvider.value(value: couponslideProvider()),
         ChangeNotifierProvider.value(value: BestSellerProvider())
       ],
       child: MaterialApp(

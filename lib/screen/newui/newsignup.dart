@@ -235,6 +235,7 @@ class _NewLoginState extends State<NewLogin> {
             height: MediaQuery.of(context).size.height,
             child: WillPopScope(
                 child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
                   child: Stack(
                     children: [
                       Container(
@@ -334,6 +335,7 @@ class _NewLoginState extends State<NewLogin> {
                                       width: MediaQuery.of(context).size.width /
                                           1.75,
                                       child: TextFormField(
+                                        enableInteractiveSelection: false,
                                         key: _mobileValuekey,
                                         controller: mobile,
                                         textInputAction: TextInputAction.done,
@@ -419,7 +421,7 @@ class _NewLoginState extends State<NewLogin> {
                       Visibility(
                         visible: showOTP(),
                         child: Container(
-                          height: MediaQuery.of(context).size.height - 400,
+                          height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.only(top: 300),
                           padding: EdgeInsets.only(top: 45),
@@ -514,7 +516,7 @@ class _NewLoginState extends State<NewLogin> {
                       Visibility(
                         visible: showSignup(),
                         child: Container(
-                          height: MediaQuery.of(context).size.height - 250,
+                          height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.only(top: 300),
                           padding: EdgeInsets.only(top: 30),
@@ -582,6 +584,7 @@ class _NewLoginState extends State<NewLogin> {
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextFormField(
+                                          enableInteractiveSelection: false,
                                           key: _fnameValuekey,
                                           controller: fname,
                                           textInputAction: TextInputAction.done,
@@ -658,6 +661,7 @@ class _NewLoginState extends State<NewLogin> {
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextFormField(
+                                          enableInteractiveSelection: false,
                                           key: _lnameValuekey,
                                           controller: lname,
                                           textInputAction: TextInputAction.done,
@@ -734,6 +738,7 @@ class _NewLoginState extends State<NewLogin> {
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextFormField(
+                                          enableInteractiveSelection: false,
                                           key: _emailValuekey,
                                           controller: email,
                                           textInputAction: TextInputAction.done,

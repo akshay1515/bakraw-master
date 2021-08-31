@@ -17,7 +17,7 @@ class OrderDetailsProvider with ChangeNotifier {
     const url = '${Utility.BaseURL}${'order-details.php'}';
 
     OrderDetailsModel model;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode(
             {'user_id': userid, 'user_email': email, "order_id": orderid}));

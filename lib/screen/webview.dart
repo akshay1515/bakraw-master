@@ -38,6 +38,7 @@ class _ContentDisplayState extends State<ContentDisplay> {
 
   @override
   void initState() {
+    super.initState();
     WebView.platform = SurfaceAndroidWebView();
   }
 }

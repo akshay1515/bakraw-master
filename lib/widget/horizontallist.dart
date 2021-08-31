@@ -21,20 +21,9 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
   var init = true;
   var count = 0;
   Future<CategoryModel> myfuture;
-  List<String> categoryIcon = [
-    'images/newicons/allmeatcolor.png',
-    'images/newicons/meatcolor.png',
-    'images/newicons/meatwithbonewhite.png'
-  ];
-
-  List<String> selectedIcon = [
-    'images/newicons/allmeatwhite.png',
-    'images/newicons/meatwhite.png',
-    'images/newicons/meatwithbonecolor.png'
-  ];
-
   @override
   void initState() {
+    super.initState();
     myfuture =
         Provider.of<CategoryProvider>(context, listen: false).getCategories();
   }
@@ -52,37 +41,21 @@ class _HorizontalScrollviewState extends State<HorizontalScrollview> {
           return Container(
               height: 40,
               margin: EdgeInsets.only(top: 7),
-              child:
-                  /* ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categorydata.length,
-        itemBuilder: (BuildContext ctx, int i) {
-          return Category(
-            imageLocation: categorydata[i].categoryId == selectedcategory
-                ? selectedIcon[i]
-                : categoryIcon[i],
-            imageCaption: categorydata[i].name,
-            categoryId: categorydata[i].categoryId,
-          );
-        },
-      ),*/
-                  GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: categorydata.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3, childAspectRatio: 3.25 / 1),
-                      itemBuilder: (context, i) {
-                        return Category(
-                          imageLocation:
-                              widget.selected != null && widget.selected == i
-                                  ? selectedIcon[widget.selected]
-                                  : categoryIcon[i],
-                          imageCaption: categorydata[i].name,
-                          categoryId: categorydata[i].categoryId,
-                          selected: widget.selected,
-                          index: i,
-                        );
-                      }));
+              child: GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: categorydata.length,
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1, childAspectRatio: 1 / 3.25),
+                  itemBuilder: (context, i) {
+                    return Category(
+                      imageLocation: categorydata[i].images[0].logo,
+                      imageCaption: categorydata[i].name,
+                      categoryId: categorydata[i].categoryId,
+                      selected: widget.selected,
+                      index: i,
+                    );
+                  }));
         });
   }
 }
@@ -153,10 +126,10 @@ class Category extends StatelessWidget {
                             border: Border.all(
                                 color: Colors.transparent,
                                 style: BorderStyle.none)),
-                        child: Image.asset(
+                        child: Image.network(
                           imageLocation,
-                          height: 20,
-                          width: 20,
+                          height: 40,
+                          width: 40,
                           fit: BoxFit.contain,
                         )),
                     Container(
@@ -180,6 +153,5 @@ class Category extends StatelessWidget {
         ),
       ),
     );
-    return Container();
   }
 }

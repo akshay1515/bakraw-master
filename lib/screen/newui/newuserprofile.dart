@@ -5,6 +5,7 @@ import 'package:bakraw/screen/newui/newsignup.dart';
 import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/widget/bottomnavigationbar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +24,6 @@ class _NewUserProfileState extends State<NewUserProfile> {
       lname = '',
       mobile = '';
   bool isinit = false;
-  bool _keyVisible;
 
   Future<String> getUserInfo() async {
     SharedPreferences prefs;
@@ -199,7 +199,6 @@ class _NewUserProfileState extends State<NewUserProfile> {
                     child: SingleChildScrollView(
                       child: Container(
                         color: Colors.green.shade50,
-                        height: MediaQuery.of(context).size.height,
                         child: Stack(
                           children: [
                             Container(
@@ -224,7 +223,7 @@ class _NewUserProfileState extends State<NewUserProfile> {
                                         Container(
                                           padding: EdgeInsets.only(bottom: 5),
                                           child: Text(
-                                            '${fname}${' '}${lname}',
+                                            '$fname${' '}$lname',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 20,
@@ -233,7 +232,7 @@ class _NewUserProfileState extends State<NewUserProfile> {
                                         ),
                                         Container(
                                           padding: EdgeInsets.only(bottom: 5),
-                                          child: Text('+91 ${mobile}',
+                                          child: Text('+91 $mobile',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 17)),
@@ -245,7 +244,7 @@ class _NewUserProfileState extends State<NewUserProfile> {
                               ),
                             ),
                             Container(
-                              height: MediaQuery.of(context).size.height - 350,
+                              height: (MediaQuery.of(context).size.height),
                               width: MediaQuery.of(context).size.width,
                               margin: EdgeInsets.only(top: 300),
                               decoration: BoxDecoration(
@@ -368,15 +367,15 @@ class _NewUserProfileState extends State<NewUserProfile> {
                                 ],
                               ),
                             ),
-                            BottomNav(currentScreen: 5)
                           ],
                         ),
                       ),
                     ),
-                    onWillPop: () {
+                    onWillPop: () async {
                       Navigator.of(context).pushReplacementNamed(
                           NewHomepage.Tag,
                           arguments: {'id': 0});
+                      return;
                     }),
               )
             : navigated()
@@ -389,6 +388,7 @@ class _NewUserProfileState extends State<NewUserProfile> {
 
   @override
   void initState() {
+    super.initState();
     getUserInfo().then((value) {
       setState(() {
         isinit = true;

@@ -10,7 +10,7 @@ class UserProvider with ChangeNotifier {
   Future<UserModel> userlogin(UserloginModel user) async {
     const url = '${Utility.BaseURL}${'signin.php'}';
     UserModel userModel;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': user.email, 'password': user.password}));
 
@@ -29,7 +29,7 @@ class UserProvider with ChangeNotifier {
   Future<UserModel> usersignup(Data signup) async {
     const url = '${Utility.BaseURL}${'signup.php'}';
     UserModel model;
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'first_name': signup.firstName,

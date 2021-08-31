@@ -10,6 +10,7 @@ class CategoryProvider with ChangeNotifier {
   List<Data> _items = [];
 
   List<Data> get items {
+    _items.sort((a, b) => a.name.compareTo(b.name));
     return [..._items];
   }
 
@@ -20,28 +21,33 @@ class CategoryProvider with ChangeNotifier {
   Future<CategoryModel> getCategories() async {
     const url = '${Utility.BaseURL}${'categories.php'}';
     CategoryModel category;
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      Map<String, dynamic> decodeddata = jsonDecode(response.body);
-      List<Data> catlist = [];
-      if (decodeddata['status'] == 200) {
-        category = CategoryModel.fromJson(decodeddata);
-        category.data.forEach((element) {
-          catlist.add(Data(
-              name: element.name,
-              categoryId: element.categoryId,
-              slug: element.slug,
-              sequence: element.sequence,
-              images: element.images));
-        });
-        _items = catlist;
-      } else {
-        category = CategoryModel(
-            status: decodeddata['status'], message: decodeddata['message']);
+    try {
+      final response = await http.get(Uri.parse(url));
+      print(response.request);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decodeddata = jsonDecode(response.body);
+        List<Data> catlist = [];
+        if (decodeddata['status'] == 200) {
+          category = CategoryModel.fromJson(decodeddata);
+          category.data.forEach((element) {
+            catlist.add(Data(
+                name: element.name,
+                categoryId: element.categoryId,
+                slug: element.slug,
+                sequence: element.sequence,
+                images: element.images));
+          });
+          _items = catlist;
+        } else {
+          category = CategoryModel(
+              status: decodeddata['status'], message: decodeddata['message']);
+        }
       }
+      notifyListeners();
+      return category;
+    } catch (error) {
+      print(error);
     }
-    notifyListeners();
-    return category;
   }
 
   void ChangeCategory(String SelectedCategory, int selected) {

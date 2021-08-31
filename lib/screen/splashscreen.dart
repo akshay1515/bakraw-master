@@ -7,8 +7,6 @@ class SplashScreen extends StatelessWidget {
   final globalScaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-
     changeStatusColor(grocery_colorPrimary);
 
     Future.delayed(Duration(seconds: 2), () async {

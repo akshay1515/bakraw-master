@@ -1,7 +1,6 @@
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 
 BoxDecoration boxDecoration(
     {double radius = 2,
@@ -47,15 +46,7 @@ Widget text(
   );
 }
 
-void changeStatusColor(Color color) async {
-  try {
-    await FlutterStatusbarcolor.setStatusBarColor(color, animate: true);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        useWhiteForeground(color));
-  } on Exception catch (e) {
-    print(e);
-  }
-}
+void changeStatusColor(Color color) async {}
 
 Function(BuildContext, String) placeholderWidgetFn() =>
     (_, s) => placeholderWidget();

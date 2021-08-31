@@ -3,6 +3,7 @@ import 'package:bakraw/widget/bakrawproperties.dart';
 import 'package:bakraw/widget/bannercarousel.dart';
 import 'package:bakraw/widget/bestsellingproduct.dart';
 import 'package:bakraw/widget/bottomnavigationbar.dart';
+import 'package:bakraw/widget/couponslider.dart';
 import 'package:bakraw/widget/customappbar.dart';
 import 'package:bakraw/widget/horizontallist.dart';
 import 'package:bakraw/widget/previousorderscreen.dart';
@@ -60,8 +61,9 @@ class NewHomepage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        height: 355,
+                        height: 270,
                         width: double.infinity,
+                        color: Colors.green.shade50.withOpacity(1.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -70,7 +72,9 @@ class NewHomepage extends StatelessWidget {
                                 left: 10,
                               ),
                               margin: EdgeInsets.only(
-                                  top: 10, left: 10, bottom: 10),
+                                top: 10,
+                                left: 10,
+                              ),
                               child: Text(
                                 'All Meat',
                                 style: TextStyle(
@@ -83,6 +87,9 @@ class NewHomepage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      Container(
+                        child: CouponSlider(),
+                      )
                     ],
                   ),
                   Column(

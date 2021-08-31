@@ -8,6 +8,7 @@ import 'package:bakraw/screen/useraddresslist.dart';
 import 'package:bakraw/screen/webview.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomAppbar extends StatelessWidget with PreferredSizeWidget {
@@ -265,7 +266,14 @@ class CustomAppbar extends StatelessWidget with PreferredSizeWidget {
               color: grocery_colorPrimary,
               size: 35,
             ),
-            onPressed: () {}),
+            onPressed: () {
+              Fluttertoast.showToast(
+                  msg: 'This feature will be avaliable soon',
+                  toastLength: Toast.LENGTH_SHORT,
+                  textColor: Colors.white,
+                  backgroundColor: Colors.black.withOpacity(0.7),
+                  gravity: ToastGravity.SNACKBAR);
+            }),
         Container(
           height: 30,
           width: 30,

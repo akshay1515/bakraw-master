@@ -21,7 +21,7 @@ class DeliverySlotProvider with ChangeNotifier {
   Future<DeliverySlotModel> getDeliverySlot() async {
     const url = '${Utility.BaseURL}${'delivery-slots.php'}';
     DeliverySlotModel model;
-    final response = await http.get(url);
+    final response = await http.get(Uri.parse(url));
     Map<String, dynamic> data = jsonDecode(response.body);
     if (response.statusCode == 200) {
       model = DeliverySlotModel.fromJson(data);

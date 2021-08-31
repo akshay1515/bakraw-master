@@ -5,7 +5,6 @@ import 'package:bakraw/provider/categoryprovider.dart';
 import 'package:bakraw/screen/newui/newproductdetail.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/utils/GroceryConstant.dart';
-import 'package:bakraw/widget/bottomnavigationbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,14 +38,13 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
     return FutureBuilder(
         future: myfuture,
         builder: (context, AsyncSnapshot<CategoryProduct> snapshot) {
           return snapshot.hasData
               ? snapshot.data.data.length > 0
                   ? Container(
-                      margin: EdgeInsets.only(
+                      padding: EdgeInsets.only(
                         left: spacing_middle,
                         right: spacing_middle,
                       ),
@@ -70,29 +68,30 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
                               });
                             },
                             child: snapshot.data.data[index].isProductIsInSale
-                                ? Banner(
-                                    location: BannerLocation.topEnd,
-                                    message: 'Sale',
-                                    color: Colors.red.shade900,
-                                    child: Container(
-                                      width: 175,
-                                      height: 270,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black45,
-                                                blurRadius: 5,
-                                                spreadRadius: 2),
-                                          ],
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(5))),
-                                      margin: EdgeInsets.only(bottom: 16),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          ClipRRect(
+                                ? Container(
+                                    width: 175,
+                                    height: 270,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black45,
+                                              blurRadius: 5,
+                                              spreadRadius: 2),
+                                        ],
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(5))),
+                                    margin: EdgeInsets.only(
+                                        bottom: 8, top: 8, left: 8, right: 8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Banner(
+                                          location: BannerLocation.topEnd,
+                                          message: 'Sale',
+                                          color: Colors.red.shade900,
+                                          child: ClipRRect(
                                             borderRadius: BorderRadius.vertical(
                                                 top: Radius.circular(5)),
                                             child: CachedNetworkImage(
@@ -105,114 +104,112 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
                                               width: double.infinity,
                                             ),
                                           ),
-                                          SizedBox(height: 4),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                SmoothStarRating(
-                                                  color: Colors.amber.shade500,
-                                                  allowHalfRating: true,
-                                                  isReadOnly: true,
-                                                  starCount: 5,
-                                                  rating: double.parse(
-                                                      '${snapshot.data.data[index].productRating.avgRating}'),
-                                                  size: 17,
+                                        ),
+                                        SizedBox(height: 4),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              SmoothStarRating(
+                                                color: Colors.amber.shade500,
+                                                allowHalfRating: true,
+                                                isReadOnly: true,
+                                                starCount: 5,
+                                                rating: double.parse(
+                                                    '${snapshot.data.data[index].productRating.avgRating}'),
+                                                size: 17,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 1),
+                                                child: Text(
+                                                  '(${snapshot.data.data[index].productRating.totalReviewsCount})',
+                                                  style:
+                                                      TextStyle(fontSize: 10),
                                                 ),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 1),
-                                                  child: Text(
-                                                    '(${snapshot.data.data[index].productRating.totalReviewsCount})',
-                                                    style:
-                                                        TextStyle(fontSize: 10),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 8),
+                                          child: Text(
+                                            snapshot.data.data[index].name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8, right: 8),
+                                          child: Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                border: Border(
+                                                    bottom: BorderSide(
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                        width: 1))),
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Container(
+                                          margin: EdgeInsets.only(top: 4),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                width: 7,
+                                                height: 14,
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.green.shade700,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomRight:
+                                                          Radius.circular(25),
+                                                      topRight:
+                                                          Radius.circular(25),
+                                                    )),
+                                              ),
+                                              Container(
+                                                padding:
+                                                    EdgeInsets.only(left: 10),
+                                                child: Text(
+                                                  '₹ ${double.parse(snapshot.data.data[index].productSaleDetails.productSalePrice).toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                    color:
+                                                        Colors.green.shade700,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(height: 4),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 8),
-                                            child: Text(
-                                              snapshot.data.data[index].name,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          SizedBox(height: 4),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8, right: 8),
-                                            child: Container(
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  border: Border(
-                                                      bottom: BorderSide(
-                                                          color: Colors
-                                                              .grey.shade300,
-                                                          width: 1))),
-                                            ),
-                                          ),
-                                          SizedBox(height: 4),
-                                          Container(
-                                            margin: EdgeInsets.only(top: 4),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Container(
-                                                  width: 7,
-                                                  height: 14,
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.green.shade700,
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                        bottomRight:
-                                                            Radius.circular(25),
-                                                        topRight:
-                                                            Radius.circular(25),
-                                                      )),
                                                 ),
-                                                Container(
-                                                  padding:
-                                                      EdgeInsets.only(left: 10),
-                                                  child: Text(
-                                                    '₹ ${double.parse(snapshot.data.data[index].productSaleDetails.productSalePrice).toStringAsFixed(2)}',
-                                                    style: TextStyle(
+                                              ),
+                                              Container(
+                                                padding:
+                                                    EdgeInsets.only(left: 5),
+                                                child: Text(
+                                                  '₹ ${double.parse(snapshot.data.data[index].price).toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                      fontSize: 8,
                                                       color:
-                                                          Colors.green.shade700,
+                                                          Colors.red.shade700,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                    ),
-                                                  ),
+                                                      decoration: TextDecoration
+                                                          .lineThrough),
                                                 ),
-                                                Container(
-                                                  padding:
-                                                      EdgeInsets.only(left: 5),
-                                                  child: Text(
-                                                    '₹ ${double.parse(snapshot.data.data[index].price).toStringAsFixed(2)}',
-                                                    style: TextStyle(
-                                                        fontSize: 8,
-                                                        color:
-                                                            Colors.red.shade700,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   )
                                 : Container(
@@ -227,8 +224,8 @@ class GrocerySubCategoryListState extends State<GrocerySubCategoryList> {
                                         ],
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(5))),
-                                    margin:
-                                        EdgeInsets.only(left: 16, bottom: 16),
+                                    margin: EdgeInsets.only(
+                                        left: 8, right: 8, bottom: 8, top: 8),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

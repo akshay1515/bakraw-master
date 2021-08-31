@@ -12,7 +12,7 @@ class Change_Password_Provider with ChangeNotifier {
 
     const url = '${Utility.BaseURL}${'change-password.php'}';
 
-    final response = await http.post(url,
+    final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'apikey': apikey},
         body: jsonEncode({
           'user_id': userid,

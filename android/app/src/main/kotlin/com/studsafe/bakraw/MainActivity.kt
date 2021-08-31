@@ -1,4 +1,4 @@
-package com.studsafe.bakraw
+package com.himalayangoatmeat.bakraw
 
 import io.flutter.embedding.android.FlutterActivity
 

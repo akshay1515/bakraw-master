@@ -150,7 +150,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
       ispickup = true;
     });
     var options = {
-      "key": "rzp_test_uQ7Wk2tHdgWxS3",
+      "key": "rzp_live_d355kwmiTLCJE7",
       "amount": taxamount,
       "name": '${widget.model.firstName + ' '}${widget.model.lastName}',
       "description": 'Purchased Meat',
@@ -250,7 +250,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
         .then((value) {
       orderplaced = orderplacedmessage(
           message: value.message, status: value.status, data: value.data);
-      var i = DatabaseHelper.instance.TrunccateTable();
+      DatabaseHelper.instance.TrunccateTable();
       setState(() {
         /* indicator.visible(false);*/
         ispickup = false;

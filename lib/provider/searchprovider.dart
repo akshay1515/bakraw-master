@@ -15,7 +15,7 @@ class SearchProvider with ChangeNotifier {
   Future<SearchModel> searchProducts(String search) async {
     const url = '${Utility.BaseURL}${'search.php?s='}';
     SearchModel model;
-    final response = await http.get('${url}$search');
+    final response = await http.get(Uri.parse('${url}$search'));
 
     if (response.statusCode == 200) {
       var decodeddata = jsonDecode(response.body);

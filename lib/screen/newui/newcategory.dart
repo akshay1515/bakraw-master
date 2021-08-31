@@ -1,6 +1,5 @@
 import 'package:bakraw/screen/categoryproduct.dart';
 import 'package:bakraw/screen/newui/newhomepage.dart';
-import 'package:bakraw/screen/searchscreen.dart';
 import 'package:bakraw/utils/GroceryColors.dart';
 import 'package:bakraw/widget/bakrawproperties.dart';
 import 'package:bakraw/widget/bottomnavigationbar.dart';
@@ -39,6 +38,7 @@ class _NewCategoryState extends State<NewCategory> {
           child: Stack(
             children: [
               Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                       height: 220,
@@ -52,7 +52,7 @@ class _NewCategoryState extends State<NewCategory> {
                 color: Colors.green.shade50,
                 margin: EdgeInsets.only(top: 210),
                 child: Container(
-                  margin: EdgeInsets.only(top: 20),
+                  margin: EdgeInsets.only(top: 25),
                   child: GrocerySubCategoryList(
                     selected: selected['selected'],
                   ),

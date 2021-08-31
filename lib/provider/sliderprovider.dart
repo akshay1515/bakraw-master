@@ -16,7 +16,7 @@ class SliderProvider with ChangeNotifier {
   Future<SliderModel> getCategory() async {
     SliderModel slider;
     const url = '${Utility.BaseURL}${'slider-products.php'}';
-    final response = await http.get(url);
+    final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       List<Data> sliderdata = [];
